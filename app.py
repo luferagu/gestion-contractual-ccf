@@ -31,24 +31,14 @@ def conectar_sheet():
     return sheet
 
 # ==========================================================
-# BUSCAR FILA POR ID
-# ==========================================================
-def buscar_fila(sheet, id_proceso):
-    registros = sheet.get_all_records()
-    for i, fila in enumerate(registros, start=2):
-        if str(fila.get("ID_PROCESO")) == str(id_proceso):
-            return i
-    return None
-
-# ==========================================================
-# GENERAR CONSECUTIVO ANUAL
+# GENERAR CONSECUTIVO ANUAL REAL
 # ==========================================================
 def generar_id():
     sheet = conectar_sheet()
     registros = sheet.get_all_records()
     year = str(date.today().year)
-    contador = 1
 
+    contador = 1
     for r in registros:
         if year in str(r.get("ID_PROCESO", "")):
             contador += 1
@@ -91,9 +81,9 @@ objeto = st.text_area("OBJETO")
 necesidad = st.text_area("NECESIDAD")
 justificacion = st.text_area("JUSTIFICACIÓN")
 
-centro = st.text_input("CENTRO DE COSTOS")
-programa = st.text_input("PROGRAMA")
-rubro = st.text_input("RUBRO")
+centro = st.text_input("CENTRO DE COSTOS (10 números)")
+programa = st.text_input("PROGRAMA (10 números)")
+rubro = st.text_input("RUBRO (10 números)")
 codigo_planeacion = st.text_input("CÓDIGO PLANEACIÓN")
 
 caracteristicas = st.text_area("CARACTERÍSTICAS TÉCNICAS DEL BIEN")
@@ -134,22 +124,41 @@ garantias = st.multiselect("GARANTÍAS CONTRACTUALES", [
 
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
-if st.button("GUARDAR ETAPA 1"):
+# ---------------- GUARDAR ETAPA 1 ----------------
+if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
+
     sheet = conectar_sheet()
 
     fila = [
         ID,objeto,necesidad,justificacion,centro,programa,
         rubro,codigo_planeacion,caracteristicas,
         ", ".join(oportunidad),forma_pago,modalidad,
-        articulo,numeral,literal,
-        valor,valor_letras,plazo,
-        analisis,", ".join(garantias),
+        articulo,numeral,literal,valor,valor_letras,
+        plazo,analisis,", ".join(garantias),
         str(fecha_estudio),
-        "", "", "", "", "", "", "", "", "", "", "", ""
+        "", "", "", "", "", "", "", "", "", ""
     ]
 
     sheet.append_row(fila)
-    st.success("ETAPA 1 guardada correctamente")
+
+    st.success("ETAPA 1 guardada en Google Sheets")
+
+# ---------------- WORD ESTUDIO PREVIO ----------------
+if st.button("GENERAR ESTUDIO PREVIO"):
+    archivo = generar_descarga("estudio_previo.docx", {
+        "ID_PROCESO": ID,
+        "OBJETO": objeto,
+        "NECESIDAD": necesidad,
+        "JUSTIFICACION": justificacion,
+        "VALOR": f"${valor:,.0f}".replace(",", "."),
+        "VALOR_LETRAS": valor_letras
+    })
+
+    st.download_button(
+        "DESCARGAR ESTUDIO PREVIO",
+        archivo,
+        f"estudio_previo_{ID}.docx"
+    )
 
 # ==========================================================
 # ================= ETAPA 2 =================
@@ -165,20 +174,21 @@ val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
 identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
 identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
 
-if st.button("GUARDAR ETAPA 2"):
-    sheet = conectar_sheet()
-    fila_num = buscar_fila(sheet, ID)
+if st.button("GENERAR SOLICITUD CDP"):
+    archivo = generar_descarga("solicitud_cdp.docx", {"ID_PROCESO": ID})
+    st.download_button("DESCARGAR CDP", archivo, f"solicitud_cdp_{ID}.docx")
 
-    if fila_num:
-        sheet.update(f"V{fila_num}", prop1)
-        sheet.update(f"W{fila_num}", val1)
-        sheet.update(f"X{fila_num}", prop2)
-        sheet.update(f"Y{fila_num}", val2)
-        sheet.update(f"Z{fila_num}", identificacion_pn)
-        sheet.update(f"AA{fila_num}", identificacion_pj)
-        st.success("ETAPA 2 actualizada")
-    else:
-        st.error("No se encontró el proceso en la base")
+if st.button("GENERAR INVITACIÓN A COTIZAR"):
+    archivo = generar_descarga("invitacion_cotizar.docx", {"ID_PROCESO": ID})
+    st.download_button("DESCARGAR INVITACIÓN", archivo, f"invitacion_{ID}.docx")
+
+if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
+    archivo = generar_descarga("invitacion_1_presentar_propuesta.docx", {"ID_PROCESO": ID})
+    st.download_button("DESCARGAR PROPUESTA 1", archivo, f"inv_prop1_{ID}.docx")
+
+if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
+    archivo = generar_descarga("invitacion_2_presentar_propuesta.docx", {"ID_PROCESO": ID})
+    st.download_button("DESCARGAR PROPUESTA 2", archivo, f"inv_prop2_{ID}.docx")
 
 # ==========================================================
 # ================= ETAPA 3 =================
@@ -200,20 +210,22 @@ duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
 empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
 fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
 
-if st.button("GUARDAR ETAPA 3"):
-    sheet = conectar_sheet()
-    fila_num = buscar_fila(sheet, ID)
+if st.button("GENERAR CONTRATO"):
+    archivo = generar_descarga("contrato.docx", {
+        "ID_PROCESO": ID,
+        "TIPO_CONTRATO": contrato_de,
+        "SUPERVISOR": supervisor,
+        "DISPONE": dispone,
+        "CDP": cdp,
+        "DURACION": f"{duracion_num} {duracion_tipo}",
+        "EMPRESA": empresa,
+        "FECHA_FIRMA": fecha_firma
+    })
 
-    if fila_num:
-        sheet.update(f"AB{fila_num}", contrato_de)
-        sheet.update(f"AC{fila_num}", supervisor)
-        sheet.update(f"AD{fila_num}", dispone)
-        sheet.update(f"AE{fila_num}", cdp)
-        sheet.update(f"AF{fila_num}", f"{duracion_num} {duracion_tipo}")
-        sheet.update(f"AG{fila_num}", empresa)
-        sheet.update(f"AH{fila_num}", str(fecha_firma))
-        st.success("ETAPA 3 actualizada")
-    else:
-        st.error("No se encontró el proceso en la base")
+    st.download_button(
+        "DESCARGAR CONTRATO",
+        archivo,
+        f"contrato_{ID}.docx"
+    )
 
 st.success("Sistema operativo correctamente.")
