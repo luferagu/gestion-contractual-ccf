@@ -13,15 +13,6 @@ st.title("SISTEMA DE GESTIÓN CONTRACTUAL - CCF")
 PLANTILLAS = "plantillas"
 
 # ==========================================================
-# VARIABLES DE CONTROL DE ETAPA
-# ==========================================================
-if "etapa1_guardada" not in st.session_state:
-    st.session_state.etapa1_guardada = False
-
-if "etapa2_guardada" not in st.session_state:
-    st.session_state.etapa2_guardada = False
-
-# ==========================================================
 # CONEXIÓN GOOGLE SHEETS
 # ==========================================================
 def conectar_sheet():
@@ -143,8 +134,7 @@ garantias = st.multiselect("GARANTÍAS CONTRACTUALES", [
 
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
-if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
-
+if st.button("GUARDAR ETAPA 1"):
     sheet = conectar_sheet()
 
     fila = [
@@ -159,8 +149,6 @@ if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
     ]
 
     sheet.append_row(fila)
-
-    st.session_state.etapa1_guardada = True
     st.success("ETAPA 1 guardada correctamente")
 
 # ==========================================================
@@ -168,71 +156,64 @@ if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
 # ==========================================================
 st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
 
-if not st.session_state.etapa1_guardada:
-    st.warning("Debe guardar ETAPA 1 antes de continuar.")
-else:
+prop1 = st.text_input("PROPONENTE 1")
+val1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
 
-    prop1 = st.text_input("PROPONENTE 1")
-    val1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
+prop2 = st.text_input("PROPONENTE 2")
+val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
 
-    prop2 = st.text_input("PROPONENTE 2")
-    val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
+identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
+identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
 
-    identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
-    identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
+if st.button("GUARDAR ETAPA 2"):
+    sheet = conectar_sheet()
+    fila_num = buscar_fila(sheet, ID)
 
-    if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
-        sheet = conectar_sheet()
-        fila_num = buscar_fila(sheet, ID)
-
-        if fila_num:
-            sheet.update(f"V{fila_num}", prop1)
-            sheet.update(f"W{fila_num}", val1)
-            sheet.update(f"X{fila_num}", prop2)
-            sheet.update(f"Y{fila_num}", val2)
-            sheet.update(f"Z{fila_num}", identificacion_pn)
-            sheet.update(f"AA{fila_num}", identificacion_pj)
-
-            st.session_state.etapa2_guardada = True
-            st.success("ETAPA 2 actualizada correctamente")
+    if fila_num:
+        sheet.update(f"V{fila_num}", prop1)
+        sheet.update(f"W{fila_num}", val1)
+        sheet.update(f"X{fila_num}", prop2)
+        sheet.update(f"Y{fila_num}", val2)
+        sheet.update(f"Z{fila_num}", identificacion_pn)
+        sheet.update(f"AA{fila_num}", identificacion_pj)
+        st.success("ETAPA 2 actualizada")
+    else:
+        st.error("No se encontró el proceso en la base")
 
 # ==========================================================
 # ================= ETAPA 3 =================
 # ==========================================================
 st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
 
-if not st.session_state.etapa2_guardada:
-    st.warning("Debe guardar ETAPA 2 antes de continuar.")
-else:
+contrato_de = st.selectbox("TIPO DE CONTRATO", [
+"Obra","Consultoría","Prestación de Servicios",
+"Suministro","Compraventa","Arrendamiento","Seguros"
+])
 
-    contrato_de = st.selectbox("TIPO DE CONTRATO", [
-    "Obra","Consultoría","Prestación de Servicios",
-    "Suministro","Compraventa","Arrendamiento","Seguros"
-    ])
+supervisor = st.text_input("SUPERVISOR")
+dispone = st.text_input("DISPONE")
+cdp = st.text_input("CDP")
 
-    supervisor = st.text_input("SUPERVISOR")
-    dispone = st.text_input("DISPONE")
-    cdp = st.text_input("CDP")
+duracion_num = st.number_input("DURACIÓN", min_value=1)
+duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
 
-    duracion_num = st.number_input("DURACIÓN", min_value=1)
-    duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
+empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
+fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
 
-    empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
-    fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
+if st.button("GUARDAR ETAPA 3"):
+    sheet = conectar_sheet()
+    fila_num = buscar_fila(sheet, ID)
 
-    if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
-        sheet = conectar_sheet()
-        fila_num = buscar_fila(sheet, ID)
-
-        if fila_num:
-            sheet.update(f"AB{fila_num}", contrato_de)
-            sheet.update(f"AC{fila_num}", supervisor)
-            sheet.update(f"AD{fila_num}", dispone)
-            sheet.update(f"AE{fila_num}", cdp)
-            sheet.update(f"AF{fila_num}", f"{duracion_num} {duracion_tipo}")
-            sheet.update(f"AG{fila_num}", empresa)
-            sheet.update(f"AH{fila_num}", str(fecha_firma))
-
-            st.success("ETAPA 3 actualizada correctamente")
+    if fila_num:
+        sheet.update(f"AB{fila_num}", contrato_de)
+        sheet.update(f"AC{fila_num}", supervisor)
+        sheet.update(f"AD{fila_num}", dispone)
+        sheet.update(f"AE{fila_num}", cdp)
+        sheet.update(f"AF{fila_num}", f"{duracion_num} {duracion_tipo}")
+        sheet.update(f"AG{fila_num}", empresa)
+        sheet.update(f"AH{fila_num}", str(fecha_firma))
+        st.success("ETAPA 3 actualizada")
+    else:
+        st.error("No se encontró el proceso en la base")
 
 st.success("Sistema operativo correctamente.")
