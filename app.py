@@ -16,6 +16,16 @@ PLANTILLAS = "plantillas"
 # CONEXIÓN GOOGLE SHEETS
 # ==========================================================
 def conectar_sheet():
+    # ==========================================================
+# BUSCAR FILA POR ID_PROCESO
+# ==========================================================
+def buscar_fila(sheet, id_proceso):
+    registros = sheet.get_all_records()
+    for i, fila in enumerate(registros, start=2):  # Empieza en fila 2 (fila 1 es encabezado)
+        if str(fila.get("ID_PROCESO")) == str(id_proceso):
+            return i
+    return None
+
     scope = [
         "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/drive"
@@ -189,6 +199,22 @@ if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
 if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
     archivo = generar_descarga("invitacion_2_presentar_propuesta.docx", {"ID_PROCESO": ID})
     st.download_button("DESCARGAR PROPUESTA 2", archivo, f"inv_prop2_{ID}.docx")
+# ---------------- GUARDAR ETAPA 2 ----------------
+if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
+    sheet = conectar_sheet()
+    fila_num = buscar_fila(sheet, ID)
+
+    if fila_num:
+        sheet.update(f"V{fila_num}", prop1)
+        sheet.update(f"W{fila_num}", val1)
+        sheet.update(f"X{fila_num}", prop2)
+        sheet.update(f"Y{fila_num}", val2)
+        sheet.update(f"Z{fila_num}", identificacion_pn)
+        sheet.update(f"AA{fila_num}", identificacion_pj)
+
+        st.success("ETAPA 2 actualizada correctamente")
+    else:
+        st.error("No se encontró el proceso en la base. Guarde primero ETAPA 1.")
 
 # ==========================================================
 # ================= ETAPA 3 =================
@@ -227,5 +253,23 @@ if st.button("GENERAR CONTRATO"):
         archivo,
         f"contrato_{ID}.docx"
     )
+# ---------------- GUARDAR ETAPA 3 ----------------
+if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
+    sheet = conectar_sheet()
+    fila_num = buscar_fila(sheet, ID)
+
+    if fila_num:
+        sheet.update(f"AB{fila_num}", contrato_de)
+        sheet.update(f"AC{fila_num}", supervisor)
+        sheet.update(f"AD{fila_num}", dispone)
+        sheet.update(f"AE{fila_num}", cdp)
+        sheet.update(f"AF{fila_num}", f"{duracion_num} {duracion_tipo}")
+        sheet.update(f"AG{fila_num}", empresa)
+        sheet.update(f"AH{fila_num}", str(fecha_firma))
+
+        st.success("ETAPA 3 actualizada correctamente")
+    else:
+        st.error("No se encontró el proceso en la base. Guarde primero ETAPA 1.")
 
 st.success("Sistema operativo correctamente.")
+
