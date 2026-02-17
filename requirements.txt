@@ -3,3 +3,6 @@ pandas
 openpyxl
 python-docx
 num2words
+google-cloud-storage
+gcsfs
+
