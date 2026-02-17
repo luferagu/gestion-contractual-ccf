@@ -4,6 +4,8 @@ from num2words import num2words
 from docx import Document
 from io import BytesIO
 import os
+import gspread
+from google.oauth2.service_account import Credentials
 
 st.set_page_config(layout="wide")
 st.title("SISTEMA DE GESTIÓN CONTRACTUAL - CCF")
@@ -11,17 +13,43 @@ st.title("SISTEMA DE GESTIÓN CONTRACTUAL - CCF")
 PLANTILLAS = "plantillas"
 
 # ==========================================================
-# GENERAR CONSECUTIVO AUTOMÁTICO
+# CONEXIÓN A GOOGLE SHEETS
 # ==========================================================
-if "contador" not in st.session_state:
-    st.session_state.contador = 1
+def conectar_sheet():
+    scope = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
 
-year = date.today().year
-ID = f"{st.session_state.contador:03d}-{year}"
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=scope
+    )
+
+    client = gspread.authorize(creds)
+    sheet = client.open("BASE_PROCESOS_CCF").sheet1
+    return sheet
+
+# ==========================================================
+# GENERAR CONSECUTIVO AUTOMÁTICO DESDE GOOGLE SHEETS
+# ==========================================================
+def generar_id():
+    sheet = conectar_sheet()
+    registros = sheet.get_all_records()
+    year = str(date.today().year)
+
+    contador = 1
+    for r in registros:
+        if year in str(r.get("ID_PROCESO", "")):
+            contador += 1
+
+    return f"{contador:03d}-{year}"
+
+ID = generar_id()
 st.info(f"ID_PROCESO generado automáticamente: {ID}")
 
 # ==========================================================
-# FUNCION REEMPLAZO EN WORD
+# FUNCIÓN REEMPLAZO WORD
 # ==========================================================
 def reemplazar(doc, datos):
     for p in doc.paragraphs:
@@ -61,7 +89,6 @@ rubro = st.text_input("RUBRO (10 números)")
 codigo_planeacion = st.text_input("CÓDIGO PLANEACIÓN")
 
 caracteristicas = st.text_area("CARACTERÍSTICAS TÉCNICAS DEL BIEN")
-imagenes = st.file_uploader("Adjuntar imágenes", accept_multiple_files=True)
 
 oportunidad = st.multiselect("OPORTUNIDAD", [
     "Enero","Febrero","Marzo","Abril","Mayo","Junio",
@@ -84,7 +111,7 @@ valor = st.number_input("VALOR", min_value=0, step=1000)
 valor_letras = num2words(valor, lang="es").upper() if valor else ""
 st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
 
-plazo = st.number_input("PLAZO (Número)", min_value=1)
+plazo = st.number_input("PLAZO", min_value=1)
 
 analisis_mercado = st.text_area("ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO")
 
@@ -100,6 +127,41 @@ garantias = st.multiselect("GARANTÍAS CONTRACTUALES", [
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
 # ==========================================================
+# BOTÓN GUARDAR EN GOOGLE SHEETS
+# ==========================================================
+if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
+
+    sheet = conectar_sheet()
+
+    fila = [
+        ID,
+        objeto,
+        necesidad,
+        justificacion,
+        centro_costos,
+        programa,
+        rubro,
+        codigo_planeacion,
+        caracteristicas,
+        ", ".join(oportunidad),
+        forma_pago,
+        modalidad,
+        articulo,
+        numeral,
+        literal,
+        valor,
+        valor_letras,
+        plazo,
+        analisis_mercado,
+        ", ".join(garantias),
+        str(fecha_estudio)
+    ]
+
+    sheet.append_row(fila)
+
+    st.success("Registro guardado correctamente en BASE_PROCESOS_CCF")
+
+# ==========================================================
 # GENERAR ESTUDIO PREVIO
 # ==========================================================
 if st.button("GENERAR ESTUDIO PREVIO"):
@@ -109,23 +171,8 @@ if st.button("GENERAR ESTUDIO PREVIO"):
         "OBJETO": objeto,
         "NECESIDAD": necesidad,
         "JUSTIFICACION": justificacion,
-        "CENTRO_DE_COSTOS": centro_costos,
-        "PROGRAMA": programa,
-        "RUBRO": rubro,
-        "CODIGO_PLANEACION": codigo_planeacion,
-        "CARACTERISTICAS": caracteristicas,
-        "OPORTUNIDAD": ", ".join(oportunidad),
-        "FORMA_DE_PAGO": forma_pago,
-        "MODALIDAD": modalidad,
-        "ARTICULO": articulo,
-        "NUMERAL": numeral,
-        "LITERAL": literal,
         "VALOR": f"${valor:,.0f}".replace(",", "."),
-        "VALOR_LETRAS": valor_letras,
-        "PLAZO": plazo,
-        "ANALISIS_MERCADO": analisis_mercado,
-        "GARANTIAS": ", ".join(garantias),
-        "FECHA_ESTUDIO": fecha_estudio
+        "VALOR_LETRAS": valor_letras
     }
 
     archivo = generar_descarga("estudio_previo.docx", datos)
@@ -135,74 +182,6 @@ if st.button("GENERAR ESTUDIO PREVIO"):
         data=archivo,
         file_name=f"estudio_previo_{ID}.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    )
-
-# ==========================================================
-# ETAPA 2 — ÁREA DE COMPRAS
-# ==========================================================
-st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
-
-proponente1 = st.text_input("PROPONENTE 1")
-valor_prop1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
-
-proponente2 = st.text_input("PROPONENTE 2")
-valor_prop2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
-
-identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
-identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
-
-if st.button("GENERAR SOLICITUD CDP"):
-    archivo = generar_descarga("solicitud_cdp.docx", {"ID_PROCESO": ID})
-    st.download_button("DESCARGAR CDP", archivo, f"solicitud_cdp_{ID}.docx")
-
-if st.button("GENERAR INVITACIÓN A COTIZAR"):
-    archivo = generar_descarga("invitacion_cotizar.docx", {"ID_PROCESO": ID})
-    st.download_button("DESCARGAR INVITACIÓN", archivo, f"invitacion_{ID}.docx")
-
-if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
-    archivo = generar_descarga("invitacion_1_presentar_propuesta.docx", {"ID_PROCESO": ID})
-    st.download_button("DESCARGAR PROPUESTA 1", archivo, f"inv_prop1_{ID}.docx")
-
-if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
-    archivo = generar_descarga("invitacion_2_presentar_propuesta.docx", {"ID_PROCESO": ID})
-    st.download_button("DESCARGAR PROPUESTA 2", archivo, f"inv_prop2_{ID}.docx")
-
-# ==========================================================
-# ETAPA 3 — ÁREA DE CONTRATOS
-# ==========================================================
-st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
-
-contrato_de = st.selectbox("TIPO DE CONTRATO", [
-    "Obra","Consultoría","Prestación de Servicios",
-    "Suministro","Compraventa","Arrendamiento","Seguros"
-])
-
-supervisor = st.text_input("SUPERVISOR")
-dispone = st.text_input("DISPONE")
-cdp = st.text_input("CDP")
-duracion_num = st.number_input("DURACIÓN", min_value=1)
-duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
-empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
-fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
-
-if st.button("GENERAR CONTRATO"):
-    datos = {
-        "ID_PROCESO": ID,
-        "TIPO_CONTRATO": contrato_de,
-        "SUPERVISOR": supervisor,
-        "DISPONE": dispone,
-        "CDP": cdp,
-        "DURACION": f"{duracion_num} {duracion_tipo}",
-        "EMPRESA": empresa,
-        "FECHA_FIRMA": fecha_firma
-    }
-
-    archivo = generar_descarga("contrato.docx", datos)
-
-    st.download_button(
-        "DESCARGAR CONTRATO",
-        archivo,
-        f"contrato_{ID}.docx"
     )
 
 st.success("Sistema funcionando correctamente.")
