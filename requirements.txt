@@ -1,8 +1,9 @@
 streamlit
 pandas
-openpyxl
-python-docx
 num2words
-google-cloud-storage
-gcsfs
+python-docx
+gspread
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
 
