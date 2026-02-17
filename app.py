@@ -13,6 +13,15 @@ st.title("SISTEMA DE GESTIÓN CONTRACTUAL - CCF")
 PLANTILLAS = "plantillas"
 
 # ==========================================================
+# VARIABLES DE CONTROL DE ETAPA
+# ==========================================================
+if "etapa1_guardada" not in st.session_state:
+    st.session_state.etapa1_guardada = False
+
+if "etapa2_guardada" not in st.session_state:
+    st.session_state.etapa2_guardada = False
+
+# ==========================================================
 # CONEXIÓN GOOGLE SHEETS
 # ==========================================================
 def conectar_sheet():
@@ -30,7 +39,6 @@ def conectar_sheet():
     sheet = client.open("BASE_PROCESOS_CCF").sheet1
     return sheet
 
-
 # ==========================================================
 # BUSCAR FILA POR ID
 # ==========================================================
@@ -41,19 +49,8 @@ def buscar_fila(sheet, id_proceso):
             return i
     return None
 
-
 # ==========================================================
-# ACTUALIZAR POR NOMBRE DE COLUMNA (SEGURO)
-# ==========================================================
-def actualizar_campo(sheet, fila, nombre_columna, valor):
-    encabezados = sheet.row_values(1)
-    if nombre_columna in encabezados:
-        col = encabezados.index(nombre_columna) + 1
-        sheet.update_cell(fila, col, valor)
-
-
-# ==========================================================
-# GENERAR CONSECUTIVO ANUAL REAL
+# GENERAR CONSECUTIVO ANUAL
 # ==========================================================
 def generar_id():
     sheet = conectar_sheet()
@@ -67,10 +64,8 @@ def generar_id():
 
     return f"{contador:03d}-{year}"
 
-
 ID = generar_id()
 st.info(f"ID_PROCESO generado automáticamente: {ID}")
-
 
 # ==========================================================
 # FUNCIONES WORD
@@ -88,7 +83,6 @@ def reemplazar(doc, datos):
                     if f"{{{{{k}}}}}" in c.text:
                         c.text = c.text.replace(f"{{{{{k}}}}}", str(v))
 
-
 def generar_descarga(nombre, datos):
     doc = Document(os.path.join(PLANTILLAS, nombre))
     reemplazar(doc, datos)
@@ -96,7 +90,6 @@ def generar_descarga(nombre, datos):
     doc.save(buffer)
     buffer.seek(0)
     return buffer
-
 
 # ==========================================================
 # ================= ETAPA 1 =================
@@ -115,16 +108,16 @@ codigo_planeacion = st.text_input("CÓDIGO PLANEACIÓN")
 caracteristicas = st.text_area("CARACTERÍSTICAS TÉCNICAS DEL BIEN")
 
 oportunidad = st.multiselect("OPORTUNIDAD", [
-    "Enero","Febrero","Marzo","Abril","Mayo","Junio",
-    "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+"Enero","Febrero","Marzo","Abril","Mayo","Junio",
+"Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
 ])
 
 forma_pago = st.text_input("FORMA DE PAGO")
 
 modalidad = st.selectbox("MODALIDAD", [
-    "Contratación Directa",
-    "Invitación Privada",
-    "Convocatoria Abierta"
+"Contratación Directa",
+"Invitación Privada",
+"Convocatoria Abierta"
 ])
 
 articulo = st.selectbox("ARTÍCULO", ["16","17","18"])
@@ -137,20 +130,21 @@ st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
 
 plazo = st.number_input("PLAZO", min_value=1)
 
-analisis = st.text_area("ANÁLISIS")
+analisis = st.text_area("ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO")
 
 garantias = st.multiselect("GARANTÍAS CONTRACTUALES", [
-    "Anticipo",
-    "Cumplimiento",
-    "Salarios y Prestaciones",
-    "Responsabilidad Civil Extracontractual",
-    "Estabilidad de la Obra",
-    "Calidad del Servicio"
+"Anticipo",
+"Cumplimiento",
+"Salarios y Prestaciones",
+"Responsabilidad Civil Extracontractual",
+"Estabilidad de la Obra",
+"Calidad del Servicio"
 ])
 
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
-if st.button("GUARDAR ETAPA 1"):
+if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
+
     sheet = conectar_sheet()
 
     fila = [
@@ -165,74 +159,80 @@ if st.button("GUARDAR ETAPA 1"):
     ]
 
     sheet.append_row(fila)
-    st.success("ETAPA 1 guardada correctamente")
 
+    st.session_state.etapa1_guardada = True
+    st.success("ETAPA 1 guardada correctamente")
 
 # ==========================================================
 # ================= ETAPA 2 =================
 # ==========================================================
 st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
 
-prop1 = st.text_input("PROPONENTE 1")
-val1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
+if not st.session_state.etapa1_guardada:
+    st.warning("Debe guardar ETAPA 1 antes de continuar.")
+else:
 
-prop2 = st.text_input("PROPONENTE 2")
-val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
+    prop1 = st.text_input("PROPONENTE 1")
+    val1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
 
-identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
-identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
+    prop2 = st.text_input("PROPONENTE 2")
+    val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
 
-if st.button("GUARDAR ETAPA 2"):
-    sheet = conectar_sheet()
-    fila_num = buscar_fila(sheet, ID)
+    identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
+    identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
 
-    if fila_num:
-        actualizar_campo(sheet, fila_num, "PROPONENTE_1", prop1)
-        actualizar_campo(sheet, fila_num, "VALOR_PROP_1", val1)
-        actualizar_campo(sheet, fila_num, "PROPONENTE_2", prop2)
-        actualizar_campo(sheet, fila_num, "VALOR_PROP_2", val2)
-        actualizar_campo(sheet, fila_num, "IDENTIFICACION_PN", identificacion_pn)
-        actualizar_campo(sheet, fila_num, "IDENTIFICACION_PJ", identificacion_pj)
-        st.success("ETAPA 2 actualizada correctamente")
-    else:
-        st.error("Debe guardar primero ETAPA 1")
+    if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
+        sheet = conectar_sheet()
+        fila_num = buscar_fila(sheet, ID)
 
+        if fila_num:
+            sheet.update(f"V{fila_num}", prop1)
+            sheet.update(f"W{fila_num}", val1)
+            sheet.update(f"X{fila_num}", prop2)
+            sheet.update(f"Y{fila_num}", val2)
+            sheet.update(f"Z{fila_num}", identificacion_pn)
+            sheet.update(f"AA{fila_num}", identificacion_pj)
+
+            st.session_state.etapa2_guardada = True
+            st.success("ETAPA 2 actualizada correctamente")
 
 # ==========================================================
 # ================= ETAPA 3 =================
 # ==========================================================
 st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
 
-contrato_de = st.selectbox("TIPO DE CONTRATO", [
+if not st.session_state.etapa2_guardada:
+    st.warning("Debe guardar ETAPA 2 antes de continuar.")
+else:
+
+    contrato_de = st.selectbox("TIPO DE CONTRATO", [
     "Obra","Consultoría","Prestación de Servicios",
     "Suministro","Compraventa","Arrendamiento","Seguros"
-])
+    ])
 
-supervisor = st.text_input("SUPERVISOR")
-dispone = st.text_input("DISPONE")
-cdp = st.text_input("CDP")
+    supervisor = st.text_input("SUPERVISOR")
+    dispone = st.text_input("DISPONE")
+    cdp = st.text_input("CDP")
 
-duracion_num = st.number_input("DURACIÓN", min_value=1)
-duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
+    duracion_num = st.number_input("DURACIÓN", min_value=1)
+    duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
 
-empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
-fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
+    empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
+    fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
 
-if st.button("GUARDAR ETAPA 3"):
-    sheet = conectar_sheet()
-    fila_num = buscar_fila(sheet, ID)
+    if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
+        sheet = conectar_sheet()
+        fila_num = buscar_fila(sheet, ID)
 
-    if fila_num:
-        actualizar_campo(sheet, fila_num, "TIPO_CONTRATO", contrato_de)
-        actualizar_campo(sheet, fila_num, "SUPERVISOR", supervisor)
-        actualizar_campo(sheet, fila_num, "DISPONE", dispone)
-        actualizar_campo(sheet, fila_num, "CDP", cdp)
-        actualizar_campo(sheet, fila_num, "DURACION", f"{duracion_num} {duracion_tipo}")
-        actualizar_campo(sheet, fila_num, "EMPRESA", empresa)
-        actualizar_campo(sheet, fila_num, "FECHA_FIRMA", str(fecha_firma))
-        st.success("ETAPA 3 actualizada correctamente")
-    else:
-        st.error("Debe guardar primero ETAPA 1")
+        if fila_num:
+            sheet.update(f"AB{fila_num}", contrato_de)
+            sheet.update(f"AC{fila_num}", supervisor)
+            sheet.update(f"AD{fila_num}", dispone)
+            sheet.update(f"AE{fila_num}", cdp)
+            sheet.update(f"AF{fila_num}", f"{duracion_num} {duracion_tipo}")
+            sheet.update(f"AG{fila_num}", empresa)
+            sheet.update(f"AH{fila_num}", str(fecha_firma))
 
+            st.success("ETAPA 3 actualizada correctamente")
 
 st.success("Sistema operativo correctamente.")
