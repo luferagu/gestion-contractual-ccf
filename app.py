@@ -31,17 +31,7 @@ def conectar_sheet():
     return sheet
 
 # ==========================================================
-# BUSCAR FILA POR ID_PROCESO
-# ==========================================================
-def buscar_fila(sheet, id_proceso):
-    registros = sheet.get_all_records()
-    for i, fila in enumerate(registros, start=2):  # fila 1 encabezado
-        if str(fila.get("ID_PROCESO")) == str(id_proceso):
-            return i
-    return None
-
-# ==========================================================
-# GENERAR CONSECUTIVO ANUAL
+# GENERAR CONSECUTIVO ANUAL REAL
 # ==========================================================
 def generar_id():
     sheet = conectar_sheet()
@@ -55,10 +45,7 @@ def generar_id():
 
     return f"{contador:03d}-{year}"
 
-if "ID_ACTUAL" not in st.session_state:
-    st.session_state.ID_ACTUAL = generar_id()
-
-ID = st.session_state.ID_ACTUAL
+ID = generar_id()
 st.info(f"ID_PROCESO generado automáticamente: {ID}")
 
 # ==========================================================
@@ -137,6 +124,7 @@ garantias = st.multiselect("GARANTÍAS CONTRACTUALES", [
 
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
+# ---------------- GUARDAR ETAPA 1 ----------------
 if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
 
     sheet = conectar_sheet()
@@ -152,7 +140,25 @@ if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
     ]
 
     sheet.append_row(fila)
-    st.success("ETAPA 1 guardada correctamente")
+
+    st.success("ETAPA 1 guardada en Google Sheets")
+
+# ---------------- WORD ESTUDIO PREVIO ----------------
+if st.button("GENERAR ESTUDIO PREVIO"):
+    archivo = generar_descarga("estudio_previo.docx", {
+        "ID_PROCESO": ID,
+        "OBJETO": objeto,
+        "NECESIDAD": necesidad,
+        "JUSTIFICACION": justificacion,
+        "VALOR": f"${valor:,.0f}".replace(",", "."),
+        "VALOR_LETRAS": valor_letras
+    })
+
+    st.download_button(
+        "DESCARGAR ESTUDIO PREVIO",
+        archivo,
+        f"estudio_previo_{ID}.docx"
+    )
 
 # ==========================================================
 # ================= ETAPA 2 =================
@@ -168,16 +174,21 @@ val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
 identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
 identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
 
-if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
-    sheet = conectar_sheet()
-    fila_num = buscar_fila(sheet, ID)
+if st.button("GENERAR SOLICITUD CDP"):
+    archivo = generar_descarga("solicitud_cdp.docx", {"ID_PROCESO": ID})
+    st.download_button("DESCARGAR CDP", archivo, f"solicitud_cdp_{ID}.docx")
 
-    if fila_num:
-        sheet.update(f"V{fila_num}:AA{fila_num}", 
-                     [[prop1, val1, prop2, val2, identificacion_pn, identificacion_pj]])
-        st.success("ETAPA 2 actualizada correctamente")
-    else:
-        st.error("Debe guardar primero ETAPA 1")
+if st.button("GENERAR INVITACIÓN A COTIZAR"):
+    archivo = generar_descarga("invitacion_cotizar.docx", {"ID_PROCESO": ID})
+    st.download_button("DESCARGAR INVITACIÓN", archivo, f"invitacion_{ID}.docx")
+
+if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
+    archivo = generar_descarga("invitacion_1_presentar_propuesta.docx", {"ID_PROCESO": ID})
+    st.download_button("DESCARGAR PROPUESTA 1", archivo, f"inv_prop1_{ID}.docx")
+
+if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
+    archivo = generar_descarga("invitacion_2_presentar_propuesta.docx", {"ID_PROCESO": ID})
+    st.download_button("DESCARGAR PROPUESTA 2", archivo, f"inv_prop2_{ID}.docx")
 
 # ==========================================================
 # ================= ETAPA 3 =================
@@ -199,17 +210,22 @@ duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
 empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
 fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
 
-if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
-    sheet = conectar_sheet()
-    fila_num = buscar_fila(sheet, ID)
+if st.button("GENERAR CONTRATO"):
+    archivo = generar_descarga("contrato.docx", {
+        "ID_PROCESO": ID,
+        "TIPO_CONTRATO": contrato_de,
+        "SUPERVISOR": supervisor,
+        "DISPONE": dispone,
+        "CDP": cdp,
+        "DURACION": f"{duracion_num} {duracion_tipo}",
+        "EMPRESA": empresa,
+        "FECHA_FIRMA": fecha_firma
+    })
 
-    if fila_num:
-        sheet.update(f"AB{fila_num}:AH{fila_num}", 
-                     [[contrato_de, supervisor, dispone, cdp,
-                       f"{duracion_num} {duracion_tipo}",
-                       empresa, str(fecha_firma)]])
-        st.success("ETAPA 3 actualizada correctamente")
-    else:
-        st.error("Debe guardar primero ETAPA 1")
+    st.download_button(
+        "DESCARGAR CONTRATO",
+        archivo,
+        f"contrato_{ID}.docx"
+    )
 
 st.success("Sistema operativo correctamente.")
