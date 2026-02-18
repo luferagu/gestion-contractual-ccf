@@ -312,39 +312,67 @@ if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
         st.error("Primero debe guardar ETAPA 1")
 
 
-if st.button("GENERAR SOLICITUD CDP"):
+col1, col2 = st.columns(2)
 
-    datos_cdp = {
-        "ID_PROCESO": ID,
-        "OBJETO": objeto,
-        "CENTRO_COSTOS": centro,
-        "PROGRAMA": programa,
-        "RUBRO": rubro,
-        "CODIGO_PLANEACION": codigo_planeacion,
-        "VALOR": f"{valor:,.0f}".replace(",", "."),
-        "VALOR_LETRAS": valor_letras
-    }
+with col1:
+    if st.button("GENERAR SOLICITUD CDP"):
+        datos_cdp = {
+            "ID_PROCESO": ID,
+            "SUPERVISOR": supervisor,
+            "CENTRO_COSTOS": centro,
+            "OBJETO": objeto,
+            "PROGRAMA": programa,
+            "CODIGO_PLANEACION": codigo_planeacion,
+            "RUBRO": rubro,
+            "VALOR": f"{valor:,.0f}".replace(",", "."),
+            "VALOR_LETRAS": valor_letras
+        }
 
-    archivo = generar_descarga("solicitud_cdp.docx", datos_cdp)
+        archivo = generar_descarga("solicitud_cdp.docx", datos_cdp)
 
-    st.download_button(
-        "DESCARGAR CDP",
-        archivo,
-        f"solicitud_cdp_{ID}.docx"
-    )
+        st.download_button(
+            "DESCARGAR CDP",
+            archivo,
+            f"solicitud_cdp_{ID}.docx"
+        )
 
+with col2:
+    if st.button("GENERAR INVITACIÓN A COTIZAR"):
+        archivo = generar_descarga(
+            "invitacion_cotizar.docx",
+            {"ID_PROCESO": ID}
+        )
+        st.download_button(
+            "DESCARGAR INVITACIÓN",
+            archivo,
+            f"invitacion_{ID}.docx"
+        )
 
-if st.button("GENERAR INVITACIÓN A COTIZAR"):
-    archivo = generar_descarga("invitacion_cotizar.docx", {"ID_PROCESO": ID})
-    st.download_button("DESCARGAR INVITACIÓN", archivo, f"invitacion_{ID}.docx")
+col3, col4 = st.columns(2)
 
-if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
-    archivo = generar_descarga("invitacion_1_presentar_propuesta.docx", {"ID_PROCESO": ID})
-    st.download_button("DESCARGAR PROPUESTA 1", archivo, f"inv_prop1_{ID}.docx")
+with col3:
+    if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
+        archivo = generar_descarga(
+            "invitacion_1_presentar_propuesta.docx",
+            {"ID_PROCESO": ID}
+        )
+        st.download_button(
+            "DESCARGAR PROPUESTA 1",
+            archivo,
+            f"inv_prop1_{ID}.docx"
+        )
 
-if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
-    archivo = generar_descarga("invitacion_2_presentar_propuesta.docx", {"ID_PROCESO": ID})
-    st.download_button("DESCARGAR PROPUESTA 2", archivo, f"inv_prop2_{ID}.docx")
+with col4:
+    if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
+        archivo = generar_descarga(
+            "invitacion_2_presentar_propuesta.docx",
+            {"ID_PROCESO": ID}
+        )
+        st.download_button(
+            "DESCARGAR PROPUESTA 2",
+            archivo,
+            f"inv_prop2_{ID}.docx"
+        )
 
 
 # ==========================================================
@@ -405,6 +433,7 @@ if st.button("GENERAR CONTRATO"):
 
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
