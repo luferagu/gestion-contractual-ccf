@@ -125,10 +125,27 @@ objeto = st.text_area("OBJETO")
 necesidad = st.text_area("NECESIDAD")
 justificacion = st.text_area("JUSTIFICACIÓN")
 
-centro = st.text_input("CENTRO DE COSTOS (10 números)")
-programa = st.text_input("PROGRAMA (10 números)")
-rubro = st.text_input("RUBRO (10 números)")
-codigo_planeacion = st.text_input("CÓDIGO PLANEACIÓN")
+
+# ===== BLOQUE MODIFICADO EN DOS LÍNEAS =====
+
+col1, col2 = st.columns(2)
+
+with col1:
+    centro = st.text_input("CENTRO DE COSTOS (10 números)")
+
+with col2:
+    programa = st.text_input("PROGRAMA (10 números)")
+
+
+col3, col4 = st.columns(2)
+
+with col3:
+    rubro = st.text_input("RUBRO (10 números)")
+
+with col4:
+    codigo_planeacion = st.text_input("CÓDIGO PLANEACIÓN")
+
+# ===========================================
 
 caracteristicas = st.text_area("CARACTERÍSTICAS TÉCNICAS DEL BIEN")
 
@@ -242,8 +259,6 @@ if st.button("GENERAR ESTUDIO PREVIO"):
 # ==========================================================
 st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
 
-# ===== BLOQUE REEMPLAZADO EXACTAMENTE COMO USTED INDICÓ =====
-
 col1, col2 = st.columns(2)
 
 with col1:
@@ -251,7 +266,6 @@ with col1:
 
 with col2:
     val1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
-
 
 col3, col4 = st.columns(2)
 
@@ -261,7 +275,6 @@ with col3:
 with col4:
     val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
 
-
 col5, col6 = st.columns(2)
 
 with col5:
@@ -269,8 +282,6 @@ with col5:
 
 with col6:
     identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
-
-# ============================================================
 
 
 if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
@@ -378,6 +389,5 @@ if st.button("GENERAR CONTRATO"):
         archivo,
         f"contrato_{ID}.docx"
     )
-
 
 st.success("Sistema operativo correctamente.")
