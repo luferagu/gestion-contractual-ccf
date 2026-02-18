@@ -55,7 +55,10 @@ def generar_id():
 
     return f"{contador:03d}-{year}"
 
-ID = generar_id()
+if "ID_PROCESO" not in st.session_state:
+    st.session_state.ID_PROCESO = generar_id()
+
+ID = st.session_state.ID_PROCESO
 st.info(f"ID_PROCESO generado automáticamente: {ID}")
 
 # ==========================================================
@@ -282,3 +285,4 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
