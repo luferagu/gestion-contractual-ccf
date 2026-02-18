@@ -168,6 +168,17 @@ garantias = st.multiselect("GARANTÍAS CONTRACTUALES", [
 
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
+area_solicitante = st.selectbox(
+    "ÁREA SOLICITANTE",
+    [
+        "Dirección Administrativa y Financiera",
+        "Dirección de Desarrollo Empresarial",
+        "Dirección de Desarrollo Institucional",
+        "Dirección de Registros Públicos",
+        "Dirección de Asuntos Jurídicos",
+        "Área de Talento Humano"
+    ]
+)
 
 if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
 
@@ -345,3 +356,4 @@ if st.button("GENERAR CONTRATO"):
 
 
 st.success("Sistema operativo correctamente.")
+
