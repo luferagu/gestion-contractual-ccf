@@ -339,20 +339,36 @@ if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
 # ==========================================================
 st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
 
-contrato_de = st.selectbox("TIPO DE CONTRATO", [
-    "Obra","Consultoría","Prestación de Servicios",
-    "Suministro","Compraventa","Arrendamiento","Seguros"
-])
+col1, col2 = st.columns(2)
 
-supervisor = st.text_input("SUPERVISOR")
-dispone = st.text_input("DISPONE")
-cdp = st.text_input("CDP")
+with col1:
+    contrato_de = st.selectbox("TIPO DE CONTRATO", [
+        "Obra","Consultoría","Prestación de Servicios",
+        "Suministro","Compraventa","Arrendamiento","Seguros"
+    ])
 
-duracion_num = st.number_input("DURACIÓN", min_value=1)
-duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
+with col2:
+    supervisor = st.text_input("SUPERVISOR")
 
-empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
+col3, col4 = st.columns(2)
+
+with col3:
+    cdp = st.text_input("CDP")
+
+with col4:
+    duracion_num = st.number_input("DURACIÓN", min_value=1)
+
+col5, col6 = st.columns(2)
+
+with col5:
+    duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
+
+with col6:
+    empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
+
 fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
+
+dispone = st.text_area("DISPONE")
 
 
 if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
@@ -391,4 +407,5 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
