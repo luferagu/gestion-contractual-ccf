@@ -52,25 +52,39 @@ st.info(f"ID_PROCESO generado automáticamente: {ID}")
 # FUNCIONES WORD
 # ==========================================================
 def reemplazar(doc, datos):
+
+    # Reemplazo en párrafos normales
     for p in doc.paragraphs:
+        full_text = "".join(run.text for run in p.runs)
+
         for k, v in datos.items():
-            if f"{{{{{k}}}}}" in p.text:
-                p.text = p.text.replace(f"{{{{{k}}}}}", str(v))
+            placeholder = f"{{{{{k}}}}}"
+            if placeholder in full_text:
+                full_text = full_text.replace(placeholder, str(v))
 
-    for t in doc.tables:
-        for r in t.rows:
-            for c in r.cells:
-                for k, v in datos.items():
-                    if f"{{{{{k}}}}}" in c.text:
-                        c.text = c.text.replace(f"{{{{{k}}}}}", str(v))
+        for run in p.runs:
+            run.text = ""
 
-def generar_descarga(nombre, datos):
-    doc = Document(os.path.join(PLANTILLAS, nombre))
-    reemplazar(doc, datos)
-    buffer = BytesIO()
-    doc.save(buffer)
-    buffer.seek(0)
-    return buffer
+        if p.runs:
+            p.runs[0].text = full_text
+
+    # Reemplazo dentro de tablas
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for p in cell.paragraphs:
+                    full_text = "".join(run.text for run in p.runs)
+
+                    for k, v in datos.items():
+                        placeholder = f"{{{{{k}}}}}"
+                        if placeholder in full_text:
+                            full_text = full_text.replace(placeholder, str(v))
+
+                    for run in p.runs:
+                        run.text = ""
+
+                    if p.runs:
+                        p.runs[0].text = full_text
 
 # ==========================================================
 # ================= ETAPA 1 =================
@@ -229,3 +243,4 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
