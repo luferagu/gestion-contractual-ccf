@@ -359,3 +359,4 @@ if st.button("GENERAR CONTRATO"):
 st.success("Sistema operativo correctamente.")
 
 
+
