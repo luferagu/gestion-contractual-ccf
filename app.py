@@ -176,6 +176,7 @@ area_solicitante = st.selectbox(
         "Dirección de Desarrollo Institucional",
         "Dirección de Registros Públicos",
         "Dirección de Asuntos Jurídicos",
+        "Dirección de control interno",
         "Área de Talento Humano"
     ]
 )
@@ -356,4 +357,5 @@ if st.button("GENERAR CONTRATO"):
 
 
 st.success("Sistema operativo correctamente.")
+
 
