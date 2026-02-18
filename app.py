@@ -30,6 +30,7 @@ def conectar_sheet():
     sheet = client.open("BASE_PROCESOS_CCF").sheet1
     return sheet
 
+
 # ==========================================================
 # BUSCAR FILA POR ID
 # ==========================================================
@@ -40,26 +41,29 @@ def buscar_fila(sheet, id_proceso):
             return i
     return None
 
+
 # ==========================================================
-# GENERAR CONSECUTIVO ANUAL REAL
+# GENERAR CONSECUTIVO ANUAL
 # ==========================================================
 def generar_id():
     sheet = conectar_sheet()
     registros = sheet.get_all_records()
     year = str(date.today().year)
-
     contador = 1
+
     for r in registros:
         if year in str(r.get("ID_PROCESO", "")):
             contador += 1
 
     return f"{contador:03d}-{year}"
 
+
 if "ID_PROCESO" not in st.session_state:
     st.session_state.ID_PROCESO = generar_id()
 
 ID = st.session_state.ID_PROCESO
 st.info(f"ID_PROCESO generado automáticamente: {ID}")
+
 
 # ==========================================================
 # FUNCIÓN REEMPLAZO ROBUSTA WORD
@@ -97,6 +101,7 @@ def reemplazar(doc, datos):
                     if p.runs:
                         p.runs[0].text = full_text
 
+
 # ==========================================================
 # GENERAR DESCARGA WORD
 # ==========================================================
@@ -109,6 +114,7 @@ def generar_descarga(nombre, datos):
     doc.save(buffer)
     buffer.seek(0)
     return buffer
+
 
 # ==========================================================
 # ================= ETAPA 1 =================
@@ -162,6 +168,7 @@ garantias = st.multiselect("GARANTÍAS CONTRACTUALES", [
 
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
+
 if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
 
     sheet = conectar_sheet()
@@ -178,6 +185,7 @@ if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
 
     sheet.append_row(fila)
     st.success("ETAPA 1 guardada en Google Sheets")
+
 
 if st.button("GENERAR ESTUDIO PREVIO"):
 
@@ -197,7 +205,7 @@ if st.button("GENERAR ESTUDIO PREVIO"):
         "ARTICULO": articulo,
         "NUMERAL": numeral,
         "LITERAL": literal,
-        "VALOR": f"${valor:,.0f}".replace(",", "."),
+        "VALOR": f"{valor:,.0f}".replace(",", "."),
         "VALOR_LETRAS": valor_letras,
         "PLAZO": plazo,
         "ANALISIS": analisis,
@@ -213,6 +221,7 @@ if st.button("GENERAR ESTUDIO PREVIO"):
         f"estudio_previo_{ID}.docx"
     )
 
+
 # ==========================================================
 # ================= ETAPA 2 =================
 # ==========================================================
@@ -226,6 +235,7 @@ val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
 
 identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
 identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
+
 
 if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
 
@@ -241,16 +251,16 @@ if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
     else:
         st.error("Primero debe guardar ETAPA 1")
 
+
 if st.button("GENERAR SOLICITUD CDP"):
 
     datos_cdp = {
         "ID_PROCESO": ID,
-        "SUPERVISOR": supervisor,
-        "CENTRO_COSTOS": centro,
         "OBJETO": objeto,
+        "CENTRO_COSTOS": centro,
         "PROGRAMA": programa,
-        "CODIGO_PLANEACION": codigo_planeacion,
         "RUBRO": rubro,
+        "CODIGO_PLANEACION": codigo_planeacion,
         "VALOR": f"{valor:,.0f}".replace(",", "."),
         "VALOR_LETRAS": valor_letras
     }
@@ -262,7 +272,7 @@ if st.button("GENERAR SOLICITUD CDP"):
         archivo,
         f"solicitud_cdp_{ID}.docx"
     )
-    st.download_button("DESCARGAR CDP", archivo, f"solicitud_cdp_{ID}.docx")
+
 
 if st.button("GENERAR INVITACIÓN A COTIZAR"):
     archivo = generar_descarga("invitacion_cotizar.docx", {"ID_PROCESO": ID})
@@ -275,6 +285,7 @@ if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
 if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
     archivo = generar_descarga("invitacion_2_presentar_propuesta.docx", {"ID_PROCESO": ID})
     st.download_button("DESCARGAR PROPUESTA 2", archivo, f"inv_prop2_{ID}.docx")
+
 
 # ==========================================================
 # ================= ETAPA 3 =================
@@ -296,6 +307,7 @@ duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
 empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
 fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
 
+
 if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
 
     sheet = conectar_sheet()
@@ -311,6 +323,7 @@ if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
         st.success("ETAPA 3 actualizada correctamente")
     else:
         st.error("Primero debe guardar ETAPA 1")
+
 
 if st.button("GENERAR CONTRATO"):
     archivo = generar_descarga("contrato.docx", {
@@ -330,5 +343,5 @@ if st.button("GENERAR CONTRATO"):
         f"contrato_{ID}.docx"
     )
 
-st.success("Sistema operativo correctamente.")
 
+st.success("Sistema operativo correctamente.")
