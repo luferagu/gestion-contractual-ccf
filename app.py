@@ -242,7 +242,26 @@ if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
         st.error("Primero debe guardar ETAPA 1")
 
 if st.button("GENERAR SOLICITUD CDP"):
-    archivo = generar_descarga("solicitud_cdp.docx", {"ID_PROCESO": ID})
+
+    datos_cdp = {
+        "ID_PROCESO": ID,
+        "SUPERVISOR": supervisor,
+        "CENTRO_COSTOS": centro,
+        "OBJETO": objeto,
+        "PROGRAMA": programa,
+        "CODIGO_PLANEACION": codigo_planeacion,
+        "RUBRO": rubro,
+        "VALOR": f"{valor:,.0f}".replace(",", "."),
+        "VALOR_LETRAS": valor_letras
+    }
+
+    archivo = generar_descarga("solicitud_cdp.docx", datos_cdp)
+
+    st.download_button(
+        "DESCARGAR CDP",
+        archivo,
+        f"solicitud_cdp_{ID}.docx"
+    )
     st.download_button("DESCARGAR CDP", archivo, f"solicitud_cdp_{ID}.docx")
 
 if st.button("GENERAR INVITACIÓN A COTIZAR"):
@@ -312,3 +331,4 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
