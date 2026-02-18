@@ -270,17 +270,25 @@ with col2:
 col3, col4 = st.columns(2)
 
 with col3:
-    prop2 = st.text_input("PROPONENTE 2")
+    identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
 
 with col4:
-    val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
+    identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
 
 col5, col6 = st.columns(2)
 
 with col5:
-    identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
+    prop2 = st.text_input("PROPONENTE 2")
 
 with col6:
+    val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
+
+col7, col8 = st.columns(2)
+
+with col7:
+    identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
+
+with col8:
     identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
 
 
@@ -412,6 +420,7 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
