@@ -49,11 +49,11 @@ ID = generar_id()
 st.info(f"ID_PROCESO generado automáticamente: {ID}")
 
 # ==========================================================
-# FUNCIONES WORD
+# FUNCIÓN REEMPLAZO ROBUSTA (CORRIGE PROBLEMA WORD)
 # ==========================================================
 def reemplazar(doc, datos):
 
-    # Reemplazo en párrafos normales
+    # Párrafos normales
     for p in doc.paragraphs:
         full_text = "".join(run.text for run in p.runs)
 
@@ -68,7 +68,7 @@ def reemplazar(doc, datos):
         if p.runs:
             p.runs[0].text = full_text
 
-    # Reemplazo dentro de tablas
+    # Tablas
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
@@ -86,8 +86,9 @@ def reemplazar(doc, datos):
                     if p.runs:
                         p.runs[0].text = full_text
 
-
-# 🔴 ESTA FUNCIÓN FALTABA — CAUSABA EL ERROR
+# ==========================================================
+# GENERAR DESCARGA WORD
+# ==========================================================
 def generar_descarga(nombre, datos):
     ruta = os.path.join(PLANTILLAS, nombre)
     doc = Document(ruta)
@@ -97,7 +98,6 @@ def generar_descarga(nombre, datos):
     doc.save(buffer)
     buffer.seek(0)
     return buffer
-
 
 # ==========================================================
 # ================= ETAPA 1 =================
@@ -116,16 +116,16 @@ codigo_planeacion = st.text_input("CÓDIGO PLANEACIÓN")
 caracteristicas = st.text_area("CARACTERÍSTICAS TÉCNICAS DEL BIEN")
 
 oportunidad = st.multiselect("OPORTUNIDAD", [
-"Enero","Febrero","Marzo","Abril","Mayo","Junio",
-"Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+    "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+    "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
 ])
 
 forma_pago = st.text_input("FORMA DE PAGO")
 
 modalidad = st.selectbox("MODALIDAD", [
-"Contratación Directa",
-"Invitación Privada",
-"Convocatoria Abierta"
+    "Contratación Directa",
+    "Invitación Privada",
+    "Convocatoria Abierta"
 ])
 
 articulo = st.selectbox("ARTÍCULO", ["16","17","18"])
@@ -141,16 +141,17 @@ plazo = st.number_input("PLAZO", min_value=1)
 analisis = st.text_area("ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO")
 
 garantias = st.multiselect("GARANTÍAS CONTRACTUALES", [
-"Anticipo",
-"Cumplimiento",
-"Salarios y Prestaciones",
-"Responsabilidad Civil Extracontractual",
-"Estabilidad de la Obra",
-"Calidad del Servicio"
+    "Anticipo",
+    "Cumplimiento",
+    "Salarios y Prestaciones",
+    "Responsabilidad Civil Extracontractual",
+    "Estabilidad de la Obra",
+    "Calidad del Servicio"
 ])
 
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
+# ---------------- GUARDAR ETAPA 1 ----------------
 if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
 
     sheet = conectar_sheet()
@@ -168,15 +169,34 @@ if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
     sheet.append_row(fila)
     st.success("ETAPA 1 guardada en Google Sheets")
 
+# ---------------- GENERAR ESTUDIO PREVIO COMPLETO ----------------
 if st.button("GENERAR ESTUDIO PREVIO"):
-    archivo = generar_descarga("estudio_previo.docx", {
+
+    datos = {
         "ID_PROCESO": ID,
         "OBJETO": objeto,
         "NECESIDAD": necesidad,
         "JUSTIFICACION": justificacion,
+        "CENTRO_COSTOS": centro,
+        "PROGRAMA": programa,
+        "RUBRO": rubro,
+        "CODIGO_PLANEACION": codigo_planeacion,
+        "CARACTERISTICAS_TECNICAS": caracteristicas,
+        "OPORTUNIDAD": ", ".join(oportunidad),
+        "FORMA_PAGO": forma_pago,
+        "MODALIDAD": modalidad,
+        "ARTICULO": articulo,
+        "NUMERAL": numeral,
+        "LITERAL": literal,
         "VALOR": f"${valor:,.0f}".replace(",", "."),
-        "VALOR_LETRAS": valor_letras
-    })
+        "VALOR_LETRAS": valor_letras,
+        "PLAZO": plazo,
+        "ANALISIS": analisis,
+        "GARANTIAS": ", ".join(garantias),
+        "FECHA_ESTUDIO": fecha_estudio
+    }
+
+    archivo = generar_descarga("estudio_previo.docx", datos)
 
     st.download_button(
         "DESCARGAR ESTUDIO PREVIO",
@@ -220,8 +240,8 @@ if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
 st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
 
 contrato_de = st.selectbox("TIPO DE CONTRATO", [
-"Obra","Consultoría","Prestación de Servicios",
-"Suministro","Compraventa","Arrendamiento","Seguros"
+    "Obra","Consultoría","Prestación de Servicios",
+    "Suministro","Compraventa","Arrendamiento","Seguros"
 ])
 
 supervisor = st.text_input("SUPERVISOR")
