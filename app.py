@@ -125,10 +125,21 @@ objeto = st.text_area("OBJETO")
 necesidad = st.text_area("NECESIDAD")
 justificacion = st.text_area("JUSTIFICACIÓN")
 
-centro = st.text_input("CENTRO DE COSTOS (10 números)")
-programa = st.text_input("PROGRAMA (10 números)")
-rubro = st.text_input("RUBRO (10 números)")
-codigo_planeacion = st.text_input("CÓDIGO PLANEACIÓN")
+col1, col2 = st.columns(2)
+
+with col1:
+    centro = st.text_input("CENTRO DE COSTOS (10 números)")
+
+with col2:
+    programa = st.text_input("PROGRAMA (10 números)")
+
+col3, col4 = st.columns(2)
+
+with col3:
+    rubro = st.text_input("RUBRO (10 números)")
+
+with col4:
+    codigo_planeacion = st.text_input("CÓDIGO PLANEACIÓN")
 
 caracteristicas = st.text_area("CARACTERÍSTICAS TÉCNICAS DEL BIEN")
 
@@ -357,6 +368,7 @@ if st.button("GENERAR CONTRATO"):
 
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
