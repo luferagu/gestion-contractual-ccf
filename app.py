@@ -139,8 +139,6 @@ oportunidad = st.multiselect("OPORTUNIDAD", [
 
 forma_pago = st.text_input("FORMA DE PAGO")
 
-
-# ================= BLOQUE MODIFICADO =================
 col1, col2 = st.columns(2)
 
 with col1:
@@ -153,7 +151,6 @@ with col1:
 with col2:
     articulo = st.selectbox("ARTÍCULO", ["16","17","18"])
 
-
 col3, col4 = st.columns(2)
 
 with col3:
@@ -161,7 +158,6 @@ with col3:
 
 with col4:
     literal = st.selectbox("LITERAL", list("abcdefgh"))
-
 
 col5, col6 = st.columns(2)
 
@@ -172,10 +168,7 @@ with col6:
     plazo = st.number_input("PLAZO", min_value=1)
 
 valor_letras = num2words(valor, lang="es").upper() if valor else ""
-
 st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
-# ======================================================
-
 
 analisis = st.text_area("ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO")
 
@@ -243,19 +236,41 @@ if st.button("GENERAR ESTUDIO PREVIO"):
         f"estudio_previo_{ID}.docx"
     )
 
+
 # ==========================================================
 # ================= ETAPA 2 =================
 # ==========================================================
 st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
 
-prop1 = st.text_input("PROPONENTE 1")
-val1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
+# ===== BLOQUE REEMPLAZADO EXACTAMENTE COMO USTED INDICÓ =====
 
-prop2 = st.text_input("PROPONENTE 2")
-val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
+col1, col2 = st.columns(2)
 
-identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
-identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
+with col1:
+    prop1 = st.text_input("PROPONENTE 1")
+
+with col2:
+    val1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
+
+
+col3, col4 = st.columns(2)
+
+with col3:
+    prop2 = st.text_input("PROPONENTE 2")
+
+with col4:
+    val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
+
+
+col5, col6 = st.columns(2)
+
+with col5:
+    identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
+
+with col6:
+    identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
+
+# ============================================================
 
 
 if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
