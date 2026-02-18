@@ -13,6 +13,15 @@ st.title("SISTEMA DE GESTIÓN CONTRACTUAL - CCF")
 PLANTILLAS = "plantillas"
 
 # ==========================================================
+# VARIABLES DE SESIÓN
+# ==========================================================
+if "ID_PROCESO" not in st.session_state:
+    st.session_state.ID_PROCESO = None
+
+if "supervisor" not in st.session_state:
+    st.session_state.supervisor = ""
+
+# ==========================================================
 # CONEXIÓN GOOGLE SHEETS
 # ==========================================================
 def conectar_sheet():
@@ -58,7 +67,7 @@ def generar_id():
     return f"{contador:03d}-{year}"
 
 
-if "ID_PROCESO" not in st.session_state:
+if st.session_state.ID_PROCESO is None:
     st.session_state.ID_PROCESO = generar_id()
 
 ID = st.session_state.ID_PROCESO
@@ -162,7 +171,6 @@ with col1:
 with col2:
     articulo = st.selectbox("ARTÍCULO", ["16","17","18"])
 
-
 col3, col4 = st.columns(2)
 
 with col3:
@@ -170,7 +178,6 @@ with col3:
 
 with col4:
     literal = st.selectbox("LITERAL", list("abcdefgh"))
-
 
 col5, col6 = st.columns(2)
 
@@ -181,9 +188,7 @@ with col6:
     plazo = st.number_input("PLAZO", min_value=1)
 
 valor_letras = num2words(valor, lang="es").upper() if valor else ""
-
 st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
-
 
 analisis = st.text_area("ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO")
 
@@ -277,7 +282,6 @@ with col1:
 with col2:
     val1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
 
-
 col3, col4 = st.columns(2)
 
 with col3:
@@ -286,7 +290,6 @@ with col3:
 with col4:
     val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
 
-
 col5, col6 = st.columns(2)
 
 with col5:
@@ -294,8 +297,6 @@ with col5:
 
 with col6:
     identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
-
-
 
 if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
 
@@ -311,11 +312,13 @@ if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
     else:
         st.error("Primero debe guardar ETAPA 1")
 
-
 col1, col2 = st.columns(2)
 
 with col1:
     if st.button("GENERAR SOLICITUD CDP"):
+
+        supervisor = st.session_state.get("supervisor", "")
+
         datos_cdp = {
             "ID_PROCESO": ID,
             "SUPERVISOR": supervisor,
@@ -348,32 +351,6 @@ with col2:
             f"invitacion_{ID}.docx"
         )
 
-col3, col4 = st.columns(2)
-
-with col3:
-    if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
-        archivo = generar_descarga(
-            "invitacion_1_presentar_propuesta.docx",
-            {"ID_PROCESO": ID}
-        )
-        st.download_button(
-            "DESCARGAR PROPUESTA 1",
-            archivo,
-            f"inv_prop1_{ID}.docx"
-        )
-
-with col4:
-    if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
-        archivo = generar_descarga(
-            "invitacion_2_presentar_propuesta.docx",
-            {"ID_PROCESO": ID}
-        )
-        st.download_button(
-            "DESCARGAR PROPUESTA 2",
-            archivo,
-            f"inv_prop2_{ID}.docx"
-        )
-
 
 # ==========================================================
 # ================= ETAPA 3 =================
@@ -385,7 +362,9 @@ contrato_de = st.selectbox("TIPO DE CONTRATO", [
     "Suministro","Compraventa","Arrendamiento","Seguros"
 ])
 
-supervisor = st.text_input("SUPERVISOR")
+supervisor = st.text_input("SUPERVISOR", value=st.session_state.supervisor)
+st.session_state.supervisor = supervisor
+
 dispone = st.text_input("DISPONE")
 cdp = st.text_input("CDP")
 
@@ -394,24 +373,6 @@ duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
 
 empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
 fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
-
-
-if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
-
-    sheet = conectar_sheet()
-    fila_num = buscar_fila(sheet, ID)
-
-    if fila_num:
-        sheet.update(
-            f"AB{fila_num}:AH{fila_num}",
-            [[contrato_de, supervisor, dispone, cdp,
-              f"{duracion_num} {duracion_tipo}",
-              empresa, str(fecha_firma)]]
-        )
-        st.success("ETAPA 3 actualizada correctamente")
-    else:
-        st.error("Primero debe guardar ETAPA 1")
-
 
 if st.button("GENERAR CONTRATO"):
     archivo = generar_descarga("contrato.docx", {
@@ -431,12 +392,4 @@ if st.button("GENERAR CONTRATO"):
         f"contrato_{ID}.docx"
     )
 
-
 st.success("Sistema operativo correctamente.")
-
-
-
-
-
-
-
