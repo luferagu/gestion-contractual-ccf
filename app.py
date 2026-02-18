@@ -339,7 +339,9 @@ if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
 # ==========================================================
 st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
 
-col1, col2 = st.columns(2)
+# ===== BLOQUE ORGANIZADO 3 POR LÍNEA =====
+
+col1, col2, col3 = st.columns(3)
 
 with col1:
     contrato_de = st.selectbox("TIPO DE CONTRATO", [
@@ -350,15 +352,14 @@ with col1:
 with col2:
     supervisor = st.text_input("SUPERVISOR")
 
-col3, col4 = st.columns(2)
-
 with col3:
     cdp = st.text_input("CDP")
 
+
+col4, col5, col6 = st.columns(3)
+
 with col4:
     duracion_num = st.number_input("DURACIÓN", min_value=1)
-
-col5, col6 = st.columns(2)
 
 with col5:
     duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
@@ -366,9 +367,13 @@ with col5:
 with col6:
     empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
 
+
 fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
 
 dispone = st.text_area("DISPONE")
+
+# ==========================================
+
 
 
 if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
@@ -407,5 +412,6 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
