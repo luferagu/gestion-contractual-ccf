@@ -1,4 +1,4 @@
-import streamlit as st
+import streamlit as st 
 from datetime import date
 from num2words import num2words
 from docx import Document
@@ -139,21 +139,43 @@ oportunidad = st.multiselect("OPORTUNIDAD", [
 
 forma_pago = st.text_input("FORMA DE PAGO")
 
-modalidad = st.selectbox("MODALIDAD", [
-    "Contratación Directa",
-    "Invitación Privada",
-    "Convocatoria Abierta"
-])
 
-articulo = st.selectbox("ARTÍCULO", ["16","17","18"])
-numeral = st.selectbox("NUMERAL", ["1","2","3","4"])
-literal = st.selectbox("LITERAL", list("abcdefgh"))
+# ================= BLOQUE MODIFICADO =================
+col1, col2 = st.columns(2)
 
-valor = st.number_input("VALOR", min_value=0, step=1000)
+with col1:
+    modalidad = st.selectbox("MODALIDAD", [
+        "Contratación Directa",
+        "Invitación Privada",
+        "Convocatoria Abierta"
+    ])
+
+with col2:
+    articulo = st.selectbox("ARTÍCULO", ["16","17","18"])
+
+
+col3, col4 = st.columns(2)
+
+with col3:
+    numeral = st.selectbox("NUMERAL", ["1","2","3","4"])
+
+with col4:
+    literal = st.selectbox("LITERAL", list("abcdefgh"))
+
+
+col5, col6 = st.columns(2)
+
+with col5:
+    valor = st.number_input("VALOR", min_value=0, step=1000)
+
+with col6:
+    plazo = st.number_input("PLAZO", min_value=1)
+
 valor_letras = num2words(valor, lang="es").upper() if valor else ""
-st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
 
-plazo = st.number_input("PLAZO", min_value=1)
+st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
+# ======================================================
+
 
 analisis = st.text_area("ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO")
 
@@ -220,7 +242,6 @@ if st.button("GENERAR ESTUDIO PREVIO"):
         archivo,
         f"estudio_previo_{ID}.docx"
     )
-
 
 # ==========================================================
 # ================= ETAPA 2 =================
