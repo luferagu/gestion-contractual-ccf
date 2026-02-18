@@ -31,6 +31,16 @@ def conectar_sheet():
     return sheet
 
 # ==========================================================
+# BUSCAR FILA POR ID (NUEVA FUNCIÓN)
+# ==========================================================
+def buscar_fila(sheet, id_proceso):
+    registros = sheet.get_all_records()
+    for i, fila in enumerate(registros, start=2):
+        if str(fila.get("ID_PROCESO")) == str(id_proceso):
+            return i
+    return None
+
+# ==========================================================
 # GENERAR CONSECUTIVO ANUAL REAL
 # ==========================================================
 def generar_id():
@@ -49,11 +59,10 @@ ID = generar_id()
 st.info(f"ID_PROCESO generado automáticamente: {ID}")
 
 # ==========================================================
-# FUNCIÓN REEMPLAZO ROBUSTA (CORRIGE PROBLEMA WORD)
+# FUNCIÓN REEMPLAZO ROBUSTA (WORD)
 # ==========================================================
 def reemplazar(doc, datos):
 
-    # Párrafos normales
     for p in doc.paragraphs:
         full_text = "".join(run.text for run in p.runs)
 
@@ -68,7 +77,6 @@ def reemplazar(doc, datos):
         if p.runs:
             p.runs[0].text = full_text
 
-    # Tablas
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
@@ -151,7 +159,6 @@ garantias = st.multiselect("GARANTÍAS CONTRACTUALES", [
 
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
-# ---------------- GUARDAR ETAPA 1 ----------------
 if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
 
     sheet = conectar_sheet()
@@ -169,41 +176,6 @@ if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
     sheet.append_row(fila)
     st.success("ETAPA 1 guardada en Google Sheets")
 
-# ---------------- GENERAR ESTUDIO PREVIO COMPLETO ----------------
-if st.button("GENERAR ESTUDIO PREVIO"):
-
-    datos = {
-        "ID_PROCESO": ID,
-        "OBJETO": objeto,
-        "NECESIDAD": necesidad,
-        "JUSTIFICACION": justificacion,
-        "CENTRO_COSTOS": centro,
-        "PROGRAMA": programa,
-        "RUBRO": rubro,
-        "CODIGO_PLANEACION": codigo_planeacion,
-        "CARACTERISTICAS_TECNICAS": caracteristicas,
-        "OPORTUNIDAD": ", ".join(oportunidad),
-        "FORMA_PAGO": forma_pago,
-        "MODALIDAD": modalidad,
-        "ARTICULO": articulo,
-        "NUMERAL": numeral,
-        "LITERAL": literal,
-        "VALOR": f"${valor:,.0f}".replace(",", "."),
-        "VALOR_LETRAS": valor_letras,
-        "PLAZO": plazo,
-        "ANALISIS": analisis,
-        "GARANTIAS": ", ".join(garantias),
-        "FECHA_ESTUDIO": fecha_estudio
-    }
-
-    archivo = generar_descarga("estudio_previo.docx", datos)
-
-    st.download_button(
-        "DESCARGAR ESTUDIO PREVIO",
-        archivo,
-        f"estudio_previo_{ID}.docx"
-    )
-
 # ==========================================================
 # ================= ETAPA 2 =================
 # ==========================================================
@@ -218,6 +190,24 @@ val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
 identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
 identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
 
+# 🔵 NUEVO BOTÓN GUARDAR ETAPA 2
+if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
+
+    sheet = conectar_sheet()
+    fila_num = buscar_fila(sheet, ID)
+
+    if fila_num:
+        sheet.update(f"V{fila_num}", prop1)
+        sheet.update(f"W{fila_num}", val1)
+        sheet.update(f"X{fila_num}", prop2)
+        sheet.update(f"Y{fila_num}", val2)
+        sheet.update(f"Z{fila_num}", identificacion_pn)
+        sheet.update(f"AA{fila_num}", identificacion_pj)
+        st.success("ETAPA 2 actualizada correctamente")
+    else:
+        st.error("Primero debe guardar ETAPA 1")
+
+# (NO SE ELIMINAN BOTONES WORD)
 if st.button("GENERAR SOLICITUD CDP"):
     archivo = generar_descarga("solicitud_cdp.docx", {"ID_PROCESO": ID})
     st.download_button("DESCARGAR CDP", archivo, f"solicitud_cdp_{ID}.docx")
@@ -254,6 +244,25 @@ duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
 empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
 fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
 
+# 🔵 NUEVO BOTÓN GUARDAR ETAPA 3
+if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
+
+    sheet = conectar_sheet()
+    fila_num = buscar_fila(sheet, ID)
+
+    if fila_num:
+        sheet.update(f"AB{fila_num}", contrato_de)
+        sheet.update(f"AC{fila_num}", supervisor)
+        sheet.update(f"AD{fila_num}", dispone)
+        sheet.update(f"AE{fila_num}", cdp)
+        sheet.update(f"AF{fila_num}", f"{duracion_num} {duracion_tipo}")
+        sheet.update(f"AG{fila_num}", empresa)
+        sheet.update(f"AH{fila_num}", str(fecha_firma))
+        st.success("ETAPA 3 actualizada correctamente")
+    else:
+        st.error("Primero debe guardar ETAPA 1")
+
+# (NO SE ELIMINA BOTÓN WORD)
 if st.button("GENERAR CONTRATO"):
     archivo = generar_descarga("contrato.docx", {
         "ID_PROCESO": ID,
