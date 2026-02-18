@@ -86,6 +86,19 @@ def reemplazar(doc, datos):
                     if p.runs:
                         p.runs[0].text = full_text
 
+
+# 🔴 ESTA FUNCIÓN FALTABA — CAUSABA EL ERROR
+def generar_descarga(nombre, datos):
+    ruta = os.path.join(PLANTILLAS, nombre)
+    doc = Document(ruta)
+    reemplazar(doc, datos)
+
+    buffer = BytesIO()
+    doc.save(buffer)
+    buffer.seek(0)
+    return buffer
+
+
 # ==========================================================
 # ================= ETAPA 1 =================
 # ==========================================================
@@ -138,7 +151,6 @@ garantias = st.multiselect("GARANTÍAS CONTRACTUALES", [
 
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
-# ---------------- GUARDAR ETAPA 1 ----------------
 if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
 
     sheet = conectar_sheet()
@@ -154,10 +166,8 @@ if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
     ]
 
     sheet.append_row(fila)
-
     st.success("ETAPA 1 guardada en Google Sheets")
 
-# ---------------- WORD ESTUDIO PREVIO ----------------
 if st.button("GENERAR ESTUDIO PREVIO"):
     archivo = generar_descarga("estudio_previo.docx", {
         "ID_PROCESO": ID,
@@ -243,4 +253,3 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
-
