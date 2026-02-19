@@ -259,6 +259,7 @@ if st.button("GENERAR ESTUDIO PREVIO"):
 # ==========================================================
 st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
 
+# ---------------- PROPONENTE 1 ----------------
 col1, col2 = st.columns(2)
 
 with col1:
@@ -270,18 +271,29 @@ with col2:
 col3, col4 = st.columns(2)
 
 with col3:
-    prop2 = st.text_input("PROPONENTE 2")
+    identificacion_pn_1 = st.text_input("IDENTIFICACIÓN P.N PROP 1")
 
 with col4:
-    val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
+    identificacion_pj_1 = st.text_input("IDENTIFICACIÓN P.J PROP 1")
 
+st.markdown("---")
+
+# ---------------- PROPONENTE 2 ----------------
 col5, col6 = st.columns(2)
 
 with col5:
-    identificacion_pn = st.text_input("IDENTIFICACIÓN PERSONA NATURAL")
+    prop2 = st.text_input("PROPONENTE 2")
 
 with col6:
-    identificacion_pj = st.text_input("IDENTIFICACIÓN PERSONA JURÍDICA")
+    val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
+
+col7, col8 = st.columns(2)
+
+with col7:
+    identificacion_pn_2 = st.text_input("IDENTIFICACIÓN P.N PROP 2")
+
+with col8:
+    identificacion_pj_2 = st.text_input("IDENTIFICACIÓN P.J PROP 2")
 
 
 if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
@@ -291,8 +303,13 @@ if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
 
     if fila_num:
         sheet.update(
-            f"V{fila_num}:AA{fila_num}",
-            [[prop1, val1, prop2, val2, identificacion_pn, identificacion_pj]]
+            f"V{fila_num}:AC{fila_num}",
+            [[
+                prop1, val1,
+                identificacion_pn_1, identificacion_pj_1,
+                prop2, val2,
+                identificacion_pn_2, identificacion_pj_2
+            ]]
         )
         st.success("ETAPA 2 actualizada correctamente")
     else:
@@ -412,3 +429,4 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
