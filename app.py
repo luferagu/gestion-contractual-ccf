@@ -135,25 +135,16 @@ def generar_id():
     return f"{contador:03d}-{year}"
 
 
-if "etapa_activa" not in st.session_state:
-    st.session_state.etapa_activa = 1
+if "ID_PROCESO" not in st.session_state:
     st.session_state.ID_PROCESO = generar_id()
 
-st.markdown("## 🔹 Flujo del Proceso")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    if st.button("1️⃣ Estudio Previo", use_container_width=True):
-        st.session_state.etapa_activa = 1
-
-with col2:
-    if st.button("2️⃣ Compras", use_container_width=True):
-        st.session_state.etapa_activa = 2
-
-with col3:
-    if st.button("3️⃣ Contratación", use_container_width=True):
-        st.session_state.etapa_activa = 3
+ID = st.session_state.ID_PROCESO
+st.markdown("""
+### 🔹 Flujo del Proceso
+1️⃣ Estudio Previo &nbsp;&nbsp; ➝ &nbsp;&nbsp;
+2️⃣ Compras &nbsp;&nbsp; ➝ &nbsp;&nbsp;
+3️⃣ Contratación
+""")
 
 
 # ==========================================================
@@ -210,16 +201,11 @@ def generar_descarga(nombre, datos):
 # ==========================================================
 # ================= ETAPA 1 =================
 # ==========================================================
-if st.session_state.etapa_activa == 1:
-    
-    st.header("ETAPA 1 — ESTUDIO PREVIO")
+st.header("ETAPA 1 — ESTUDIO PREVIO")
 
-    objeto = st.text_area("OBJETO")
-    necesidad = st.text_area("NECESIDAD")
-    justificacion = st.text_area("JUSTIFICACIÓN")
-
-
-# ===== BLOQUE MODIFICADO EN DOS LÍNEAS =====
+objeto = st.text_area("OBJETO")
+necesidad = st.text_area("NECESIDAD")
+justificacion = st.text_area("JUSTIFICACIÓN")
 
 col1, col2 = st.columns(2)
 
@@ -229,7 +215,6 @@ with col1:
 with col2:
     programa = st.text_input("PROGRAMA (10 números)")
 
-
 col3, col4 = st.columns(2)
 
 with col3:
@@ -237,8 +222,6 @@ with col3:
 
 with col4:
     codigo_planeacion = st.text_input("CÓDIGO PLANEACIÓN")
-
-# ===========================================
 
 caracteristicas = st.text_area("CARACTERÍSTICAS TÉCNICAS DEL BIEN")
 
@@ -293,7 +276,6 @@ garantias = st.multiselect("GARANTÍAS CONTRACTUALES", [
 
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
-
 if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
 
     sheet = conectar_sheet()
@@ -310,7 +292,6 @@ if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
 
     sheet.append_row(fila)
     st.success("ETAPA 1 guardada en Google Sheets")
-
 
 if st.button("GENERAR ESTUDIO PREVIO"):
 
@@ -346,14 +327,11 @@ if st.button("GENERAR ESTUDIO PREVIO"):
         f"estudio_previo_{ID}.docx"
     )
 
-
 # ==========================================================
 # ================= ETAPA 2 =================
 # ==========================================================
-if st.session_state.etapa_activa == 2:
-    st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
+st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
 
-# ---------------- PROPONENTE 1 ----------------
 col1, col2 = st.columns(2)
 
 with col1:
@@ -372,7 +350,6 @@ with col4:
 
 st.markdown("---")
 
-# ---------------- PROPONENTE 2 ----------------
 col5, col6 = st.columns(2)
 
 with col5:
@@ -388,7 +365,6 @@ with col7:
 
 with col8:
     identificacion_pj_2 = st.text_input("IDENTIFICACIÓN P.J PROP 2")
-
 
 if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
 
@@ -408,7 +384,6 @@ if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
         st.success("ETAPA 2 actualizada correctamente")
     else:
         st.error("Primero debe guardar ETAPA 1")
-
 
 if st.button("GENERAR SOLICITUD CDP"):
 
@@ -431,7 +406,6 @@ if st.button("GENERAR SOLICITUD CDP"):
         f"solicitud_cdp_{ID}.docx"
     )
 
-
 if st.button("GENERAR INVITACIÓN A COTIZAR"):
     archivo = generar_descarga("invitacion_cotizar.docx", {"ID_PROCESO": ID})
     st.download_button("DESCARGAR INVITACIÓN", archivo, f"invitacion_{ID}.docx")
@@ -444,14 +418,10 @@ if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
     archivo = generar_descarga("invitacion_2_presentar_propuesta.docx", {"ID_PROCESO": ID})
     st.download_button("DESCARGAR PROPUESTA 2", archivo, f"inv_prop2_{ID}.docx")
 
-
 # ==========================================================
 # ================= ETAPA 3 =================
 # ==========================================================
-if st.session_state.etapa_activa == 3:    
-    st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
-
-# ===== BLOQUE ORGANIZADO 3 POR LÍNEA =====
+st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
 
 col1, col2, col3 = st.columns(3)
 
@@ -467,7 +437,6 @@ with col2:
 with col3:
     cdp = st.text_input("CDP")
 
-
 col4, col5, col6 = st.columns(3)
 
 with col4:
@@ -479,14 +448,9 @@ with col5:
 with col6:
     empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
 
-
 fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
 
 dispone = st.text_area("DISPONE")
-
-# ==========================================
-
-
 
 if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
 
@@ -503,7 +467,6 @@ if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
         st.success("ETAPA 3 actualizada correctamente")
     else:
         st.error("Primero debe guardar ETAPA 1")
-
 
 if st.button("GENERAR CONTRATO"):
     archivo = generar_descarga("contrato.docx", {
@@ -524,11 +487,3 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
-
-
-
-
-
-
-
-
