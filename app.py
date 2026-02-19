@@ -7,10 +7,87 @@ import os
 import gspread
 from google.oauth2.service_account import Credentials
 
-st.set_page_config(layout="wide")
+st.set_page_config(
+    page_title="Sistema de Gestión Contractual - CCF",
+    page_icon="📄",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 st.title("SISTEMA DE GESTIÓN CONTRACTUAL - CCF")
+st.markdown("""
+<style>
+
+html, body, [class*="css"]  {
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.main {
+    background-color: #0f172a;
+}
+
+h1, h2, h3 {
+    color: #f8fafc;
+}
+
+section[data-testid="stSidebar"] {
+    background-color: #0b1220;
+}
+
+.stButton>button {
+    background-color: #1e40af;
+    color: white;
+    border-radius: 8px;
+    height: 45px;
+    width: 100%;
+}
+
+.stButton>button:hover {
+    background-color: #2563eb;
+    color: white;
+}
+
+.stTextInput>div>div>input,
+.stNumberInput>div>div>input,
+textarea {
+    background-color: #1e293b !important;
+    color: white !important;
+    border-radius: 6px !important;
+}
+
+div[data-testid="stSelectbox"] > div {
+    background-color: #1e293b !important;
+    color: white !important;
+    border-radius: 6px !important;
+}
+
+.block-container {
+    padding-top: 2rem;
+}
+
+.banner-id {
+    background: linear-gradient(90deg, #1e3a8a, #2563eb);
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 PLANTILLAS = "plantillas"
+with st.sidebar:
+    st.markdown("## 📑 MENÚ")
+    st.markdown("---")
+    st.markdown("🏠 Inicio")
+    st.markdown("📂 Procesos")
+    st.markdown("📜 Contratos")
+    st.markdown("📊 Reportes")
+    st.markdown("⚙ Configuración")
+    st.markdown("---")
+    st.markdown("🔒 Cerrar sesión")
 
 # ==========================================================
 # CONEXIÓN GOOGLE SHEETS
@@ -62,7 +139,12 @@ if "ID_PROCESO" not in st.session_state:
     st.session_state.ID_PROCESO = generar_id()
 
 ID = st.session_state.ID_PROCESO
-st.info(f"ID_PROCESO generado automáticamente: {ID}")
+st.markdown("""
+### 🔹 Flujo del Proceso
+1️⃣ Estudio Previo &nbsp;&nbsp; ➝ &nbsp;&nbsp;
+2️⃣ Compras &nbsp;&nbsp; ➝ &nbsp;&nbsp;
+3️⃣ Contratación
+""")
 
 
 # ==========================================================
@@ -429,4 +511,5 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
