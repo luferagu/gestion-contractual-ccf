@@ -195,9 +195,11 @@ def generar_id_nuevo():
     nuevo = max(consecutivos) + 1 if consecutivos else 1
 
     return f"{nuevo:03d}-{year}"
-    # Inicializa ID si no existe
+# Inicialización segura del ID
 if "ID_PROCESO" not in st.session_state:
-    st.session_state.ID_PROCESO = generar_id_nuevo()
+    st.session_state["ID_PROCESO"] = generar_id_nuevo()
+
+ID = st.session_state["ID_PROCESO"]
 
 
 # ==========================================================
@@ -668,6 +670,7 @@ elif st.session_state.menu == "Reportes":
 elif st.session_state.menu == "Configuracion":
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
+
 
 
 
