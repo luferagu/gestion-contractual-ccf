@@ -170,7 +170,11 @@ def generar_id():
     return f"{contador:03d}-{year}"
 
 
-ID = st.session_state.ID_PROCESO
+if "ID_PROCESO" not in st.session_state:
+    st.session_state["ID_PROCESO"] = generar_id_nuevo()
+
+ID = st.session_state["ID_PROCESO"]
+
 
 # ==========================================================
 # GENERAR NUEVO PROCESO
@@ -664,6 +668,7 @@ elif st.session_state.menu == "Reportes":
 elif st.session_state.menu == "Configuracion":
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
+
 
 
 
