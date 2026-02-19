@@ -170,9 +170,6 @@ def generar_id():
     return f"{contador:03d}-{year}"
 
 
-if "ID_PROCESO" not in st.session_state:
-    st.session_state.ID_PROCESO = generar_id()
-
 ID = st.session_state.ID_PROCESO
 
 # ==========================================================
@@ -194,6 +191,10 @@ def generar_id_nuevo():
     nuevo = max(consecutivos) + 1 if consecutivos else 1
 
     return f"{nuevo:03d}-{year}"
+    # Inicializa ID si no existe
+if "ID_PROCESO" not in st.session_state:
+    st.session_state.ID_PROCESO = generar_id_nuevo()
+
 
 # ==========================================================
 # PANTALLAS
@@ -663,6 +664,7 @@ elif st.session_state.menu == "Reportes":
 elif st.session_state.menu == "Configuracion":
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
+
 
 
 
