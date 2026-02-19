@@ -136,15 +136,25 @@ def generar_id():
 
 
 if "ID_PROCESO" not in st.session_state:
+    if "etapa_activa" not in st.session_state:
+    st.session_state.etapa_activa = 1
     st.session_state.ID_PROCESO = generar_id()
 
-ID = st.session_state.ID_PROCESO
-st.markdown("""
-### 🔹 Flujo del Proceso
-1️⃣ Estudio Previo &nbsp;&nbsp; ➝ &nbsp;&nbsp;
-2️⃣ Compras &nbsp;&nbsp; ➝ &nbsp;&nbsp;
-3️⃣ Contratación
-""")
+st.markdown("## 🔹 Flujo del Proceso")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    if st.button("1️⃣ Estudio Previo", use_container_width=True):
+        st.session_state.etapa_activa = 1
+
+with col2:
+    if st.button("2️⃣ Compras", use_container_width=True):
+        st.session_state.etapa_activa = 2
+
+with col3:
+    if st.button("3️⃣ Contratación", use_container_width=True):
+        st.session_state.etapa_activa = 3
 
 
 # ==========================================================
@@ -201,7 +211,8 @@ def generar_descarga(nombre, datos):
 # ==========================================================
 # ================= ETAPA 1 =================
 # ==========================================================
-st.header("ETAPA 1 — ESTUDIO PREVIO")
+if st.session_state.etapa_activa == 1:
+    st.header("ETAPA 1 — ESTUDIO PREVIO")
 
 objeto = st.text_area("OBJETO")
 necesidad = st.text_area("NECESIDAD")
@@ -339,7 +350,8 @@ if st.button("GENERAR ESTUDIO PREVIO"):
 # ==========================================================
 # ================= ETAPA 2 =================
 # ==========================================================
-st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
+if st.session_state.etapa_activa == 2:
+    st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
 
 # ---------------- PROPONENTE 1 ----------------
 col1, col2 = st.columns(2)
@@ -436,7 +448,8 @@ if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
 # ==========================================================
 # ================= ETAPA 3 =================
 # ==========================================================
-st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
+if st.session_state.etapa_activa == 3:    
+    st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
 
 # ===== BLOQUE ORGANIZADO 3 POR LÍNEA =====
 
@@ -511,5 +524,6 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
