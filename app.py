@@ -91,22 +91,21 @@ with st.sidebar:
     st.markdown("## 📑 MENÚ")
     st.markdown("---")
 
-    if st.button("➕ Nuevo Proceso"):
+if st.button("➕ Nuevo Proceso"):
 
     # Genera nuevo consecutivo
     nuevo_id = generar_id_nuevo()
     st.session_state["ID_PROCESO"] = nuevo_id
 
-    # Limpia formulario pero conserva navegación
+    # Limpia formulario
     for key in list(st.session_state.keys()):
         if key not in ["menu", "ID_PROCESO"]:
             del st.session_state[key]
 
-    # Redirige a pantalla Procesos
+    # Redirige a Procesos
     st.session_state["menu"] = "Procesos"
 
     st.rerun()
-
     st.markdown("---")
 
     if st.button("🏠 Inicio"):
@@ -619,5 +618,6 @@ elif st.session_state["menu"] == "Configuracion":
 
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
+
 
 
