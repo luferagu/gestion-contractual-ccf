@@ -519,8 +519,48 @@ elif st.session_state.menu == "Procesos":
     st.success("Sistema operativo correctamente.")
 
 elif st.session_state.menu == "Contratos":
+
     st.header("📜 MÓDULO DE CONTRATOS")
-    st.info("Aquí podrá consultar y administrar contratos.")
+
+    sheet = conectar_sheet()
+    registros = sheet.get_all_records()
+
+    contratos_generados = []
+
+    for fila in registros:
+        # Si ya tiene información de ETAPA 3 (tipo contrato no vacío)
+        if fila.get("TIPO_CONTRATO") not in [None, ""]:
+            contratos_generados.append(fila)
+
+    if contratos_generados:
+
+        st.success(f"Se encontraron {len(contratos_generados)} contratos generados.")
+
+        for contrato in contratos_generados:
+
+            with st.container():
+                st.markdown(f"""
+                ### 📄 Proceso {contrato.get('ID_PROCESO')}
+                **Tipo:** {contrato.get('TIPO_CONTRATO')}  
+                **Supervisor:** {contrato.get('SUPERVISOR')}  
+                **Empresa:** {contrato.get('EMPRESA')}
+                """)
+
+                if st.button(f"Descargar contrato {contrato.get('ID_PROCESO')}"):
+                    
+                    archivo = generar_descarga("contrato.docx", contrato)
+
+                    st.download_button(
+                        "Descargar archivo",
+                        archivo,
+                        f"contrato_{contrato.get('ID_PROCESO')}.docx",
+                        key=f"down_{contrato.get('ID_PROCESO')}"
+                    )
+
+                st.markdown("---")
+
+    else:
+        st.warning("No existen contratos generados aún.")
 
 elif st.session_state.menu == "Reportes":
     st.header("📊 MÓDULO DE REPORTES")
@@ -529,3 +569,4 @@ elif st.session_state.menu == "Reportes":
 elif st.session_state.menu == "Configuracion":
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
+
