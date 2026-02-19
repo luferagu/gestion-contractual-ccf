@@ -78,16 +78,36 @@ div[data-testid="stSelectbox"] > div {
 """, unsafe_allow_html=True)
 
 PLANTILLAS = "plantillas"
+# ==========================================================
+# CONTROL DE NAVEGACIÓN
+# ==========================================================
+if "menu" not in st.session_state:
+    st.session_state.menu = "Inicio"
 with st.sidebar:
     st.markdown("## 📑 MENÚ")
     st.markdown("---")
-    st.markdown("🏠 Inicio")
-    st.markdown("📂 Procesos")
-    st.markdown("📜 Contratos")
-    st.markdown("📊 Reportes")
-    st.markdown("⚙ Configuración")
+
+    if st.button("🏠 Inicio"):
+        st.session_state.menu = "Inicio"
+
+    if st.button("📂 Procesos"):
+        st.session_state.menu = "Procesos"
+
+    if st.button("📜 Contratos"):
+        st.session_state.menu = "Contratos"
+
+    if st.button("📊 Reportes"):
+        st.session_state.menu = "Reportes"
+
+    if st.button("⚙ Configuración"):
+        st.session_state.menu = "Configuracion"
+
     st.markdown("---")
-    st.markdown("🔒 Cerrar sesión")
+
+    if st.button("🔒 Cerrar sesión"):
+        st.session_state.clear()
+        st.experimental_rerun()
+
 
 # ==========================================================
 # CONEXIÓN GOOGLE SHEETS
@@ -201,289 +221,311 @@ def generar_descarga(nombre, datos):
 # ==========================================================
 # ================= ETAPA 1 =================
 # ==========================================================
-st.header("ETAPA 1 — ESTUDIO PREVIO")
+# ==========================================================
+# PANTALLAS
+# ==========================================================
 
-objeto = st.text_area("OBJETO")
-necesidad = st.text_area("NECESIDAD")
-justificacion = st.text_area("JUSTIFICACIÓN")
+if st.session_state.menu == "Inicio":
+    st.header("🏠 PANEL PRINCIPAL")
+    st.info("Bienvenido al Sistema de Gestión Contractual CCF")
 
-col1, col2 = st.columns(2)
+elif st.session_state.menu == "Procesos":
+    elif st.session_state.menu == "Contratos":
+    st.header("📜 MÓDULO DE CONTRATOS")
+    st.info("Aquí podrá consultar y administrar contratos.")
 
-with col1:
-    centro = st.text_input("CENTRO DE COSTOS (10 números)")
+elif st.session_state.menu == "Reportes":
+    st.header("📊 MÓDULO DE REPORTES")
+    st.info("Aquí se generarán reportes y estadísticas.")
 
-with col2:
-    programa = st.text_input("PROGRAMA (10 números)")
+elif st.session_state.menu == "Configuracion":
+    st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
+    st.info("Parámetros generales del sistema.")
 
-col3, col4 = st.columns(2)
+    st.header("ETAPA 1 — ESTUDIO PREVIO")
 
-with col3:
-    rubro = st.text_input("RUBRO (10 números)")
+    objeto = st.text_area("OBJETO")
+    necesidad = st.text_area("NECESIDAD")
+    justificacion = st.text_area("JUSTIFICACIÓN")
 
-with col4:
-    codigo_planeacion = st.text_input("CÓDIGO PLANEACIÓN")
+    col1, col2 = st.columns(2)
 
-caracteristicas = st.text_area("CARACTERÍSTICAS TÉCNICAS DEL BIEN")
+    with col1:
+        centro = st.text_input("CENTRO DE COSTOS (10 números)")
 
-oportunidad = st.multiselect("OPORTUNIDAD", [
-    "Enero","Febrero","Marzo","Abril","Mayo","Junio",
-    "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
-])
+    with col2:
+        programa = st.text_input("PROGRAMA (10 números)")
 
-forma_pago = st.text_input("FORMA DE PAGO")
+    col3, col4 = st.columns(2)
 
-col1, col2 = st.columns(2)
+    with col3:
+        rubro = st.text_input("RUBRO (10 números)")
 
-with col1:
-    modalidad = st.selectbox("MODALIDAD", [
-        "Contratación Directa",
-        "Invitación Privada",
-        "Convocatoria Abierta"
+    with col4:
+        codigo_planeacion = st.text_input("CÓDIGO PLANEACIÓN")
+
+    caracteristicas = st.text_area("CARACTERÍSTICAS TÉCNICAS DEL BIEN")
+
+    oportunidad = st.multiselect("OPORTUNIDAD", [
+        "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+        "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
     ])
 
-with col2:
-    articulo = st.selectbox("ARTÍCULO", ["16","17","18"])
+    forma_pago = st.text_input("FORMA DE PAGO")
 
-col3, col4 = st.columns(2)
+    col1, col2 = st.columns(2)
 
-with col3:
-    numeral = st.selectbox("NUMERAL", ["1","2","3","4"])
+    with col1:
+        modalidad = st.selectbox("MODALIDAD", [
+            "Contratación Directa",
+            "Invitación Privada",
+            "Convocatoria Abierta"
+        ])
 
-with col4:
-    literal = st.selectbox("LITERAL", list("abcdefgh"))
+    with col2:
+        articulo = st.selectbox("ARTÍCULO", ["16","17","18"])
 
-col5, col6 = st.columns(2)
+    col3, col4 = st.columns(2)
 
-with col5:
-    valor = st.number_input("VALOR", min_value=0, step=1000)
+    with col3:
+        numeral = st.selectbox("NUMERAL", ["1","2","3","4"])
 
-with col6:
-    plazo = st.number_input("PLAZO", min_value=1)
+    with col4:
+        literal = st.selectbox("LITERAL", list("abcdefgh"))
 
-valor_letras = num2words(valor, lang="es").upper() if valor else ""
-st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
+    col5, col6 = st.columns(2)
 
-analisis = st.text_area("ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO")
+    with col5:
+        valor = st.number_input("VALOR", min_value=0, step=1000)
 
-garantias = st.multiselect("GARANTÍAS CONTRACTUALES", [
-    "Anticipo",
-    "Cumplimiento",
-    "Salarios y Prestaciones",
-    "Responsabilidad Civil Extracontractual",
-    "Estabilidad de la Obra",
-    "Calidad del Servicio"
-])
+    with col6:
+        plazo = st.number_input("PLAZO", min_value=1)
 
-fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
+    valor_letras = num2words(valor, lang="es").upper() if valor else ""
+    st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
 
-if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
+    analisis = st.text_area("ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO")
 
-    sheet = conectar_sheet()
+    garantias = st.multiselect("GARANTÍAS CONTRACTUALES", [
+        "Anticipo",
+        "Cumplimiento",
+        "Salarios y Prestaciones",
+        "Responsabilidad Civil Extracontractual",
+        "Estabilidad de la Obra",
+        "Calidad del Servicio"
+    ])
 
-    fila = [
-        ID,objeto,necesidad,justificacion,centro,programa,
-        rubro,codigo_planeacion,caracteristicas,
-        ", ".join(oportunidad),forma_pago,modalidad,
-        articulo,numeral,literal,valor,valor_letras,
-        plazo,analisis,", ".join(garantias),
-        str(fecha_estudio),
-        "", "", "", "", "", "", "", "", "", ""
-    ]
+    fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
-    sheet.append_row(fila)
-    st.success("ETAPA 1 guardada en Google Sheets")
+    if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
 
-if st.button("GENERAR ESTUDIO PREVIO"):
+        sheet = conectar_sheet()
 
-    datos = {
-        "ID_PROCESO": ID,
-        "OBJETO": objeto,
-        "NECESIDAD": necesidad,
-        "JUSTIFICACION": justificacion,
-        "CENTRO_COSTOS": centro,
-        "PROGRAMA": programa,
-        "RUBRO": rubro,
-        "CODIGO_PLANEACION": codigo_planeacion,
-        "CARACTERISTICAS_TECNICAS": caracteristicas,
-        "OPORTUNIDAD": ", ".join(oportunidad),
-        "FORMA_PAGO": forma_pago,
-        "MODALIDAD": modalidad,
-        "ARTICULO": articulo,
-        "NUMERAL": numeral,
-        "LITERAL": literal,
-        "VALOR": f"{valor:,.0f}".replace(",", "."),
-        "VALOR_LETRAS": valor_letras,
-        "PLAZO": plazo,
-        "ANALISIS": analisis,
-        "GARANTIAS": ", ".join(garantias),
-        "FECHA_ESTUDIO": fecha_estudio
-    }
+        fila = [
+            ID,objeto,necesidad,justificacion,centro,programa,
+            rubro,codigo_planeacion,caracteristicas,
+            ", ".join(oportunidad),forma_pago,modalidad,
+            articulo,numeral,literal,valor,valor_letras,
+            plazo,analisis,", ".join(garantias),
+            str(fecha_estudio),
+            "", "", "", "", "", "", "", "", "", ""
+        ]
 
-    archivo = generar_descarga("estudio_previo.docx", datos)
+        sheet.append_row(fila)
+        st.success("ETAPA 1 guardada en Google Sheets")
 
-    st.download_button(
-        "DESCARGAR ESTUDIO PREVIO",
-        archivo,
-        f"estudio_previo_{ID}.docx"
-    )
+    if st.button("GENERAR ESTUDIO PREVIO"):
+
+        datos = {
+            "ID_PROCESO": ID,
+            "OBJETO": objeto,
+            "NECESIDAD": necesidad,
+            "JUSTIFICACION": justificacion,
+            "CENTRO_COSTOS": centro,
+            "PROGRAMA": programa,
+            "RUBRO": rubro,
+            "CODIGO_PLANEACION": codigo_planeacion,
+            "CARACTERISTICAS_TECNICAS": caracteristicas,
+            "OPORTUNIDAD": ", ".join(oportunidad),
+            "FORMA_PAGO": forma_pago,
+            "MODALIDAD": modalidad,
+            "ARTICULO": articulo,
+            "NUMERAL": numeral,
+            "LITERAL": literal,
+            "VALOR": f"{valor:,.0f}".replace(",", "."),
+            "VALOR_LETRAS": valor_letras,
+            "PLAZO": plazo,
+            "ANALISIS": analisis,
+            "GARANTIAS": ", ".join(garantias),
+            "FECHA_ESTUDIO": fecha_estudio
+        }
+
+        archivo = generar_descarga("estudio_previo.docx", datos)
+
+        st.download_button(
+            "DESCARGAR ESTUDIO PREVIO",
+            archivo,
+            f"estudio_previo_{ID}.docx"
+        )
 
 # ==========================================================
 # ================= ETAPA 2 =================
 # ==========================================================
-st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
+    st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
 
-col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2)
 
-with col1:
-    prop1 = st.text_input("PROPONENTE 1")
+    with col1:
+        prop1 = st.text_input("PROPONENTE 1")
 
-with col2:
-    val1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
+    with col2:
+        val1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
 
-col3, col4 = st.columns(2)
+    col3, col4 = st.columns(2)
+    
+    with col3:
+        identificacion_pn_1 = st.text_input("IDENTIFICACIÓN P.N PROP 1")
+    
+    with col4:
+        identificacion_pj_1 = st.text_input("IDENTIFICACIÓN P.J PROP 1")
+    
+    st.markdown("---")
 
-with col3:
-    identificacion_pn_1 = st.text_input("IDENTIFICACIÓN P.N PROP 1")
+    col5, col6 = st.columns(2)
+    
+    with col5:
+        prop2 = st.text_input("PROPONENTE 2")
+    
+    with col6:
+        val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
+    
+    col7, col8 = st.columns(2)
+    
+    with col7:
+        identificacion_pn_2 = st.text_input("IDENTIFICACIÓN P.N PROP 2")
 
-with col4:
-    identificacion_pj_1 = st.text_input("IDENTIFICACIÓN P.J PROP 1")
-
-st.markdown("---")
-
-col5, col6 = st.columns(2)
-
-with col5:
-    prop2 = st.text_input("PROPONENTE 2")
-
-with col6:
-    val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
-
-col7, col8 = st.columns(2)
-
-with col7:
-    identificacion_pn_2 = st.text_input("IDENTIFICACIÓN P.N PROP 2")
-
-with col8:
-    identificacion_pj_2 = st.text_input("IDENTIFICACIÓN P.J PROP 2")
-
-if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
-
-    sheet = conectar_sheet()
-    fila_num = buscar_fila(sheet, ID)
-
-    if fila_num:
-        sheet.update(
-            f"V{fila_num}:AC{fila_num}",
-            [[
-                prop1, val1,
-                identificacion_pn_1, identificacion_pj_1,
-                prop2, val2,
-                identificacion_pn_2, identificacion_pj_2
-            ]]
+    with col8:
+        identificacion_pj_2 = st.text_input("IDENTIFICACIÓN P.J PROP 2")
+    
+    if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
+    
+        sheet = conectar_sheet()
+        fila_num = buscar_fila(sheet, ID)
+    
+        if fila_num:
+            sheet.update(
+                f"V{fila_num}:AC{fila_num}",
+                [[
+                    prop1, val1,
+                    identificacion_pn_1, identificacion_pj_1,
+                    prop2, val2,
+                    identificacion_pn_2, identificacion_pj_2
+                ]]
+            )
+            st.success("ETAPA 2 actualizada correctamente")
+        else:
+            st.error("Primero debe guardar ETAPA 1")
+    
+    if st.button("GENERAR SOLICITUD CDP"):
+    
+        datos_cdp = {
+            "ID_PROCESO": ID,
+            "OBJETO": objeto,
+            "CENTRO_COSTOS": centro,
+            "PROGRAMA": programa,
+            "RUBRO": rubro,
+            "CODIGO_PLANEACION": codigo_planeacion,
+            "VALOR": f"{valor:,.0f}".replace(",", "."),
+            "VALOR_LETRAS": valor_letras
+        }
+    
+        archivo = generar_descarga("solicitud_cdp.docx", datos_cdp)
+    
+        st.download_button(
+            "DESCARGAR CDP",
+            archivo,
+            f"solicitud_cdp_{ID}.docx"
         )
-        st.success("ETAPA 2 actualizada correctamente")
-    else:
-        st.error("Primero debe guardar ETAPA 1")
 
-if st.button("GENERAR SOLICITUD CDP"):
-
-    datos_cdp = {
-        "ID_PROCESO": ID,
-        "OBJETO": objeto,
-        "CENTRO_COSTOS": centro,
-        "PROGRAMA": programa,
-        "RUBRO": rubro,
-        "CODIGO_PLANEACION": codigo_planeacion,
-        "VALOR": f"{valor:,.0f}".replace(",", "."),
-        "VALOR_LETRAS": valor_letras
-    }
-
-    archivo = generar_descarga("solicitud_cdp.docx", datos_cdp)
-
-    st.download_button(
-        "DESCARGAR CDP",
-        archivo,
-        f"solicitud_cdp_{ID}.docx"
-    )
-
-if st.button("GENERAR INVITACIÓN A COTIZAR"):
-    archivo = generar_descarga("invitacion_cotizar.docx", {"ID_PROCESO": ID})
-    st.download_button("DESCARGAR INVITACIÓN", archivo, f"invitacion_{ID}.docx")
-
-if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
-    archivo = generar_descarga("invitacion_1_presentar_propuesta.docx", {"ID_PROCESO": ID})
-    st.download_button("DESCARGAR PROPUESTA 1", archivo, f"inv_prop1_{ID}.docx")
-
-if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
-    archivo = generar_descarga("invitacion_2_presentar_propuesta.docx", {"ID_PROCESO": ID})
-    st.download_button("DESCARGAR PROPUESTA 2", archivo, f"inv_prop2_{ID}.docx")
+    if st.button("GENERAR INVITACIÓN A COTIZAR"):
+        archivo = generar_descarga("invitacion_cotizar.docx", {"ID_PROCESO": ID})
+        st.download_button("DESCARGAR INVITACIÓN", archivo, f"invitacion_{ID}.docx")
+    
+    if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
+        archivo = generar_descarga("invitacion_1_presentar_propuesta.docx", {"ID_PROCESO": ID})
+        st.download_button("DESCARGAR PROPUESTA 1", archivo, f"inv_prop1_{ID}.docx")
+    
+    if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
+        archivo = generar_descarga("invitacion_2_presentar_propuesta.docx", {"ID_PROCESO": ID})
+        st.download_button("DESCARGAR PROPUESTA 2", archivo, f"inv_prop2_{ID}.docx")
 
 # ==========================================================
 # ================= ETAPA 3 =================
 # ==========================================================
-st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    contrato_de = st.selectbox("TIPO DE CONTRATO", [
-        "Obra","Consultoría","Prestación de Servicios",
-        "Suministro","Compraventa","Arrendamiento","Seguros"
-    ])
-
-with col2:
-    supervisor = st.text_input("SUPERVISOR")
-
-with col3:
-    cdp = st.text_input("CDP")
-
-col4, col5, col6 = st.columns(3)
-
-with col4:
-    duracion_num = st.number_input("DURACIÓN", min_value=1)
-
-with col5:
-    duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
-
-with col6:
-    empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
-
-fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
-
-dispone = st.text_area("DISPONE")
-
-if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
-
-    sheet = conectar_sheet()
-    fila_num = buscar_fila(sheet, ID)
-
-    if fila_num:
-        sheet.update(
-            f"AB{fila_num}:AH{fila_num}",
-            [[contrato_de, supervisor, dispone, cdp,
-              f"{duracion_num} {duracion_tipo}",
-              empresa, str(fecha_firma)]]
+    st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        contrato_de = st.selectbox("TIPO DE CONTRATO", [
+            "Obra","Consultoría","Prestación de Servicios",
+            "Suministro","Compraventa","Arrendamiento","Seguros"
+        ])
+    
+    with col2:
+        supervisor = st.text_input("SUPERVISOR")
+    
+    with col3:
+        cdp = st.text_input("CDP")
+    
+    col4, col5, col6 = st.columns(3)
+    
+    with col4:
+        duracion_num = st.number_input("DURACIÓN", min_value=1)
+    
+    with col5:
+        duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
+    
+    with col6:
+        empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
+    
+    fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
+    
+    dispone = st.text_area("DISPONE")
+    
+    if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
+    
+        sheet = conectar_sheet()
+        fila_num = buscar_fila(sheet, ID)
+    
+        if fila_num:
+            sheet.update(
+                f"AB{fila_num}:AH{fila_num}",
+                [[contrato_de, supervisor, dispone, cdp,
+                  f"{duracion_num} {duracion_tipo}",
+                  empresa, str(fecha_firma)]]
+            )
+            st.success("ETAPA 3 actualizada correctamente")
+        else:
+            st.error("Primero debe guardar ETAPA 1")
+    
+    if st.button("GENERAR CONTRATO"):
+        archivo = generar_descarga("contrato.docx", {
+            "ID_PROCESO": ID,
+            "TIPO_CONTRATO": contrato_de,
+            "SUPERVISOR": supervisor,
+            "DISPONE": dispone,
+            "CDP": cdp,
+            "DURACION": f"{duracion_num} {duracion_tipo}",
+            "EMPRESA": empresa,
+            "FECHA_FIRMA": fecha_firma
+        })
+    
+        st.download_button(
+            "DESCARGAR CONTRATO",
+            archivo,
+            f"contrato_{ID}.docx"
         )
-        st.success("ETAPA 3 actualizada correctamente")
-    else:
-        st.error("Primero debe guardar ETAPA 1")
+    
+    st.success("Sistema operativo correctamente.")
 
-if st.button("GENERAR CONTRATO"):
-    archivo = generar_descarga("contrato.docx", {
-        "ID_PROCESO": ID,
-        "TIPO_CONTRATO": contrato_de,
-        "SUPERVISOR": supervisor,
-        "DISPONE": dispone,
-        "CDP": cdp,
-        "DURACION": f"{duracion_num} {duracion_tipo}",
-        "EMPRESA": empresa,
-        "FECHA_FIRMA": fecha_firma
-    })
-
-    st.download_button(
-        "DESCARGAR CONTRATO",
-        archivo,
-        f"contrato_{ID}.docx"
-    )
-
-st.success("Sistema operativo correctamente.")
