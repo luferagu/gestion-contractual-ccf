@@ -98,7 +98,7 @@ with st.sidebar:
             if key not in ["menu", "ID_PROCESO"]:
                 del st.session_state[key]
 
-        st.experimental_rerun()
+        st.rerun()
 
     st.markdown("---")
 
@@ -124,7 +124,7 @@ with st.sidebar:
 
     if st.button("🔒 Cerrar sesión"):
         st.session_state.clear()
-        st.experimental_rerun()
+        st.rerun()
 
 
 # ==========================================================
@@ -507,7 +507,7 @@ elif st.session_state["menu"] == "Procesos_Anuales":
                 if st.button(f"Editar {proceso.get('ID_PROCESO')}"):
                     st.session_state["ID_PROCESO"] = proceso.get("ID_PROCESO")
                     st.session_state["menu"] = "Editar_Proceso"
-                    st.experimental_rerun()
+                    st.rerun()
 
                 st.markdown("---")
 
@@ -612,3 +612,4 @@ elif st.session_state["menu"] == "Configuracion":
 
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
+
