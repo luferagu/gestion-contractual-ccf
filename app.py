@@ -175,6 +175,25 @@ if "ID_PROCESO" not in st.session_state:
 
 ID = st.session_state.ID_PROCESO
 
+# ==========================================================
+# GENERAR NUEVO PROCESO
+# ==========================================================
+def generar_id_nuevo():
+    sheet = conectar_sheet()
+    registros = sheet.get_all_records()
+    year = str(date.today().year)
+
+    consecutivos = []
+
+    for r in registros:
+        idp = str(r.get("ID_PROCESO", ""))
+        if idp.endswith(year):
+            numero = idp.split("-")[0]
+            consecutivos.append(int(numero))
+
+    nuevo = max(consecutivos) + 1 if consecutivos else 1
+
+    return f"{nuevo:03d}-{year}"
 
 # ==========================================================
 # PANTALLAS
@@ -644,6 +663,7 @@ elif st.session_state.menu == "Reportes":
 elif st.session_state.menu == "Configuracion":
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
+
 
 
 
