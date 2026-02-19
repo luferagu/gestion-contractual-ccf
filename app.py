@@ -88,12 +88,46 @@ if "menu" not in st.session_state:
 with st.sidebar:
     st.markdown("## 📑 MENÚ")
     st.markdown("---")
+# ==========================================================
+# NUEVO PROCESO
+# ==========================================================
+def generar_id_nuevo():
+    sheet = conectar_sheet()
+    registros = sheet.get_all_records()
+    year = str(date.today().year)
 
+    consecutivos = []
+
+    for r in registros:
+        idp = str(r.get("ID_PROCESO", ""))
+        if idp.endswith(year):
+            numero = idp.split("-")[0]
+            consecutivos.append(int(numero))
+
+    nuevo = max(consecutivos) + 1 if consecutivos else 1
+    return f"{nuevo:03d}-{year}"
+
+
+if st.button("➕ Nuevo Proceso"):
+    st.session_state.ID_PROCESO = generar_id_nuevo()
+
+    # Limpia solo variables del formulario
+    for key in list(st.session_state.keys()):
+        if key not in ["menu", "ID_PROCESO"]:
+            del st.session_state[key]
+
+    st.success(f"Nuevo proceso creado: {st.session_state.ID_PROCESO}")
+    st.experimental_rerun()
+    
+    
     if st.button("🏠 Inicio"):
         st.session_state.menu = "Inicio"
 
     if st.button("📂 Procesos"):
         st.session_state.menu = "Procesos"
+
+    if st.button("📁 Procesos 2026"):
+    st.session_state.menu = "Procesos_Anuales"
 
     if st.button("📜 Contratos"):
         st.session_state.menu = "Contratos"
@@ -517,6 +551,66 @@ elif st.session_state.menu == "Procesos":
         )
 
     st.success("Sistema operativo correctamente.")
+elif st.session_state.menu == "Procesos_Anuales":
+
+    st.header("📁 PROCESOS 2026")
+
+    sheet = conectar_sheet()
+    registros = sheet.get_all_records()
+
+    year = "2026"
+    procesos = [r for r in registros if year in str(r.get("ID_PROCESO"))]
+
+    if procesos:
+
+        for proceso in procesos:
+
+            with st.container():
+
+                st.markdown(f"""
+                ### 📄 {proceso.get('ID_PROCESO')}
+                **Objeto:** {proceso.get('OBJETO')}
+                **Valor:** {proceso.get('VALOR')}
+                """)
+
+                if st.button(f"Editar {proceso.get('ID_PROCESO')}"):
+                    st.session_state.ID_PROCESO = proceso.get("ID_PROCESO")
+                    st.session_state.menu = "Editar_Proceso"
+                    st.experimental_rerun()
+
+                st.markdown("---")
+
+    else:
+        st.warning("No existen procesos para 2026.")
+elif st.session_state.menu == "Editar_Proceso":
+
+    st.header(f"✏ EDITAR PROCESO {st.session_state.ID_PROCESO}")
+
+    sheet = conectar_sheet()
+    registros = sheet.get_all_records()
+
+    proceso = None
+    for r in registros:
+        if r.get("ID_PROCESO") == st.session_state.ID_PROCESO:
+            proceso = r
+            break
+
+    if proceso:
+
+        objeto = st.text_area("OBJETO", value=proceso.get("OBJETO"))
+        necesidad = st.text_area("NECESIDAD", value=proceso.get("NECESIDAD"))
+        valor = st.number_input("VALOR", value=int(proceso.get("VALOR") or 0))
+
+        if st.button("💾 Actualizar Proceso"):
+
+            fila = buscar_fila(sheet, st.session_state.ID_PROCESO)
+
+            sheet.update(
+                f"B{fila}:D{fila}",
+                [[objeto, necesidad, valor]]
+            )
+
+            st.success("Proceso actualizado correctamente.")
 
 elif st.session_state.menu == "Contratos":
 
@@ -570,4 +664,5 @@ elif st.session_state.menu == "Reportes":
 elif st.session_state.menu == "Configuracion":
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
+
 
