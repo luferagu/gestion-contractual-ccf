@@ -83,27 +83,7 @@ PLANTILLAS = "plantillas"
 # CONTROL DE NAVEGACIÓN
 # ==========================================================
 if "menu" not in st.session_state:
-    if st.session_state.menu == "Inicio":
-
-    st.header("📊 PANEL PRINCIPAL")
-
-    st.markdown("""
-    ### 🔹 Flujo del Proceso
-    1️⃣ Estudio Previo ➝ 2️⃣ Compras ➝ 3️⃣ Contratación
-    """)
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        if st.button("🆕 NUEVO PROCESO"):
-            st.session_state.ID_PROCESO = generar_id()
-            st.session_state.menu = "Procesos"
-            st.rerun()
-
-    with col2:
-        if st.button("📂 HISTÓRICO DE PROCESOS"):
-            st.session_state.menu = "Historico"
-            st.rerun()
+    st.session_state.menu = "Inicio"
 
 with st.sidebar:
     st.markdown("## 📑 MENÚ")
@@ -539,48 +519,8 @@ elif st.session_state.menu == "Procesos":
     st.success("Sistema operativo correctamente.")
 
 elif st.session_state.menu == "Contratos":
-
     st.header("📜 MÓDULO DE CONTRATOS")
-
-    sheet = conectar_sheet()
-    registros = sheet.get_all_records()
-
-    contratos_generados = []
-
-    for fila in registros:
-        # Si ya tiene información de ETAPA 3 (tipo contrato no vacío)
-        if fila.get("TIPO_CONTRATO") not in [None, ""]:
-            contratos_generados.append(fila)
-
-    if contratos_generados:
-
-        st.success(f"Se encontraron {len(contratos_generados)} contratos generados.")
-
-        for contrato in contratos_generados:
-
-            with st.container():
-                st.markdown(f"""
-                ### 📄 Proceso {contrato.get('ID_PROCESO')}
-                **Tipo:** {contrato.get('TIPO_CONTRATO')}  
-                **Supervisor:** {contrato.get('SUPERVISOR')}  
-                **Empresa:** {contrato.get('EMPRESA')}
-                """)
-
-                if st.button(f"Descargar contrato {contrato.get('ID_PROCESO')}"):
-                    
-                    archivo = generar_descarga("contrato.docx", contrato)
-
-                    st.download_button(
-                        "Descargar archivo",
-                        archivo,
-                        f"contrato_{contrato.get('ID_PROCESO')}.docx",
-                        key=f"down_{contrato.get('ID_PROCESO')}"
-                    )
-
-                st.markdown("---")
-
-    else:
-        st.warning("No existen contratos generados aún.")
+    st.info("Aquí podrá consultar y administrar contratos.")
 
 elif st.session_state.menu == "Reportes":
     st.header("📊 MÓDULO DE REPORTES")
@@ -589,40 +529,3 @@ elif st.session_state.menu == "Reportes":
 elif st.session_state.menu == "Configuracion":
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
-    
-elif st.session_state.menu == "Historico":
-
-    st.header("📂 HISTÓRICO DE PROCESOS")
-
-    sheet = conectar_sheet()
-    registros = sheet.get_all_records()
-
-    if registros:
-
-        ids = [r["ID_PROCESO"] for r in registros]
-
-        proceso_seleccionado = st.selectbox(
-            "Seleccione un proceso para consultar o continuar:",
-            ids
-        )
-
-        if st.button("ABRIR PROCESO"):
-            st.session_state.ID_PROCESO = proceso_seleccionado
-            st.session_state.menu = "Procesos"
-            st.rerun()
-
-        st.markdown("---")
-
-        st.subheader("Listado general")
-
-        for r in registros:
-            st.markdown(f"""
-            **Proceso:** {r.get("ID_PROCESO")}  
-            **Objeto:** {r.get("OBJETO")}  
-            **Valor:** {r.get("VALOR")}
-            """)
-            st.markdown("---")
-
-    else:
-        st.warning("No existen procesos registrados.")
-
