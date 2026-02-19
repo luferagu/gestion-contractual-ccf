@@ -127,7 +127,7 @@ if st.button("➕ Nuevo Proceso"):
         st.session_state.menu = "Procesos"
 
     if st.button("📁 Procesos 2026"):
-    st.session_state.menu = "Procesos_Anuales"
+        st.session_state.menu = "Procesos_Anuales"
 
     if st.button("📜 Contratos"):
         st.session_state.menu = "Contratos"
@@ -664,5 +664,6 @@ elif st.session_state.menu == "Reportes":
 elif st.session_state.menu == "Configuracion":
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
+
 
 
