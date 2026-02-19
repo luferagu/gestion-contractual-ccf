@@ -1,4 +1,4 @@
-import streamlit as st 
+import streamlit as st
 from datetime import date
 from num2words import num2words
 from docx import Document
@@ -7,6 +7,9 @@ import os
 import gspread
 from google.oauth2.service_account import Credentials
 
+# ==========================================================
+# CONFIGURACIÓN INICIAL
+# ==========================================================
 st.set_page_config(
     page_title="Sistema de Gestión Contractual - CCF",
     page_icon="📄",
@@ -15,114 +18,8 @@ st.set_page_config(
 )
 
 st.title("SISTEMA DE GESTIÓN CONTRACTUAL - CCF")
-st.markdown("""
-<style>
-
-html, body, [class*="css"]  {
-    font-family: 'Segoe UI', sans-serif;
-}
-
-.main {
-    background-color: #0f172a;
-}
-
-h1, h2, h3 {
-    color: #f8fafc;
-}
-
-section[data-testid="stSidebar"] {
-    background-color: #0b1220;
-}
-
-.stButton>button {
-    background-color: #1e40af;
-    color: white;
-    border-radius: 8px;
-    height: 45px;
-    width: 100%;
-}
-
-.stButton>button:hover {
-    background-color: #2563eb;
-    color: white;
-}
-
-.stTextInput>div>div>input,
-.stNumberInput>div>div>input,
-textarea {
-    background-color: #1e293b !important;
-    color: white !important;
-    border-radius: 6px !important;
-}
-
-div[data-testid="stSelectbox"] > div {
-    background-color: #1e293b !important;
-    color: white !important;
-    border-radius: 6px !important;
-}
-
-.block-container {
-    padding-top: 2rem;
-}
-
-.banner-id {
-    background: linear-gradient(90deg, #1e3a8a, #2563eb);
-    padding: 15px;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-</style>
-""", unsafe_allow_html=True)
 
 PLANTILLAS = "plantillas"
-
-# ==========================================================
-# CONTROL DE NAVEGACIÓN
-# ==========================================================
-if "menu" not in st.session_state:
-    st.session_state.menu = "Inicio"
-
-with st.sidebar:
-    st.markdown("## 📑 MENÚ")
-    st.markdown("---")
-
-    if st.button("➕ Nuevo Proceso"):
-        st.session_state.ID_PROCESO = generar_id_nuevo()
-
-        for key in list(st.session_state.keys()):
-            if key not in ["menu", "ID_PROCESO"]:
-                del st.session_state[key]
-
-        st.experimental_rerun()
-
-    st.markdown("---")
-
-    if st.button("🏠 Inicio"):
-        st.session_state.menu = "Inicio"
-
-    if st.button("📂 Procesos"):
-        st.session_state.menu = "Procesos"
-
-    if st.button("📁 Procesos 2026"):
-        st.session_state.menu = "Procesos_Anuales"
-
-    if st.button("📜 Contratos"):
-        st.session_state.menu = "Contratos"
-
-    if st.button("📊 Reportes"):
-        st.session_state.menu = "Reportes"
-
-    if st.button("⚙ Configuración"):
-        st.session_state.menu = "Configuracion"
-
-    st.markdown("---")
-
-    if st.button("🔒 Cerrar sesión"):
-        st.session_state.clear()
-        st.experimental_rerun()
 
 # ==========================================================
 # CONEXIÓN GOOGLE SHEETS
@@ -155,28 +52,6 @@ def buscar_fila(sheet, id_proceso):
 
 
 # ==========================================================
-# GENERAR CONSECUTIVO ANUAL
-# ==========================================================
-def generar_id():
-    sheet = conectar_sheet()
-    registros = sheet.get_all_records()
-    year = str(date.today().year)
-    contador = 1
-
-    for r in registros:
-        if year in str(r.get("ID_PROCESO", "")):
-            contador += 1
-
-    return f"{contador:03d}-{year}"
-
-
-if "ID_PROCESO" not in st.session_state:
-    st.session_state["ID_PROCESO"] = generar_id_nuevo()
-
-ID = st.session_state["ID_PROCESO"]
-
-
-# ==========================================================
 # GENERAR NUEVO PROCESO
 # ==========================================================
 def generar_id_nuevo():
@@ -193,9 +68,15 @@ def generar_id_nuevo():
             consecutivos.append(int(numero))
 
     nuevo = max(consecutivos) + 1 if consecutivos else 1
-
     return f"{nuevo:03d}-{year}"
-# Inicialización segura del ID
+
+
+# ==========================================================
+# CONTROL DE ESTADO SEGURO
+# ==========================================================
+if "menu" not in st.session_state:
+    st.session_state["menu"] = "Inicio"
+
 if "ID_PROCESO" not in st.session_state:
     st.session_state["ID_PROCESO"] = generar_id_nuevo()
 
@@ -203,26 +84,69 @@ ID = st.session_state["ID_PROCESO"]
 
 
 # ==========================================================
+# SIDEBAR
+# ==========================================================
+with st.sidebar:
+
+    st.markdown("## 📑 MENÚ")
+    st.markdown("---")
+
+    if st.button("➕ Nuevo Proceso"):
+        st.session_state["ID_PROCESO"] = generar_id_nuevo()
+
+        for key in list(st.session_state.keys()):
+            if key not in ["menu", "ID_PROCESO"]:
+                del st.session_state[key]
+
+        st.experimental_rerun()
+
+    st.markdown("---")
+
+    if st.button("🏠 Inicio"):
+        st.session_state["menu"] = "Inicio"
+
+    if st.button("📂 Procesos"):
+        st.session_state["menu"] = "Procesos"
+
+    if st.button("📁 Procesos 2026"):
+        st.session_state["menu"] = "Procesos_Anuales"
+
+    if st.button("📜 Contratos"):
+        st.session_state["menu"] = "Contratos"
+
+    if st.button("📊 Reportes"):
+        st.session_state["menu"] = "Reportes"
+
+    if st.button("⚙ Configuración"):
+        st.session_state["menu"] = "Configuracion"
+
+    st.markdown("---")
+
+    if st.button("🔒 Cerrar sesión"):
+        st.session_state.clear()
+        st.experimental_rerun()
+
+
+# ==========================================================
 # PANTALLAS
 # ==========================================================
-
-if st.session_state.menu == "Inicio":
+if st.session_state["menu"] == "Inicio":
 
     st.markdown("""
     ### 🔹 Flujo del Proceso
-    1️⃣ Estudio Previo &nbsp;&nbsp; ➝ &nbsp;&nbsp;
-    2️⃣ Compras &nbsp;&nbsp; ➝ &nbsp;&nbsp;
+    1️⃣ Estudio Previo ➝  
+    2️⃣ Compras ➝  
     3️⃣ Contratación
     """)
 
-elif st.session_state.menu == "Procesos":
+elif st.session_state["menu"] == "Procesos":
 
     st.markdown(f'<div class="banner-id">PROCESO ACTUAL: {ID}</div>', unsafe_allow_html=True)
+
     # ==========================================================
-    # FUNCIÓN REEMPLAZO ROBUSTA WORD
+    # FUNCIÓN REEMPLAZO WORD
     # ==========================================================
     def reemplazar(doc, datos):
-
         for p in doc.paragraphs:
             full_text = "".join(run.text for run in p.runs)
 
@@ -255,9 +179,6 @@ elif st.session_state.menu == "Procesos":
                             p.runs[0].text = full_text
 
 
-    # ==========================================================
-    # GENERAR DESCARGA WORD
-    # ==========================================================
     def generar_descarga(nombre, datos):
         ruta = os.path.join(PLANTILLAS, nombre)
         doc = Document(ruta)
@@ -270,7 +191,7 @@ elif st.session_state.menu == "Procesos":
 
 
     # ==========================================================
-    # ================= ETAPA 1 =================
+    # ETAPA 1
     # ==========================================================
     st.header("ETAPA 1 — ESTUDIO PREVIO")
 
@@ -285,7 +206,6 @@ elif st.session_state.menu == "Procesos":
 
     with col2:
         programa = st.text_input("PROGRAMA (10 números)")
-
     col3, col4 = st.columns(2)
 
     with col3:
@@ -397,8 +317,9 @@ elif st.session_state.menu == "Procesos":
             archivo,
             f"estudio_previo_{ID}.docx"
         )
+
     # ==========================================================
-    # ================= ETAPA 2 =================
+    # ETAPA 2
     # ==========================================================
     st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
 
@@ -487,9 +408,8 @@ elif st.session_state.menu == "Procesos":
     if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
         archivo = generar_descarga("invitacion_2_presentar_propuesta.docx", {"ID_PROCESO": ID})
         st.download_button("DESCARGAR PROPUESTA 2", archivo, f"inv_prop2_{ID}.docx")
-
     # ==========================================================
-    # ================= ETAPA 3 =================
+    # ETAPA 3
     # ==========================================================
     st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
 
@@ -519,7 +439,6 @@ elif st.session_state.menu == "Procesos":
         empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
 
     fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
-
     dispone = st.text_area("DISPONE")
 
     if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
@@ -539,6 +458,7 @@ elif st.session_state.menu == "Procesos":
             st.error("Primero debe guardar ETAPA 1")
 
     if st.button("GENERAR CONTRATO"):
+
         archivo = generar_descarga("contrato.docx", {
             "ID_PROCESO": ID,
             "TIPO_CONTRATO": contrato_de,
@@ -557,7 +477,12 @@ elif st.session_state.menu == "Procesos":
         )
 
     st.success("Sistema operativo correctamente.")
-elif st.session_state.menu == "Procesos_Anuales":
+
+
+# ==========================================================
+# PROCESOS ANUALES
+# ==========================================================
+elif st.session_state["menu"] == "Procesos_Anuales":
 
     st.header("📁 PROCESOS 2026")
 
@@ -580,24 +505,29 @@ elif st.session_state.menu == "Procesos_Anuales":
                 """)
 
                 if st.button(f"Editar {proceso.get('ID_PROCESO')}"):
-                    st.session_state.ID_PROCESO = proceso.get("ID_PROCESO")
-                    st.session_state.menu = "Editar_Proceso"
+                    st.session_state["ID_PROCESO"] = proceso.get("ID_PROCESO")
+                    st.session_state["menu"] = "Editar_Proceso"
                     st.experimental_rerun()
 
                 st.markdown("---")
 
     else:
         st.warning("No existen procesos para 2026.")
-elif st.session_state.menu == "Editar_Proceso":
 
-    st.header(f"✏ EDITAR PROCESO {st.session_state.ID_PROCESO}")
+
+# ==========================================================
+# EDITAR PROCESO
+# ==========================================================
+elif st.session_state["menu"] == "Editar_Proceso":
+
+    st.header(f"✏ EDITAR PROCESO {st.session_state['ID_PROCESO']}")
 
     sheet = conectar_sheet()
     registros = sheet.get_all_records()
 
     proceso = None
     for r in registros:
-        if r.get("ID_PROCESO") == st.session_state.ID_PROCESO:
+        if r.get("ID_PROCESO") == st.session_state["ID_PROCESO"]:
             proceso = r
             break
 
@@ -609,7 +539,7 @@ elif st.session_state.menu == "Editar_Proceso":
 
         if st.button("💾 Actualizar Proceso"):
 
-            fila = buscar_fila(sheet, st.session_state.ID_PROCESO)
+            fila = buscar_fila(sheet, st.session_state["ID_PROCESO"])
 
             sheet.update(
                 f"B{fila}:D{fila}",
@@ -618,7 +548,11 @@ elif st.session_state.menu == "Editar_Proceso":
 
             st.success("Proceso actualizado correctamente.")
 
-elif st.session_state.menu == "Contratos":
+
+# ==========================================================
+# CONTRATOS
+# ==========================================================
+elif st.session_state["menu"] == "Contratos":
 
     st.header("📜 MÓDULO DE CONTRATOS")
 
@@ -628,7 +562,6 @@ elif st.session_state.menu == "Contratos":
     contratos_generados = []
 
     for fila in registros:
-        # Si ya tiene información de ETAPA 3 (tipo contrato no vacío)
         if fila.get("TIPO_CONTRATO") not in [None, ""]:
             contratos_generados.append(fila)
 
@@ -647,7 +580,7 @@ elif st.session_state.menu == "Contratos":
                 """)
 
                 if st.button(f"Descargar contrato {contrato.get('ID_PROCESO')}"):
-                    
+
                     archivo = generar_descarga("contrato.docx", contrato)
 
                     st.download_button(
@@ -663,18 +596,19 @@ elif st.session_state.menu == "Contratos":
         st.warning("No existen contratos generados aún.")
 
 
-elif st.session_state.menu == "Reportes":
+# ==========================================================
+# REPORTES
+# ==========================================================
+elif st.session_state["menu"] == "Reportes":
+
     st.header("📊 MÓDULO DE REPORTES")
     st.info("Aquí se generarán reportes y estadísticas.")
 
-elif st.session_state.menu == "Configuracion":
+
+# ==========================================================
+# CONFIGURACIÓN
+# ==========================================================
+elif st.session_state["menu"] == "Configuracion":
+
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
-
-
-
-
-
-
-
-
