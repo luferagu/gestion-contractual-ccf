@@ -136,7 +136,7 @@ def generar_id():
 
 
 if "ID_PROCESO" not in st.session_state:
-    if "etapa_activa" not in st.session_state:
+if "etapa_activa" not in st.session_state:
     st.session_state.etapa_activa = 1
     st.session_state.ID_PROCESO = generar_id()
 
@@ -525,6 +525,7 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
