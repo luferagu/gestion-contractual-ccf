@@ -83,7 +83,27 @@ PLANTILLAS = "plantillas"
 # CONTROL DE NAVEGACIÓN
 # ==========================================================
 if "menu" not in st.session_state:
-    st.session_state.menu = "Inicio"
+    if st.session_state.menu == "Inicio":
+
+    st.header("📊 PANEL PRINCIPAL")
+
+    st.markdown("""
+    ### 🔹 Flujo del Proceso
+    1️⃣ Estudio Previo ➝ 2️⃣ Compras ➝ 3️⃣ Contratación
+    """)
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("🆕 NUEVO PROCESO"):
+            st.session_state.ID_PROCESO = generar_id()
+            st.session_state.menu = "Procesos"
+            st.rerun()
+
+    with col2:
+        if st.button("📂 HISTÓRICO DE PROCESOS"):
+            st.session_state.menu = "Historico"
+            st.rerun()
 
 with st.sidebar:
     st.markdown("## 📑 MENÚ")
@@ -569,4 +589,40 @@ elif st.session_state.menu == "Reportes":
 elif st.session_state.menu == "Configuracion":
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
+    
+elif st.session_state.menu == "Historico":
+
+    st.header("📂 HISTÓRICO DE PROCESOS")
+
+    sheet = conectar_sheet()
+    registros = sheet.get_all_records()
+
+    if registros:
+
+        ids = [r["ID_PROCESO"] for r in registros]
+
+        proceso_seleccionado = st.selectbox(
+            "Seleccione un proceso para consultar o continuar:",
+            ids
+        )
+
+        if st.button("ABRIR PROCESO"):
+            st.session_state.ID_PROCESO = proceso_seleccionado
+            st.session_state.menu = "Procesos"
+            st.rerun()
+
+        st.markdown("---")
+
+        st.subheader("Listado general")
+
+        for r in registros:
+            st.markdown(f"""
+            **Proceso:** {r.get("ID_PROCESO")}  
+            **Objeto:** {r.get("OBJETO")}  
+            **Valor:** {r.get("VALOR")}
+            """)
+            st.markdown("---")
+
+    else:
+        st.warning("No existen procesos registrados.")
 
