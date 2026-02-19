@@ -88,38 +88,18 @@ if "menu" not in st.session_state:
 with st.sidebar:
     st.markdown("## 📑 MENÚ")
     st.markdown("---")
-# ==========================================================
-# NUEVO PROCESO
-# ==========================================================
-def generar_id_nuevo():
-    sheet = conectar_sheet()
-    registros = sheet.get_all_records()
-    year = str(date.today().year)
 
-    consecutivos = []
+    if st.button("➕ Nuevo Proceso"):
+        st.session_state.ID_PROCESO = generar_id_nuevo()
 
-    for r in registros:
-        idp = str(r.get("ID_PROCESO", ""))
-        if idp.endswith(year):
-            numero = idp.split("-")[0]
-            consecutivos.append(int(numero))
+        for key in list(st.session_state.keys()):
+            if key not in ["menu", "ID_PROCESO"]:
+                del st.session_state[key]
 
-    nuevo = max(consecutivos) + 1 if consecutivos else 1
-    return f"{nuevo:03d}-{year}"
+        st.experimental_rerun()
 
+    st.markdown("---")
 
-if st.button("➕ Nuevo Proceso"):
-    st.session_state.ID_PROCESO = generar_id_nuevo()
-
-    # Limpia solo variables del formulario
-    for key in list(st.session_state.keys()):
-        if key not in ["menu", "ID_PROCESO"]:
-            del st.session_state[key]
-
-    st.success(f"Nuevo proceso creado: {st.session_state.ID_PROCESO}")
-    st.experimental_rerun()
-    
-    
     if st.button("🏠 Inicio"):
         st.session_state.menu = "Inicio"
 
@@ -664,6 +644,7 @@ elif st.session_state.menu == "Reportes":
 elif st.session_state.menu == "Configuracion":
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
+
 
 
 
