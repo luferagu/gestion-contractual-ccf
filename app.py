@@ -78,11 +78,13 @@ div[data-testid="stSelectbox"] > div {
 """, unsafe_allow_html=True)
 
 PLANTILLAS = "plantillas"
+
 # ==========================================================
 # CONTROL DE NAVEGACIÓN
 # ==========================================================
 if "menu" not in st.session_state:
     st.session_state.menu = "Inicio"
+
 with st.sidebar:
     st.markdown("## 📑 MENÚ")
     st.markdown("---")
@@ -107,7 +109,6 @@ with st.sidebar:
     if st.button("🔒 Cerrar sesión"):
         st.session_state.clear()
         st.experimental_rerun()
-
 
 # ==========================================================
 # CONEXIÓN GOOGLE SHEETS
@@ -159,89 +160,78 @@ if "ID_PROCESO" not in st.session_state:
     st.session_state.ID_PROCESO = generar_id()
 
 ID = st.session_state.ID_PROCESO
-st.markdown("""
-### 🔹 Flujo del Proceso
-1️⃣ Estudio Previo &nbsp;&nbsp; ➝ &nbsp;&nbsp;
-2️⃣ Compras &nbsp;&nbsp; ➝ &nbsp;&nbsp;
-3️⃣ Contratación
-""")
 
 
-# ==========================================================
-# FUNCIÓN REEMPLAZO ROBUSTA WORD
-# ==========================================================
-def reemplazar(doc, datos):
-
-    for p in doc.paragraphs:
-        full_text = "".join(run.text for run in p.runs)
-
-        for k, v in datos.items():
-            placeholder = f"{{{{{k}}}}}"
-            if placeholder in full_text:
-                full_text = full_text.replace(placeholder, str(v))
-
-        for run in p.runs:
-            run.text = ""
-
-        if p.runs:
-            p.runs[0].text = full_text
-
-    for table in doc.tables:
-        for row in table.rows:
-            for cell in row.cells:
-                for p in cell.paragraphs:
-                    full_text = "".join(run.text for run in p.runs)
-
-                    for k, v in datos.items():
-                        placeholder = f"{{{{{k}}}}}"
-                        if placeholder in full_text:
-                            full_text = full_text.replace(placeholder, str(v))
-
-                    for run in p.runs:
-                        run.text = ""
-
-                    if p.runs:
-                        p.runs[0].text = full_text
-
-
-# ==========================================================
-# GENERAR DESCARGA WORD
-# ==========================================================
-def generar_descarga(nombre, datos):
-    ruta = os.path.join(PLANTILLAS, nombre)
-    doc = Document(ruta)
-    reemplazar(doc, datos)
-
-    buffer = BytesIO()
-    doc.save(buffer)
-    buffer.seek(0)
-    return buffer
-
-
-# ==========================================================
-# ================= ETAPA 1 =================
-# ==========================================================
 # ==========================================================
 # PANTALLAS
 # ==========================================================
 
 if st.session_state.menu == "Inicio":
-    st.header("🏠 PANEL PRINCIPAL")
-    st.info("Bienvenido al Sistema de Gestión Contractual CCF")
+
+    st.markdown("""
+    ### 🔹 Flujo del Proceso
+    1️⃣ Estudio Previo &nbsp;&nbsp; ➝ &nbsp;&nbsp;
+    2️⃣ Compras &nbsp;&nbsp; ➝ &nbsp;&nbsp;
+    3️⃣ Contratación
+    """)
 
 elif st.session_state.menu == "Procesos":
-    elif st.session_state.menu == "Contratos":
-    st.header("📜 MÓDULO DE CONTRATOS")
-    st.info("Aquí podrá consultar y administrar contratos.")
 
-elif st.session_state.menu == "Reportes":
-    st.header("📊 MÓDULO DE REPORTES")
-    st.info("Aquí se generarán reportes y estadísticas.")
+    st.markdown(f'<div class="banner-id">PROCESO ACTUAL: {ID}</div>', unsafe_allow_html=True)
+    # ==========================================================
+    # FUNCIÓN REEMPLAZO ROBUSTA WORD
+    # ==========================================================
+    def reemplazar(doc, datos):
 
-elif st.session_state.menu == "Configuracion":
-    st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
-    st.info("Parámetros generales del sistema.")
+        for p in doc.paragraphs:
+            full_text = "".join(run.text for run in p.runs)
 
+            for k, v in datos.items():
+                placeholder = f"{{{{{k}}}}}"
+                if placeholder in full_text:
+                    full_text = full_text.replace(placeholder, str(v))
+
+            for run in p.runs:
+                run.text = ""
+
+            if p.runs:
+                p.runs[0].text = full_text
+
+        for table in doc.tables:
+            for row in table.rows:
+                for cell in row.cells:
+                    for p in cell.paragraphs:
+                        full_text = "".join(run.text for run in p.runs)
+
+                        for k, v in datos.items():
+                            placeholder = f"{{{{{k}}}}}"
+                            if placeholder in full_text:
+                                full_text = full_text.replace(placeholder, str(v))
+
+                        for run in p.runs:
+                            run.text = ""
+
+                        if p.runs:
+                            p.runs[0].text = full_text
+
+
+    # ==========================================================
+    # GENERAR DESCARGA WORD
+    # ==========================================================
+    def generar_descarga(nombre, datos):
+        ruta = os.path.join(PLANTILLAS, nombre)
+        doc = Document(ruta)
+        reemplazar(doc, datos)
+
+        buffer = BytesIO()
+        doc.save(buffer)
+        buffer.seek(0)
+        return buffer
+
+
+    # ==========================================================
+    # ================= ETAPA 1 =================
+    # ==========================================================
     st.header("ETAPA 1 — ESTUDIO PREVIO")
 
     objeto = st.text_area("OBJETO")
@@ -367,10 +357,9 @@ elif st.session_state.menu == "Configuracion":
             archivo,
             f"estudio_previo_{ID}.docx"
         )
-
-# ==========================================================
-# ================= ETAPA 2 =================
-# ==========================================================
+    # ==========================================================
+    # ================= ETAPA 2 =================
+    # ==========================================================
     st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
 
     col1, col2 = st.columns(2)
@@ -382,36 +371,36 @@ elif st.session_state.menu == "Configuracion":
         val1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
 
     col3, col4 = st.columns(2)
-    
+
     with col3:
         identificacion_pn_1 = st.text_input("IDENTIFICACIÓN P.N PROP 1")
-    
+
     with col4:
         identificacion_pj_1 = st.text_input("IDENTIFICACIÓN P.J PROP 1")
-    
+
     st.markdown("---")
 
     col5, col6 = st.columns(2)
-    
+
     with col5:
         prop2 = st.text_input("PROPONENTE 2")
-    
+
     with col6:
         val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
-    
+
     col7, col8 = st.columns(2)
-    
+
     with col7:
         identificacion_pn_2 = st.text_input("IDENTIFICACIÓN P.N PROP 2")
 
     with col8:
         identificacion_pj_2 = st.text_input("IDENTIFICACIÓN P.J PROP 2")
-    
+
     if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
-    
+
         sheet = conectar_sheet()
         fila_num = buscar_fila(sheet, ID)
-    
+
         if fila_num:
             sheet.update(
                 f"V{fila_num}:AC{fila_num}",
@@ -425,9 +414,9 @@ elif st.session_state.menu == "Configuracion":
             st.success("ETAPA 2 actualizada correctamente")
         else:
             st.error("Primero debe guardar ETAPA 1")
-    
+
     if st.button("GENERAR SOLICITUD CDP"):
-    
+
         datos_cdp = {
             "ID_PROCESO": ID,
             "OBJETO": objeto,
@@ -438,9 +427,9 @@ elif st.session_state.menu == "Configuracion":
             "VALOR": f"{valor:,.0f}".replace(",", "."),
             "VALOR_LETRAS": valor_letras
         }
-    
+
         archivo = generar_descarga("solicitud_cdp.docx", datos_cdp)
-    
+
         st.download_button(
             "DESCARGAR CDP",
             archivo,
@@ -450,54 +439,54 @@ elif st.session_state.menu == "Configuracion":
     if st.button("GENERAR INVITACIÓN A COTIZAR"):
         archivo = generar_descarga("invitacion_cotizar.docx", {"ID_PROCESO": ID})
         st.download_button("DESCARGAR INVITACIÓN", archivo, f"invitacion_{ID}.docx")
-    
+
     if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
         archivo = generar_descarga("invitacion_1_presentar_propuesta.docx", {"ID_PROCESO": ID})
         st.download_button("DESCARGAR PROPUESTA 1", archivo, f"inv_prop1_{ID}.docx")
-    
+
     if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
         archivo = generar_descarga("invitacion_2_presentar_propuesta.docx", {"ID_PROCESO": ID})
         st.download_button("DESCARGAR PROPUESTA 2", archivo, f"inv_prop2_{ID}.docx")
 
-# ==========================================================
-# ================= ETAPA 3 =================
-# ==========================================================
+    # ==========================================================
+    # ================= ETAPA 3 =================
+    # ==========================================================
     st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
-    
+
     col1, col2, col3 = st.columns(3)
-    
+
     with col1:
         contrato_de = st.selectbox("TIPO DE CONTRATO", [
             "Obra","Consultoría","Prestación de Servicios",
             "Suministro","Compraventa","Arrendamiento","Seguros"
         ])
-    
+
     with col2:
         supervisor = st.text_input("SUPERVISOR")
-    
+
     with col3:
         cdp = st.text_input("CDP")
-    
+
     col4, col5, col6 = st.columns(3)
-    
+
     with col4:
         duracion_num = st.number_input("DURACIÓN", min_value=1)
-    
+
     with col5:
         duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
-    
+
     with col6:
         empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
-    
+
     fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
-    
+
     dispone = st.text_area("DISPONE")
-    
+
     if st.button("ENVIAR ETAPA 3 (GUARDAR EN BASE)"):
-    
+
         sheet = conectar_sheet()
         fila_num = buscar_fila(sheet, ID)
-    
+
         if fila_num:
             sheet.update(
                 f"AB{fila_num}:AH{fila_num}",
@@ -508,7 +497,7 @@ elif st.session_state.menu == "Configuracion":
             st.success("ETAPA 3 actualizada correctamente")
         else:
             st.error("Primero debe guardar ETAPA 1")
-    
+
     if st.button("GENERAR CONTRATO"):
         archivo = generar_descarga("contrato.docx", {
             "ID_PROCESO": ID,
@@ -520,12 +509,23 @@ elif st.session_state.menu == "Configuracion":
             "EMPRESA": empresa,
             "FECHA_FIRMA": fecha_firma
         })
-    
+
         st.download_button(
             "DESCARGAR CONTRATO",
             archivo,
             f"contrato_{ID}.docx"
         )
-    
+
     st.success("Sistema operativo correctamente.")
 
+elif st.session_state.menu == "Contratos":
+    st.header("📜 MÓDULO DE CONTRATOS")
+    st.info("Aquí podrá consultar y administrar contratos.")
+
+elif st.session_state.menu == "Reportes":
+    st.header("📊 MÓDULO DE REPORTES")
+    st.info("Aquí se generarán reportes y estadísticas.")
+
+elif st.session_state.menu == "Configuracion":
+    st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
+    st.info("Parámetros generales del sistema.")
