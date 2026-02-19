@@ -136,7 +136,7 @@ def generar_id():
 
 
 if "ID_PROCESO" not in st.session_state:
-if "etapa_activa" not in st.session_state:
+    if "etapa_activa" not in st.session_state:
     st.session_state.etapa_activa = 1
     st.session_state.ID_PROCESO = generar_id()
 
@@ -212,11 +212,12 @@ def generar_descarga(nombre, datos):
 # ================= ETAPA 1 =================
 # ==========================================================
 if st.session_state.etapa_activa == 1:
+    
     st.header("ETAPA 1 — ESTUDIO PREVIO")
 
-objeto = st.text_area("OBJETO")
-necesidad = st.text_area("NECESIDAD")
-justificacion = st.text_area("JUSTIFICACIÓN")
+    objeto = st.text_area("OBJETO")
+    necesidad = st.text_area("NECESIDAD")
+    justificacion = st.text_area("JUSTIFICACIÓN")
 
 
 # ===== BLOQUE MODIFICADO EN DOS LÍNEAS =====
@@ -524,6 +525,7 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
