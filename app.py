@@ -83,14 +83,25 @@ if "vista" not in st.session_state:
 with st.sidebar:
     st.markdown("## 📑 MENÚ")
     st.markdown("---")
-    st.markdown("🏠 Inicio")
-if st.button("📂 Procesos"):
-    st.session_state.vista = "procesos"
-    st.markdown("📜 Contratos")
-    st.markdown("📊 Reportes")
-    st.markdown("⚙ Configuración")
+
+    if st.button("🏠 Inicio"):
+        st.session_state.vista = "principal"
+
+    if st.button("📂 Procesos"):
+        st.session_state.vista = "procesos"
+
+    if st.button("📜 Contratos"):
+        pass
+
+    if st.button("📊 Reportes"):
+        pass
+
+    if st.button("⚙ Configuración"):
+        pass
+
     st.markdown("---")
     st.markdown("🔒 Cerrar sesión")
+
 
 # ==========================================================
 # CONEXIÓN GOOGLE SHEETS
@@ -510,5 +521,6 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
