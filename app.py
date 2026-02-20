@@ -73,7 +73,7 @@ with st.sidebar:
     st.markdown("## 📑 MENÚ")
     st.markdown("---")
 
-    menu = st.radio(
+   menu = st.radio(
     "",
     [
         "📄 Estudio Previo",
@@ -81,7 +81,7 @@ with st.sidebar:
         "📑 Área de Contratos"
     ]
 )
-)
+
 
     st.markdown("---")
     st.button("🔒 Cerrar sesión")
@@ -296,3 +296,4 @@ elif menu == "📑 Área de Contratos":
         cdp = st.text_input("CDP")
 
 st.success("Sistema operativo correctamente.")
+
