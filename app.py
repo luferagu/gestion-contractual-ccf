@@ -136,6 +136,11 @@ def buscar_fila(sheet, id_proceso):
 # ==========================================================
 # GENERAR CONSECUTIVO ANUAL
 # ==========================================================
+if "ID_PROCESO" not in st.session_state:
+    st.session_state.ID_PROCESO = generar_id()
+
+ID = st.session_state.get("ID_PROCESO")
+
 def generar_id():
     sheet = conectar_sheet()
     registros = sheet.get_all_records()
@@ -528,6 +533,7 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
