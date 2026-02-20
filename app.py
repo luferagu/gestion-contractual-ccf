@@ -126,6 +126,15 @@ def conectar_sheet():
 # BUSCAR FILA POR ID
 # ==========================================================
 def buscar_fila(sheet, id_proceso):
+    def cargar_proceso_por_id(id_proceso):
+    sheet = conectar_sheet()
+    registros = sheet.get_all_records()
+
+    for fila in registros:
+        if str(fila.get("ID_PROCESO")) == str(id_proceso):
+            return fila
+
+    return None
     registros = sheet.get_all_records()
     for i, fila in enumerate(registros, start=2):
         if str(fila.get("ID_PROCESO")) == str(id_proceso):
@@ -171,13 +180,19 @@ if st.session_state.vista == "procesos":
 
             col1, col2 = st.columns([1, 4])
 
-            if col1.button(
-                f"✏ {fila['ID_PROCESO']}",
-                key=f"editar_{i}"
-            ):
-                st.session_state.ID_PROCESO = fila["ID_PROCESO"]
-                st.session_state.vista = "principal"
-                st.rerun()
+           if col1.button(
+    f"✏ {fila['ID_PROCESO']}",
+    key=f"editar_{i}"
+):
+
+    proceso = cargar_proceso_por_id(fila["ID_PROCESO"])
+
+    if proceso:
+        st.session_state.datos_proceso = proceso
+        st.session_state.ID_PROCESO = fila["ID_PROCESO"]
+        st.session_state.vista = "principal"
+        st.rerun()
+
 
             col2.write(fila["OBJETO"])
 
@@ -249,9 +264,20 @@ def generar_descarga(nombre, datos):
 # ==========================================================
 st.header("ETAPA 1 — ESTUDIO PREVIO")
 
-objeto = st.text_area("OBJETO")
-necesidad = st.text_area("NECESIDAD")
-justificacion = st.text_area("JUSTIFICACIÓN")
+objeto = st.text_area(
+    "OBJETO",
+    value=st.session_state.get("datos_proceso", {}).get("OBJETO", "")
+)
+necesidad = st.text_area(
+    "NECESIDAD",
+    value=st.session_state.get("datos_proceso", {}).get("NECESIDAD", "")
+)
+
+justificacion = st.text_area(
+    "JUSTIFICACIÓN",
+    value=st.session_state.get("datos_proceso", {}).get("JUSTIFICACION", "")
+)
+
 
 col1, col2 = st.columns(2)
 
@@ -533,6 +559,7 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
