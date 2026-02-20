@@ -158,7 +158,7 @@ ID = st.session_state.ID_PROCESO
 # ==========================================================
 if st.session_state.vista == "procesos":
 
-      st.header("LISTADO GENERAL DE PROCESOS")
+    st.header("LISTADO GENERAL DE PROCESOS")
 
     sheet = conectar_sheet()
     registros = sheet.get_all_records()
@@ -192,7 +192,6 @@ st.markdown("""
 2️⃣ Compras &nbsp;&nbsp; ➝ &nbsp;&nbsp;
 3️⃣ Contratación
 """)
-
 
 # ==========================================================
 # FUNCIÓN REEMPLAZO ROBUSTA WORD
@@ -534,6 +533,7 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
