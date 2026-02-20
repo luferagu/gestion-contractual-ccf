@@ -158,57 +158,28 @@ ID = st.session_state.ID_PROCESO
 # ==========================================================
 if st.session_state.vista == "procesos":
 
-    st.header("LISTADO GENERAL DE PROCESOS")
+      st.header("LISTADO GENERAL DE PROCESOS")
 
     sheet = conectar_sheet()
     registros = sheet.get_all_records()
 
-    if registros:
-
-        for fila in registros:
-            col1, col2, col3 = st.columns([1,3,1])
-    
-            with col1:
-                if not registros:
-    st.info("No existen procesos registrados aún.")
-else:
-
-    for i, fila in enumerate(registros):
-
-        col1, col2 = st.columns([1, 4])
-
-        if col1.button(
-            f"✏ {fila['ID_PROCESO']}",
-            key=f"editar_{i}"
-        ):
-            st.session_state.ID_PROCESO = fila["ID_PROCESO"]
-            st.session_state.vista = "principal"
-            st.rerun()
-
-        col2.write(fila["OBJETO"])
-
-
-    col1, col2 = st.columns([1,4])
-
-    if col1.button(
-        f"✏ {fila['ID_PROCESO']}",
-        key=f"editar_{fila['ID_PROCESO']}_{i}"
-    ):
-        st.session_state.ID_PROCESO = fila["ID_PROCESO"]
-        st.session_state.vista = "principal"
-        st.rerun()
-
-    col2.write(fila["OBJETO"])
-
-    
-            with col2:
-                st.write(fila["OBJETO"])
-    
-            with col3:
-                st.write("")
+    if not registros:
+        st.info("No existen procesos registrados aún.")
 
     else:
-        st.info("No existen procesos registrados aún.")
+        for i, fila in enumerate(registros):
+
+            col1, col2 = st.columns([1, 4])
+
+            if col1.button(
+                f"✏ {fila['ID_PROCESO']}",
+                key=f"editar_{i}"
+            ):
+                st.session_state.ID_PROCESO = fila["ID_PROCESO"]
+                st.session_state.vista = "principal"
+                st.rerun()
+
+            col2.write(fila["OBJETO"])
 
     if st.button("⬅ Volver"):
         st.session_state.vista = "principal"
@@ -563,6 +534,7 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
