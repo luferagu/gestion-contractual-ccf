@@ -187,19 +187,18 @@ if st.session_state.vista == "procesos":
 
             col1, col2 = st.columns([1, 4])
 
-           if col1.button(
-    f"✏ {fila['ID_PROCESO']}",
-    key=f"editar_{i}"
-):
+            if col1.button(
+                f"✏ {fila['ID_PROCESO']}",
+                key=f"editar_{i}"
+            ):
 
-    proceso = cargar_proceso_por_id(fila["ID_PROCESO"])
+                proceso = cargar_proceso_por_id(fila["ID_PROCESO"])
 
-    if proceso:
-        st.session_state.datos_proceso = proceso
-        st.session_state.ID_PROCESO = fila["ID_PROCESO"]
-        st.session_state.vista = "principal"
-        st.rerun()
-
+                if proceso:
+                    st.session_state.datos_proceso = proceso
+                    st.session_state.ID_PROCESO = fila["ID_PROCESO"]
+                    st.session_state.vista = "principal"
+                    st.rerun()
 
             col2.write(fila["OBJETO"])
 
@@ -566,6 +565,7 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
