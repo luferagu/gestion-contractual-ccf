@@ -435,7 +435,7 @@ if st.button("GENERAR SOLICITUD CDP"):
     archivo = generar_descarga("solicitud_cdp.docx", datos_cdp)
 
     st.download_button(
-        "DESCARGAR CDP",
+        "DESCARGAR SOLICITUD CDP",
         archivo,
         f"solicitud_cdp_{ID}.docx"
     )
@@ -521,6 +521,7 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
