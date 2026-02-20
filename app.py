@@ -169,7 +169,24 @@ if st.session_state.vista == "procesos":
             col1, col2, col3 = st.columns([1,3,1])
     
             with col1:
-                for i, fila in enumerate(registros):
+                if not registros:
+    st.info("No existen procesos registrados aún.")
+else:
+
+    for i, fila in enumerate(registros):
+
+        col1, col2 = st.columns([1, 4])
+
+        if col1.button(
+            f"✏ {fila['ID_PROCESO']}",
+            key=f"editar_{i}"
+        ):
+            st.session_state.ID_PROCESO = fila["ID_PROCESO"]
+            st.session_state.vista = "principal"
+            st.rerun()
+
+        col2.write(fila["OBJETO"])
+
 
     col1, col2 = st.columns([1,4])
 
@@ -546,6 +563,7 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
