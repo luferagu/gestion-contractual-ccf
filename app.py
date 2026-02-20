@@ -188,67 +188,67 @@ def generar_descarga(nombre, datos):
 # ==========================================================
 if menu == "📂 Procesos":
 
-st.header("ETAPA 1 — ESTUDIO PREVIO")
-
-objeto = st.text_area("OBJETO")
-necesidad = st.text_area("NECESIDAD")
-justificacion = st.text_area("JUSTIFICACIÓN")
-
-col1, col2 = st.columns(2)
-with col1:
-    centro = st.text_input("CENTRO DE COSTOS (10 números)")
-with col2:
-    programa = st.text_input("PROGRAMA (10 números)")
-
-col3, col4 = st.columns(2)
-with col3:
-    rubro = st.text_input("RUBRO (10 números)")
-with col4:
-    codigo_planeacion = st.text_input("CÓDIGO PLANEACIÓN")
-
-caracteristicas = st.text_area("CARACTERÍSTICAS TÉCNICAS DEL BIEN")
-
-oportunidad = st.multiselect(
-    "OPORTUNIDAD",
-    ["Enero","Febrero","Marzo","Abril","Mayo","Junio",
-     "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
-)
-
-forma_pago = st.text_input("FORMA DE PAGO")
-
-col1, col2 = st.columns(2)
-with col1:
-    modalidad = st.selectbox("MODALIDAD",
-        ["Contratación Directa", "Invitación Privada", "Convocatoria Abierta"]
+    st.header("ETAPA 1 — ESTUDIO PREVIO")
+    
+    objeto = st.text_area("OBJETO")
+    necesidad = st.text_area("NECESIDAD")
+    justificacion = st.text_area("JUSTIFICACIÓN")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        centro = st.text_input("CENTRO DE COSTOS (10 números)")
+    with col2:
+        programa = st.text_input("PROGRAMA (10 números)")
+    
+    col3, col4 = st.columns(2)
+    with col3:
+        rubro = st.text_input("RUBRO (10 números)")
+    with col4:
+        codigo_planeacion = st.text_input("CÓDIGO PLANEACIÓN")
+    
+    caracteristicas = st.text_area("CARACTERÍSTICAS TÉCNICAS DEL BIEN")
+    
+    oportunidad = st.multiselect(
+        "OPORTUNIDAD",
+        ["Enero","Febrero","Marzo","Abril","Mayo","Junio",
+         "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
     )
-with col2:
-    articulo = st.selectbox("ARTÍCULO", ["16","17","18"])
-
-col3, col4 = st.columns(2)
-with col3:
-    numeral = st.selectbox("NUMERAL", ["1","2","3","4"])
-with col4:
-    literal = st.selectbox("LITERAL", list("abcdefgh"))
-
-col5, col6 = st.columns(2)
-with col5:
-    valor = st.number_input("VALOR", min_value=0, step=1000)
-with col6:
-    plazo = st.number_input("PLAZO", min_value=1)
-
-valor_letras = num2words(valor, lang="es").upper() if valor else ""
-st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
-
-analisis = st.text_area("ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO")
-
-garantias = st.multiselect(
-    "GARANTÍAS CONTRACTUALES",
-    ["Anticipo", "Cumplimiento", "Salarios y Prestaciones",
-     "Responsabilidad Civil Extracontractual",
-     "Estabilidad de la Obra", "Calidad del Servicio"]
-)
-
-fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
+    
+    forma_pago = st.text_input("FORMA DE PAGO")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        modalidad = st.selectbox("MODALIDAD",
+            ["Contratación Directa", "Invitación Privada", "Convocatoria Abierta"]
+        )
+    with col2:
+        articulo = st.selectbox("ARTÍCULO", ["16","17","18"])
+    
+    col3, col4 = st.columns(2)
+    with col3:
+        numeral = st.selectbox("NUMERAL", ["1","2","3","4"])
+    with col4:
+        literal = st.selectbox("LITERAL", list("abcdefgh"))
+    
+    col5, col6 = st.columns(2)
+    with col5:
+        valor = st.number_input("VALOR", min_value=0, step=1000)
+    with col6:
+        plazo = st.number_input("PLAZO", min_value=1)
+    
+    valor_letras = num2words(valor, lang="es").upper() if valor else ""
+    st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
+    
+    analisis = st.text_area("ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO")
+    
+    garantias = st.multiselect(
+        "GARANTÍAS CONTRACTUALES",
+        ["Anticipo", "Cumplimiento", "Salarios y Prestaciones",
+         "Responsabilidad Civil Extracontractual",
+         "Estabilidad de la Obra", "Calidad del Servicio"]
+    )
+    
+    fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
 if st.button("ENVIAR ETAPA 1 (GUARDAR EN BASE)"):
     sheet = conectar_sheet()
@@ -481,5 +481,6 @@ elif menu == "⚙ Configuración":
     st.write("Parámetros del sistema.")
 
 st.success("Sistema operativo correctamente.")
+
 
 
