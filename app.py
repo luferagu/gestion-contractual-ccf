@@ -140,19 +140,26 @@ def generar_id():
     sheet = conectar_sheet()
     registros = sheet.get_all_records()
     year = str(date.today().year)
-    contador = 1
+
+    consecutivos = []
 
     for r in registros:
-        if year in str(r.get("ID_PROCESO", "")):
-            contador += 1
+        id_proceso = str(r.get("ID_PROCESO", ""))
 
-    return f"{contador:03d}-{year}"
+        if id_proceso.endswith(f"-{year}"):
+            try:
+                numero = int(id_proceso.split("-")[0])
+                consecutivos.append(numero)
+            except:
+                pass
 
+    if consecutivos:
+        nuevo = max(consecutivos) + 1
+    else:
+        nuevo = 1
 
-if "ID_PROCESO" not in st.session_state:
-    st.session_state.ID_PROCESO = generar_id()
+    return f"{nuevo:03d}-{year}"
 
-ID = st.session_state.ID_PROCESO
 # ==========================================================
 # VISTA PROCESOS
 # ==========================================================
@@ -521,6 +528,7 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
