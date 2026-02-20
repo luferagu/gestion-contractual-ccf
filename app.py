@@ -91,21 +91,15 @@ with st.sidebar:
     st.markdown("## 📑 MENÚ")
     st.markdown("---")
 
-if st.button("➕ Nuevo Proceso"):
+    if st.button("➕ Nuevo Proceso"):
+        st.session_state["ID_PROCESO"] = generar_id_nuevo()
 
-    # Genera nuevo consecutivo
-    nuevo_id = generar_id_nuevo()
-    st.session_state["ID_PROCESO"] = nuevo_id
+        for key in list(st.session_state.keys()):
+            if key not in ["menu", "ID_PROCESO"]:
+                del st.session_state[key]
 
-    # Limpia formulario
-    for key in list(st.session_state.keys()):
-        if key not in ["menu", "ID_PROCESO"]:
-            del st.session_state[key]
+        st.experimental_rerun()
 
-    # Redirige a Procesos
-    st.session_state["menu"] = "Procesos"
-
-    st.rerun()
     st.markdown("---")
 
     if st.button("🏠 Inicio"):
@@ -130,7 +124,7 @@ if st.button("➕ Nuevo Proceso"):
 
     if st.button("🔒 Cerrar sesión"):
         st.session_state.clear()
-        st.rerun()
+        st.experimental_rerun()
 
 
 # ==========================================================
@@ -513,7 +507,7 @@ elif st.session_state["menu"] == "Procesos_Anuales":
                 if st.button(f"Editar {proceso.get('ID_PROCESO')}"):
                     st.session_state["ID_PROCESO"] = proceso.get("ID_PROCESO")
                     st.session_state["menu"] = "Editar_Proceso"
-                    st.rerun()
+                    st.experimental_rerun()
 
                 st.markdown("---")
 
@@ -618,7 +612,3 @@ elif st.session_state["menu"] == "Configuracion":
 
     st.header("⚙ CONFIGURACIÓN DEL SISTEMA")
     st.info("Parámetros generales del sistema.")
-
-
-
-
