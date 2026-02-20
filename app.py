@@ -91,43 +91,30 @@ with st.sidebar:
     st.markdown("## 📑 MENÚ")
     st.markdown("---")
 
-    if st.button("➕ Nuevo Proceso"):
+    if st.button("🏠 Inicio", key="menu_inicio"):
+        st.session_state.menu = "Inicio"
 
-        nuevo_id = generar_id_nuevo()
-        st.session_state["ID_PROCESO"] = nuevo_id
+    if st.button("📂 Procesos", key="menu_procesos"):
+        st.session_state.menu = "Procesos"
 
-        for key in list(st.session_state.keys()):
-            if key not in ["menu", "ID_PROCESO"]:
-                del st.session_state[key]
+    if st.button("📁 Procesos 2026", key="menu_procesos_2026"):
+        st.session_state.menu = "Procesos_Anuales"
 
-        st.session_state["menu"] = "Procesos"
-        st.rerun()
+    if st.button("📜 Contratos", key="menu_contratos"):
+        st.session_state.menu = "Contratos"
 
-    st.markdown("---")
+    if st.button("📊 Reportes", key="menu_reportes"):
+        st.session_state.menu = "Reportes"
 
-    if st.button("🏠 Inicio"):
-        st.session_state["menu"] = "Inicio"
-
-    if st.button("📂 Procesos"):
-        st.session_state["menu"] = "Procesos"
-
-    if st.button("📁 Procesos 2026"):
-        st.session_state["menu"] = "Procesos_Anuales"
-
-    if st.button("📜 Contratos"):
-        st.session_state["menu"] = "Contratos"
-
-    if st.button("📊 Reportes"):
-        st.session_state["menu"] = "Reportes"
-
-    if st.button("⚙ Configuración"):
-        st.session_state["menu"] = "Configuracion"
+    if st.button("⚙ Configuración", key="menu_configuracion"):
+        st.session_state.menu = "Configuracion"
 
     st.markdown("---")
 
-    if st.button("🔒 Cerrar sesión"):
+    if st.button("🔒 Cerrar sesión", key="menu_logout"):
         st.session_state.clear()
         st.rerun()
+
 import streamlit as st
 from datetime import date
 from num2words import num2words
@@ -619,3 +606,4 @@ elif st.session_state.menu == "Procesos":
     dispone = st.text_area("DISPONE")
 
     st.success("Sistema operativo correctamente.")
+
