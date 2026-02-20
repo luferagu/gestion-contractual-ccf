@@ -164,7 +164,22 @@ if st.session_state.vista == "procesos":
     registros = sheet.get_all_records()
 
     if registros:
-        st.dataframe(registros, use_container_width=True)
+
+    for fila in registros:
+        col1, col2, col3 = st.columns([1,3,1])
+
+        with col1:
+            if st.button(f"✏ {fila['ID_PROCESO']}", key=fila['ID_PROCESO']):
+                st.session_state.ID_PROCESO = fila["ID_PROCESO"]
+                st.session_state.vista = "principal"
+                st.rerun()
+
+        with col2:
+            st.write(fila["OBJETO"])
+
+        with col3:
+            st.write("")
+
     else:
         st.info("No existen procesos registrados aún.")
 
@@ -521,3 +536,4 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
