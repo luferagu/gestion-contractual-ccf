@@ -78,11 +78,14 @@ div[data-testid="stSelectbox"] > div {
 """, unsafe_allow_html=True)
 
 PLANTILLAS = "plantillas"
+if "vista" not in st.session_state:
+    st.session_state.vista = "principal"
 with st.sidebar:
     st.markdown("## 📑 MENÚ")
     st.markdown("---")
     st.markdown("🏠 Inicio")
-    st.markdown("📂 Procesos")
+    if st.button("📂 Procesos"):
+    st.session_state.vista = "procesos"
     st.markdown("📜 Contratos")
     st.markdown("📊 Reportes")
     st.markdown("⚙ Configuración")
@@ -139,6 +142,26 @@ if "ID_PROCESO" not in st.session_state:
     st.session_state.ID_PROCESO = generar_id()
 
 ID = st.session_state.ID_PROCESO
+# ==========================================================
+# VISTA PROCESOS
+# ==========================================================
+if st.session_state.vista == "procesos":
+
+    st.header("LISTADO GENERAL DE PROCESOS")
+
+    sheet = conectar_sheet()
+    registros = sheet.get_all_records()
+
+    if registros:
+        st.dataframe(registros, use_container_width=True)
+    else:
+        st.info("No existen procesos registrados aún.")
+
+    if st.button("⬅ Volver"):
+        st.session_state.vista = "principal"
+
+    st.stop()
+
 st.markdown("""
 ### 🔹 Flujo del Proceso
 1️⃣ Estudio Previo &nbsp;&nbsp; ➝ &nbsp;&nbsp;
@@ -487,3 +510,4 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
