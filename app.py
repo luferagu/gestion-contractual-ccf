@@ -125,10 +125,17 @@ def conectar_sheet():
 # ==========================================================
 # BUSCAR FILA POR ID
 # ==========================================================
-def buscar_fila(sheet, id_proceso):
-    def cargar_proceso_por_id(id_proceso):
+def cargar_proceso_por_id(id_proceso):
+
     sheet = conectar_sheet()
     registros = sheet.get_all_records()
+
+    for fila in registros:
+        if str(fila.get("ID_PROCESO")) == str(id_proceso):
+            return fila
+
+    return None
+
 
     for fila in registros:
         if str(fila.get("ID_PROCESO")) == str(id_proceso):
@@ -559,6 +566,7 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
