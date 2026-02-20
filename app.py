@@ -85,7 +85,7 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    st.button("🔒 Cerrar sesi
+    st.button("🔒 Cerrar sesión")
 
 
 # ==========================================================
@@ -481,4 +481,5 @@ elif menu == "⚙ Configuración":
     st.write("Parámetros del sistema.")
 
 st.success("Sistema operativo correctamente.")
+
 
