@@ -16,58 +16,11 @@ st.set_page_config(
 
 st.title("SISTEMA DE GESTIÓN CONTRACTUAL - CCF")
 
-st.markdown("""
-<style>
-html, body, [class*="css"] {
-    font-family: 'Segoe UI', sans-serif;
-}
-.main {
-    background-color: #0f172a;
-}
-h1, h2, h3 {
-    color: #f8fafc;
-}
-section[data-testid="stSidebar"] {
-    background-color: #0b1220;
-}
-.stButton>button {
-    background-color: #1e40af;
-    color: white;
-    border-radius: 8px;
-    height: 45px;
-    width: 100%;
-}
-.stButton>button:hover {
-    background-color: #2563eb;
-    color: white;
-}
-.stTextInput>div>div>input,
-.stNumberInput>div>div>input,
-textarea {
-    background-color: #1e293b !important;
-    color: white !important;
-    border-radius: 6px !important;
-}
-div[data-testid="stSelectbox"] > div {
-    background-color: #1e293b !important;
-    color: white !important;
-    border-radius: 6px !important;
-}
-.block-container {
-    padding-top: 2rem;
-}
-.banner-id {
-    background: linear-gradient(90deg, #1e3a8a, #2563eb);
-    padding: 15px;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-</style>
-""", unsafe_allow_html=True)
-
 PLANTILLAS = "plantillas"
+
+# ==========================================================
+# SIDEBAR
+# ==========================================================
 
 with st.sidebar:
     st.markdown("## 📑 MENÚ")
@@ -76,18 +29,19 @@ with st.sidebar:
     menu = st.radio(
         "",
         [
-            "📄 Estudio Previo",
-            "🛒 Área de Compras",
-            "📑 Área de Contratos"
+            "🏠 Inicio",
+            "📂 Procesos",
+            "📜 Contratos",
+            "📊 Reportes",
+            "⚙ Configuración"
         ]
     )
 
     st.markdown("---")
     st.button("🔒 Cerrar sesión")
 
-
 # ==========================================================
-# CONEXIÓN GOOGLE SHEETS
+# FUNCIONES
 # ==========================================================
 
 def conectar_sheet():
@@ -103,9 +57,6 @@ def conectar_sheet():
     sheet = client.open("BASE_PROCESOS_CCF").sheet1
     return sheet
 
-# ==========================================================
-# BUSCAR FILA POR ID
-# ==========================================================
 
 def buscar_fila(sheet, id_proceso):
     registros = sheet.get_all_records()
@@ -114,9 +65,6 @@ def buscar_fila(sheet, id_proceso):
             return i
     return None
 
-# ==========================================================
-# GENERAR CONSECUTIVO ANUAL
-# ==========================================================
 
 def generar_id():
     sheet = conectar_sheet()
@@ -128,19 +76,6 @@ def generar_id():
             contador += 1
     return f"{contador:03d}-{year}"
 
-if "ID_PROCESO" not in st.session_state:
-    st.session_state.ID_PROCESO = generar_id()
-
-ID = st.session_state.ID_PROCESO
-
-st.markdown("""
-### 🔹 Flujo del Proceso
-1️⃣ Estudio Previo &nbsp;&nbsp; ➝ &nbsp;&nbsp; 2️⃣ Compras &nbsp;&nbsp; ➝ &nbsp;&nbsp; 3️⃣ Contratación
-""")
-
-# ==========================================================
-# FUNCIÓN REEMPLAZO ROBUSTA WORD
-# ==========================================================
 
 def reemplazar(doc, datos):
     for p in doc.paragraphs:
@@ -168,9 +103,6 @@ def reemplazar(doc, datos):
                     if p.runs:
                         p.runs[0].text = full_text
 
-# ==========================================================
-# GENERAR DESCARGA WORD
-# ==========================================================
 
 def generar_descarga(nombre, datos):
     ruta = os.path.join(PLANTILLAS, nombre)
@@ -181,11 +113,30 @@ def generar_descarga(nombre, datos):
     buffer.seek(0)
     return buffer
 
+
+if "ID_PROCESO" not in st.session_state:
+    st.session_state.ID_PROCESO = generar_id()
+
+ID = st.session_state.ID_PROCESO
+
 # ==========================================================
-# ================= VISTAS DEL SISTEMA =================
+# VISTAS
 # ==========================================================
 
-if menu == "📄 Estudio Previo":
+if menu == "🏠 Inicio":
+
+    st.header("INICIO")
+    st.write("Bienvenido al Sistema de Gestión Contractual CCF")
+
+
+elif menu == "📂 Procesos":
+
+    st.markdown("""
+    ### 🔹 Flujo del Proceso
+    1️⃣ Estudio Previo ➝ 2️⃣ Compras ➝ 3️⃣ Contratación
+    """)
+
+    # ================= ETAPA 1 =================
 
     st.header("ETAPA 1 — ESTUDIO PREVIO")
 
@@ -215,30 +166,22 @@ if menu == "📄 Estudio Previo":
 
     forma_pago = st.text_input("FORMA DE PAGO")
 
-    col1, col2 = st.columns(2)
-    with col1:
-        modalidad = st.selectbox("MODALIDAD",
-            ["Contratación Directa", "Invitación Privada", "Convocatoria Abierta"]
-        )
-    with col2:
-        articulo = st.selectbox("ARTÍCULO", ["16","17","18"])
+    modalidad = st.selectbox(
+        "MODALIDAD",
+        ["Contratación Directa", "Invitación Privada", "Convocatoria Abierta"]
+    )
 
-    col3, col4 = st.columns(2)
-    with col3:
-        numeral = st.selectbox("NUMERAL", ["1","2","3","4"])
-    with col4:
-        literal = st.selectbox("LITERAL", list("abcdefgh"))
+    articulo = st.selectbox("ARTÍCULO", ["16","17","18"])
+    numeral = st.selectbox("NUMERAL", ["1","2","3","4"])
+    literal = st.selectbox("LITERAL", list("abcdefgh"))
 
-    col5, col6 = st.columns(2)
-    with col5:
-        valor = st.number_input("VALOR", min_value=0, step=1000)
-    with col6:
-        plazo = st.number_input("PLAZO", min_value=1)
+    valor = st.number_input("VALOR", min_value=0, step=1000)
+    plazo = st.number_input("PLAZO", min_value=1)
 
     valor_letras = num2words(valor, lang="es").upper() if valor else ""
     st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
 
-    analisis = st.text_area("ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO")
+    analisis = st.text_area("ANÁLISIS DE MERCADO")
 
     garantias = st.multiselect(
         "GARANTÍAS CONTRACTUALES",
@@ -262,38 +205,100 @@ if menu == "📄 Estudio Previo":
         sheet.append_row(fila)
         st.success("ETAPA 1 guardada en Google Sheets")
 
-elif menu == "🛒 Área de Compras":
+    if st.button("GENERAR ESTUDIO PREVIO"):
+        datos = {
+            "ID_PROCESO": ID,
+            "OBJETO": objeto,
+            "NECESIDAD": necesidad,
+            "JUSTIFICACION": justificacion,
+            "CENTRO_COSTOS": centro,
+            "PROGRAMA": programa,
+            "RUBRO": rubro,
+            "CODIGO_PLANEACION": codigo_planeacion,
+            "CARACTERISTICAS_TECNICAS": caracteristicas,
+            "OPORTUNIDAD": ", ".join(oportunidad),
+            "FORMA_PAGO": forma_pago,
+            "MODALIDAD": modalidad,
+            "ARTICULO": articulo,
+            "NUMERAL": numeral,
+            "LITERAL": literal,
+            "VALOR": f"{valor:,.0f}".replace(",", "."),
+            "VALOR_LETRAS": valor_letras,
+            "PLAZO": plazo,
+            "ANALISIS": analisis,
+            "GARANTIAS": ", ".join(garantias),
+            "FECHA_ESTUDIO": fecha_estudio
+        }
+
+        archivo = generar_descarga("estudio_previo.docx", datos)
+        st.download_button("DESCARGAR ESTUDIO PREVIO", archivo, f"estudio_previo_{ID}.docx")
+
+    # ================= ETAPA 2 =================
 
     st.header("ESPACIO RESERVADO PARA EL ÁREA DE COMPRAS")
 
-    col1, col2 = st.columns(2)
-    with col1:
-        prop1 = st.text_input("PROPONENTE 1")
-    with col2:
-        val1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
+    prop1 = st.text_input("PROPONENTE 1")
+    val1 = st.number_input("VALOR PROPUESTA 1", min_value=0)
 
-    col5, col6 = st.columns(2)
-    with col5:
-        prop2 = st.text_input("PROPONENTE 2")
-    with col6:
-        val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
+    prop2 = st.text_input("PROPONENTE 2")
+    val2 = st.number_input("VALOR PROPUESTA 2", min_value=0)
 
-elif menu == "📑 Área de Contratos":
+    if st.button("ENVIAR ETAPA 2 (GUARDAR EN BASE)"):
+        sheet = conectar_sheet()
+        fila_num = buscar_fila(sheet, ID)
+        if fila_num:
+            sheet.update(f"V{fila_num}:AC{fila_num}", [[prop1, val1, prop2, val2]])
+            st.success("ETAPA 2 actualizada correctamente")
+        else:
+            st.error("Primero debe guardar ETAPA 1")
+
+    # ================= ETAPA 3 =================
 
     st.header("ESPACIO RESERVADO PARA EL ÁREA DE CONTRATOS")
 
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        contrato_de = st.selectbox(
-            "TIPO DE CONTRATO",
-            ["Obra","Consultoría","Prestación de Servicios",
-             "Suministro","Compraventa","Arrendamiento","Seguros"]
+    contrato_de = st.selectbox(
+        "TIPO DE CONTRATO",
+        ["Obra","Consultoría","Prestación de Servicios",
+         "Suministro","Compraventa","Arrendamiento","Seguros"]
+    )
+
+    supervisor = st.text_input("SUPERVISOR")
+    cdp = st.text_input("CDP")
+
+    duracion_num = st.number_input("DURACIÓN", min_value=1)
+    duracion_tipo = st.selectbox("TIPO DURACIÓN", ["Meses","Días"])
+    empresa = st.selectbox("EMPRESA", ["Micro","Mini","Macro"])
+
+    fecha_firma = st.date_input("FECHA FIRMA CONTRATO")
+    dispone = st.text_area("DISPONE")
+
+    if st.button("GENERAR CONTRATO"):
+        archivo = generar_descarga(
+            "contrato.docx",
+            {
+                "ID_PROCESO": ID,
+                "TIPO_CONTRATO": contrato_de,
+                "SUPERVISOR": supervisor,
+                "DISPONE": dispone,
+                "CDP": cdp,
+                "DURACION": f"{duracion_num} {duracion_tipo}",
+                "EMPRESA": empresa,
+                "FECHA_FIRMA": fecha_firma
+            }
         )
-    with col2:
-        supervisor = st.text_input("SUPERVISOR")
-    with col3:
-        cdp = st.text_input("CDP")
+        st.download_button("DESCARGAR CONTRATO", archivo, f"contrato_{ID}.docx")
+
+
+elif menu == "📜 Contratos":
+    st.header("MÓDULO DE CONTRATOS")
+    st.write("Aquí irá la consulta de contratos.")
+
+elif menu == "📊 Reportes":
+    st.header("REPORTES")
+    st.write("Aquí irán los reportes.")
+
+elif menu == "⚙ Configuración":
+    st.header("CONFIGURACIÓN")
+    st.write("Parámetros del sistema.")
 
 st.success("Sistema operativo correctamente.")
-
-
