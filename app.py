@@ -136,35 +136,23 @@ def buscar_fila(sheet, id_proceso):
 # ==========================================================
 # GENERAR CONSECUTIVO ANUAL
 # ==========================================================
-if "ID_PROCESO" not in st.session_state:
-    st.session_state.ID_PROCESO = generar_id()
-
-ID = st.session_state.get("ID_PROCESO")
-
 def generar_id():
     sheet = conectar_sheet()
     registros = sheet.get_all_records()
     year = str(date.today().year)
-
-    consecutivos = []
+    contador = 1
 
     for r in registros:
-        id_proceso = str(r.get("ID_PROCESO", ""))
+        if year in str(r.get("ID_PROCESO", "")):
+            contador += 1
 
-        if id_proceso.endswith(f"-{year}"):
-            try:
-                numero = int(id_proceso.split("-")[0])
-                consecutivos.append(numero)
-            except:
-                pass
+    return f"{contador:03d}-{year}"
 
-    if consecutivos:
-        nuevo = max(consecutivos) + 1
-    else:
-        nuevo = 1
 
-    return f"{nuevo:03d}-{year}"
+if "ID_PROCESO" not in st.session_state:
+    st.session_state.ID_PROCESO = generar_id()
 
+ID = st.session_state.ID_PROCESO
 # ==========================================================
 # VISTA PROCESOS
 # ==========================================================
@@ -447,7 +435,7 @@ if st.button("GENERAR SOLICITUD CDP"):
     archivo = generar_descarga("solicitud_cdp.docx", datos_cdp)
 
     st.download_button(
-        "DESCARGAR SOLICITUD CDP",
+        "DESCARGAR CDP",
         archivo,
         f"solicitud_cdp_{ID}.docx"
     )
@@ -533,9 +521,3 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
-
-
-
-
-
-
