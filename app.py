@@ -84,7 +84,7 @@ with st.sidebar:
     st.markdown("## 📑 MENÚ")
     st.markdown("---")
     st.markdown("🏠 Inicio")
-    if st.button("📂 Procesos"):
+if st.button("📂 Procesos"):
     st.session_state.vista = "procesos"
     st.markdown("📜 Contratos")
     st.markdown("📊 Reportes")
@@ -510,4 +510,5 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
