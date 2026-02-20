@@ -91,7 +91,8 @@ with st.sidebar:
         st.session_state.vista = "procesos"
 
     if st.button("📜 Contratos"):
-        pass
+        st.session_state.vista = "contratos"
+
 
     if st.button("📊 Reportes"):
         pass
@@ -201,6 +202,66 @@ if st.session_state.vista == "procesos":
                     st.rerun()
 
             col2.write(fila["OBJETO"])
+
+    if st.button("⬅ Volver"):
+        st.session_state.vista = "principal"
+
+    st.stop()
+# ==========================================================
+# VISTA CONTRATOS
+# ==========================================================
+if st.session_state.vista == "contratos":
+
+    st.header("LISTADO GENERAL DE CONTRATOS")
+
+    sheet = conectar_sheet()
+    registros = sheet.get_all_records()
+
+    contratos = []
+
+    for fila in registros:
+        # Se considera contrato generado si existe fecha firma
+        if fila.get("FECHA_FIRMA"):
+
+            contratos.append({
+                "ID": fila.get("ID_PROCESO"),
+                "OBJETO": fila.get("OBJETO"),
+                "VALOR": fila.get("VALOR")
+            })
+
+    if not contratos:
+        st.info("No existen contratos generados aún.")
+
+    else:
+        for i, contrato in enumerate(contratos):
+
+            col1, col2, col3, col4 = st.columns([1, 3, 1, 1])
+
+            col1.write(contrato["ID"])
+            col2.write(contrato["OBJETO"])
+            col3.write(f"${contrato['VALOR']:,.0f}" if contrato["VALOR"] else "")
+
+            if col4.button("Descargar", key=f"desc_{i}"):
+
+                datos = cargar_proceso_por_id(contrato["ID"])
+
+                archivo = generar_descarga("contrato.docx", {
+                    "ID_PROCESO": datos.get("ID_PROCESO"),
+                    "TIPO_CONTRATO": datos.get("TIPO_CONTRATO"),
+                    "SUPERVISOR": datos.get("SUPERVISOR"),
+                    "DISPONE": datos.get("DISPONE"),
+                    "CDP": datos.get("CDP"),
+                    "DURACION": datos.get("DURACION"),
+                    "EMPRESA": datos.get("EMPRESA"),
+                    "FECHA_FIRMA": datos.get("FECHA_FIRMA")
+                })
+
+                st.download_button(
+                    label="⬇",
+                    data=archivo,
+                    file_name=f"contrato_{contrato['ID']}.docx",
+                    key=f"file_{i}"
+                )
 
     if st.button("⬅ Volver"):
         st.session_state.vista = "principal"
@@ -565,6 +626,7 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema operativo correctamente.")
+
 
 
 
