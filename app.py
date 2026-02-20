@@ -72,13 +72,21 @@ PLANTILLAS = "plantillas"
 with st.sidebar:
     st.markdown("## 📑 MENÚ")
     st.markdown("---")
-    st.markdown("🏠 Inicio")
-    st.markdown("📂 Procesos")
-    st.markdown("📜 Contratos")
-    st.markdown("📊 Reportes")
-    st.markdown("⚙ Configuración")
+
+    menu = st.radio(
+        "",
+        [
+            "🏠 Inicio",
+            "📂 Procesos",
+            "📜 Contratos",
+            "📊 Reportes",
+            "⚙ Configuración"
+        ]
+    )
+
     st.markdown("---")
-    st.markdown("🔒 Cerrar sesión")
+    st.button("🔒 Cerrar sesi
+
 
 # ==========================================================
 # CONEXIÓN GOOGLE SHEETS
@@ -178,6 +186,7 @@ def generar_descarga(nombre, datos):
 # ==========================================================
 # ================= ETAPA 1 =================
 # ==========================================================
+if menu == "📂 Procesos":
 
 st.header("ETAPA 1 — ESTUDIO PREVIO")
 
@@ -455,5 +464,21 @@ if st.button("GENERAR CONTRATO"):
         archivo,
         f"contrato_{ID}.docx"
     )
+elif menu == "🏠 Inicio":
+    st.header("INICIO")
+    st.write("Bienvenido al Sistema de Gestión Contractual CCF")
+
+elif menu == "📜 Contratos":
+    st.header("MÓDULO DE CONTRATOS")
+    st.write("Aquí irá la consulta de contratos.")
+
+elif menu == "📊 Reportes":
+    st.header("REPORTES")
+    st.write("Aquí irán los reportes.")
+
+elif menu == "⚙ Configuración":
+    st.header("CONFIGURACIÓN")
+    st.write("Parámetros del sistema.")
 
 st.success("Sistema operativo correctamente.")
+
