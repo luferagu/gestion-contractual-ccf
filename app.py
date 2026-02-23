@@ -35,8 +35,18 @@ ID = generar_id()
 st.info(f"ID_PROCESO: {ID}")
 
 # =====================================================
-# FUNCIONES WORD
+# FUNCIONES AUXILIARES
 # =====================================================
+def formato_moneda(valor):
+    return f"$ {valor:,.0f}"
+
+def valor_en_letras(valor):
+    if valor == 0:
+        return ""
+    texto = num2words(valor, lang="es")
+    texto = texto.replace("uno", "un")
+    return texto.upper() + " PESOS M/CTE"
+
 def reemplazar_texto(parrafo, datos):
     texto = "".join(run.text for run in parrafo.runs)
     for k, v in datos.items():
@@ -74,9 +84,9 @@ objeto = st.text_area("OBJETO")
 necesidad = st.text_area("NECESIDAD")
 justificacion = st.text_area("JUSTIFICACIÓN")
 
-valor = st.number_input("VALOR", min_value=0, step=1000, format="%d")
-valor_letras = num2words(valor, lang="es").upper() if valor else ""
-st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
+valor = st.number_input("VALOR", min_value=0, step=1000)
+st.text_input("VALOR FORMATEADO", value=formato_moneda(valor), disabled=True)
+st.text_input("VALOR EN LETRAS", value=valor_en_letras(valor), disabled=True)
 
 plazo = st.number_input("PLAZO", min_value=1)
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
@@ -102,8 +112,8 @@ if st.button("GENERAR ESTUDIO PREVIO"):
         "OBJETO": objeto,
         "NECESIDAD": necesidad,
         "JUSTIFICACION": justificacion,
-        "VALOR": valor,
-        "VALOR_LETRAS": valor_letras,
+        "VALOR": formato_moneda(valor),
+        "VALOR_LETRAS": valor_en_letras(valor),
         "PLAZO": plazo
     })
 
@@ -119,7 +129,7 @@ if st.button("GENERAR ESTUDIO PREVIO"):
 # =====================================================
 st.header("ETAPA 2 — ÁREA DE COMPRAS")
 
-# ================= PROONENTE 1 =================
+# ---------------- PROONENTE 1 ----------------
 st.subheader("DATOS PROPONENTE 1")
 
 col1, col2, col3, col4, col5 = st.columns(5)
@@ -129,34 +139,22 @@ with col1:
 
 with col2:
     tipo_persona_1 = st.selectbox("TIPO PERSONA",
-        ["Persona Natural", "Persona Jurídica"],
-        key="tipo1")
+        ["Persona Natural", "Persona Jurídica"], key="tipo1")
 
 with col3:
-    if tipo_persona_1 == "Persona Natural":
-        identificacion_1 = st.text_input("CC", key="cc1")
-    else:
-        identificacion_1 = st.text_input("NIT", key="nit1")
+    identificacion_1 = st.text_input(
+        "CC" if tipo_persona_1 == "Persona Natural" else "NIT",
+        key="id1"
+    )
 
 with col4:
-    valor_prop_1 = st.number_input(
-        "VALOR PROPUESTA",
-        min_value=0,
-        step=1000,
-        format="%d",
-        key="valor1"
-    )
+    valor_prop_1 = st.number_input("VALOR PROPUESTA", min_value=0, step=1000, key="valor1")
+    st.text_input("VALOR FORMATEADO", value=formato_moneda(valor_prop_1), disabled=True, key="form1")
 
 with col5:
-    valor_prop_letras_1 = num2words(valor_prop_1, lang="es").upper() if valor_prop_1 else ""
-    st.text_input(
-        "VALOR EN LETRAS",
-        value=valor_prop_letras_1,
-        disabled=True,
-        key="letras1"
-    )
+    st.text_input("VALOR EN LETRAS", value=valor_en_letras(valor_prop_1), disabled=True, key="letras1")
 
-# ================= PROONENTE 2 =================
+# ---------------- PROONENTE 2 ----------------
 st.subheader("DATOS PROPONENTE 2")
 
 col6, col7, col8, col9, col10 = st.columns(5)
@@ -166,60 +164,40 @@ with col6:
 
 with col7:
     tipo_persona_2 = st.selectbox("TIPO PERSONA",
-        ["Persona Natural", "Persona Jurídica"],
-        key="tipo2")
+        ["Persona Natural", "Persona Jurídica"], key="tipo2")
 
 with col8:
-    if tipo_persona_2 == "Persona Natural":
-        identificacion_2 = st.text_input("CC", key="cc2")
-    else:
-        identificacion_2 = st.text_input("NIT", key="nit2")
+    identificacion_2 = st.text_input(
+        "CC" if tipo_persona_2 == "Persona Natural" else "NIT",
+        key="id2"
+    )
 
 with col9:
-    valor_prop_2 = st.number_input(
-        "VALOR PROPUESTA",
-        min_value=0,
-        step=1000,
-        format="%d",
-        key="valor2"
-    )
+    valor_prop_2 = st.number_input("VALOR PROPUESTA", min_value=0, step=1000, key="valor2")
+    st.text_input("VALOR FORMATEADO", value=formato_moneda(valor_prop_2), disabled=True, key="form2")
 
 with col10:
-    valor_prop_letras_2 = num2words(valor_prop_2, lang="es").upper() if valor_prop_2 else ""
-    st.text_input(
-        "VALOR EN LETRAS",
-        value=valor_prop_letras_2,
-        disabled=True,
-        key="letras2"
-    )
+    st.text_input("VALOR EN LETRAS", value=valor_en_letras(valor_prop_2), disabled=True, key="letras2")
 
-# ================= DOCUMENTOS COMPRAS =================
+# ---------------- DOCUMENTOS COMPRAS ----------------
 st.subheader("GENERACIÓN DOCUMENTOS ÁREA DE COMPRAS")
 
-if st.button("GENERAR SOLICITUD CDP"):
-    archivo = generar_doc("solicitud_cdp.docx", {"ID_PROCESO": ID})
-    st.download_button("Descargar Solicitud CDP", archivo,
-                       file_name=f"solicitud_cdp_{ID}.docx")
+documentos_compras = [
+    "solicitud_cdp.docx",
+    "invitacion_cotizar.docx",
+    "invitacion_1_presentar_propuesta.docx",
+    "invitacion_2_presentar_propuesta.docx",
+    "Verificacion_de_requisitos.docx"
+]
 
-if st.button("GENERAR INVITACIÓN A COTIZAR"):
-    archivo = generar_doc("invitacion_cotizar.docx", {"ID_PROCESO": ID})
-    st.download_button("Descargar Invitación Cotizar", archivo,
-                       file_name=f"invitacion_cotizar_{ID}.docx")
-
-if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
-    archivo = generar_doc("invitacion_1_presentar_propuesta.docx", {"ID_PROCESO": ID})
-    st.download_button("Descargar Invitación Propuesta 1", archivo,
-                       file_name=f"inv_prop1_{ID}.docx")
-
-if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
-    archivo = generar_doc("invitacion_2_presentar_propuesta.docx", {"ID_PROCESO": ID})
-    st.download_button("Descargar Invitación Propuesta 2", archivo,
-                       file_name=f"inv_prop2_{ID}.docx")
-
-if st.button("GENERAR VERIFICACIÓN DE REQUISITOS"):
-    archivo = generar_doc("Verificacion_de_requisitos.docx", {"ID_PROCESO": ID})
-    st.download_button("Descargar Verificación", archivo,
-                       file_name=f"verificacion_{ID}.docx")
+for doc_name in documentos_compras:
+    if st.button(f"GENERAR {doc_name.replace('.docx','').upper()}"):
+        archivo = generar_doc(doc_name, {"ID_PROCESO": ID})
+        st.download_button(
+            f"Descargar {doc_name}",
+            archivo,
+            file_name=f"{doc_name.replace('.docx','')}_{ID}.docx"
+        )
 
 # =====================================================
 # ETAPA 3 — CONTRATOS
@@ -251,7 +229,8 @@ if st.button("GENERAR CONTRATO"):
     archivo = generar_doc("contrato.docx", {
         "ID_PROCESO": ID,
         "SUPERVISOR": supervisor,
-        "FECHA": fecha_firma
+        "FECHA": fecha_firma,
+        "VALOR": formato_moneda(valor)
     })
 
     st.download_button(
