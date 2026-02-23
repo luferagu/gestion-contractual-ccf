@@ -169,13 +169,22 @@ if st.button("GUARDAR CONTRATO"):
     st.success("Contrato almacenado en SQL")
 
 if st.button("GENERAR CONTRATO"):
-    generar_doc("contrato.docx", {
+
+    archivo = generar_doc("contrato.docx", {
         "ID_PROCESO": ID,
         "SUPERVISOR": supervisor,
         "FECHA": fecha_firma
     })
-    st.success("Contrato generado")
+
+    st.download_button(
+        label="Descargar Contrato",
+        data=archivo,
+        file_name=f"contrato_{ID}.docx",
+        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )
+
 
 st.success("Sistema funcionando correctamente.")
+
 
 
