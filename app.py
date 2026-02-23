@@ -3,10 +3,11 @@ import os
 from datetime import date
 from num2words import num2words
 from docx import Document
+from io import BytesIO
 from database import conectar_db, crear_tablas
 
 # =====================================================
-# CONFIGURACIÓN INICIAL
+# CONFIGURACIÓN GENERAL
 # =====================================================
 st.set_page_config(layout="wide")
 st.title("SISTEMA DE GESTIÓN CONTRACTUAL")
@@ -14,29 +15,24 @@ st.title("SISTEMA DE GESTIÓN CONTRACTUAL")
 crear_tablas()
 
 PLANTILLAS = "2_PLANTILLAS"
-SALIDA = "3_SALIDA"
-
-os.makedirs("3_SALIDA", exist_ok=True)
+os.makedirs(PLANTILLAS, exist_ok=True)
 
 # =====================================================
-# GENERAR CONSECUTIVO AUTOMÁTICO DESDE SQL
+# GENERAR CONSECUTIVO DESDE SQL
 # =====================================================
 def generar_id():
     conn = conectar_db()
     cursor = conn.cursor()
 
     year = date.today().year
-
     cursor.execute("SELECT COUNT(*) FROM procesos WHERE id_proceso LIKE ?", (f"%-{year}",))
     total = cursor.fetchone()[0]
 
     conn.close()
-
-    consecutivo = total + 1
-    return f"{consecutivo:03d}-{year}"
+    return f"{total+1:03d}-{year}"
 
 ID = generar_id()
-st.info(f"ID_PROCESO generado automáticamente: {ID}")
+st.info(f"ID_PROCESO: {ID}")
 
 # =====================================================
 # FUNCIONES WORD
@@ -59,17 +55,14 @@ def reemplazar_doc(doc, datos):
                 for p in c.paragraphs:
                     reemplazar_texto(p, datos)
 
-from io import BytesIO
-
 def generar_doc(nombre, datos):
-
-    doc = Document(os.path.join(PLANTILLAS, nombre))
+    ruta = os.path.join(PLANTILLAS, nombre)
+    doc = Document(ruta)
     reemplazar_doc(doc, datos)
 
     buffer = BytesIO()
     doc.save(buffer)
     buffer.seek(0)
-
     return buffer
 
 # =====================================================
@@ -88,34 +81,27 @@ st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
 plazo = st.number_input("PLAZO", min_value=1)
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
-# -------- GUARDAR ETAPA 1 EN SQL --------
+# Guardar Proceso
 if st.button("GUARDAR ETAPA 1"):
-
     conn = conectar_db()
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO procesos 
+        INSERT INTO procesos
         (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     """, (
-        ID,
-        objeto,
-        necesidad,
-        justificacion,
-        valor,
-        plazo,
-        str(fecha_estudio)
+        ID, objeto, necesidad, justificacion,
+        valor, plazo, str(fecha_estudio)
     ))
 
     conn.commit()
     conn.close()
 
-    st.success("ETAPA 1 almacenada en base SQL")
+    st.success("Proceso guardado correctamente.")
 
-# -------- GENERAR ESTUDIO --------
+# Generar Estudio Previo
 if st.button("GENERAR ESTUDIO PREVIO"):
-
     archivo = generar_doc("estudio_previo.docx", {
         "ID_PROCESO": ID,
         "OBJETO": objeto,
@@ -127,12 +113,55 @@ if st.button("GENERAR ESTUDIO PREVIO"):
     })
 
     st.download_button(
-        label="Descargar Estudio Previo",
+        "Descargar Estudio Previo",
         data=archivo,
         file_name=f"estudio_previo_{ID}.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
 
+# =====================================================
+# ETAPA 2 — ÁREA DE COMPRAS
+# =====================================================
+st.header("ETAPA 2 — ÁREA DE COMPRAS")
+
+st.subheader("Generación de Documentos")
+
+if st.button("GENERAR SOLICITUD CDP"):
+    archivo = generar_doc("solicitud_cdp.docx", {
+        "ID_PROCESO": ID,
+        "OBJETO": objeto,
+        "VALOR": valor
+    })
+    st.download_button("Descargar Solicitud CDP", archivo,
+                       file_name=f"solicitud_cdp_{ID}.docx")
+
+if st.button("GENERAR INVITACIÓN A COTIZAR"):
+    archivo = generar_doc("invitacion_cotizar.docx", {
+        "ID_PROCESO": ID
+    })
+    st.download_button("Descargar Invitación Cotizar", archivo,
+                       file_name=f"invitacion_cotizar_{ID}.docx")
+
+if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
+    archivo = generar_doc("invitacion_1_presentar_propuesta.docx", {
+        "ID_PROCESO": ID
+    })
+    st.download_button("Descargar Invitación Propuesta 1", archivo,
+                       file_name=f"inv_prop1_{ID}.docx")
+
+if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
+    archivo = generar_doc("invitacion_2_presentar_propuesta.docx", {
+        "ID_PROCESO": ID
+    })
+    st.download_button("Descargar Invitación Propuesta 2", archivo,
+                       file_name=f"inv_prop2_{ID}.docx")
+
+if st.button("GENERAR VERIFICACIÓN DE REQUISITOS"):
+    archivo = generar_doc("Verificacion_de_requisitos.docx", {
+        "ID_PROCESO": ID
+    })
+    st.download_button("Descargar Verificación", archivo,
+                       file_name=f"verificacion_{ID}.docx")
 
 # =====================================================
 # ETAPA 3 — CONTRATOS
@@ -140,14 +169,13 @@ if st.button("GENERAR ESTUDIO PREVIO"):
 st.header("ETAPA 3 — CONTRATOS")
 
 tipo = st.selectbox("TIPO CONTRATO",
-["Obra","Consultoría","Prestación de Servicios","Suministro"])
+    ["Obra","Consultoría","Prestación de Servicios","Suministro"])
 
 supervisor = st.text_input("SUPERVISOR")
 cdp = st.text_input("CDP")
 fecha_firma = st.date_input("FECHA FIRMA")
 
 if st.button("GUARDAR CONTRATO"):
-
     conn = conectar_db()
     cursor = conn.cursor()
 
@@ -156,35 +184,27 @@ if st.button("GUARDAR CONTRATO"):
         (id_proceso, tipo_contrato, supervisor, cdp, fecha_firma)
         VALUES (?, ?, ?, ?, ?)
     """, (
-        ID,
-        tipo,
-        supervisor,
-        cdp,
-        str(fecha_firma)
+        ID, tipo, supervisor, cdp, str(fecha_firma)
     ))
 
     conn.commit()
     conn.close()
 
-    st.success("Contrato almacenado en SQL")
+    st.success("Contrato guardado correctamente.")
 
 if st.button("GENERAR CONTRATO"):
-
     archivo = generar_doc("contrato.docx", {
         "ID_PROCESO": ID,
         "SUPERVISOR": supervisor,
-        "FECHA": fecha_firma
+        "FECHA": fecha_firma,
+        "VALOR": valor
     })
 
     st.download_button(
-        label="Descargar Contrato",
+        "Descargar Contrato",
         data=archivo,
         file_name=f"contrato_{ID}.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
 
-
 st.success("Sistema funcionando correctamente.")
-
-
-
