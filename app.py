@@ -74,18 +74,16 @@ objeto = st.text_area("OBJETO")
 necesidad = st.text_area("NECESIDAD")
 justificacion = st.text_area("JUSTIFICACIÓN")
 
-valor = st.number_input("VALOR", min_value=0, step=1000)
+valor = st.number_input("VALOR", min_value=0, step=1000, format="%d")
 valor_letras = num2words(valor, lang="es").upper() if valor else ""
 st.text_input("VALOR EN LETRAS", value=valor_letras, disabled=True)
 
 plazo = st.number_input("PLAZO", min_value=1)
 fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
-# Guardar Proceso
 if st.button("GUARDAR ETAPA 1"):
     conn = conectar_db()
     cursor = conn.cursor()
-
     cursor.execute("""
         INSERT INTO procesos
         (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
@@ -94,13 +92,10 @@ if st.button("GUARDAR ETAPA 1"):
         ID, objeto, necesidad, justificacion,
         valor, plazo, str(fecha_estudio)
     ))
-
     conn.commit()
     conn.close()
-
     st.success("Proceso guardado correctamente.")
 
-# Generar Estudio Previo
 if st.button("GENERAR ESTUDIO PREVIO"):
     archivo = generar_doc("estudio_previo.docx", {
         "ID_PROCESO": ID,
@@ -114,7 +109,7 @@ if st.button("GENERAR ESTUDIO PREVIO"):
 
     st.download_button(
         "Descargar Estudio Previo",
-        data=archivo,
+        archivo,
         file_name=f"estudio_previo_{ID}.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
@@ -124,42 +119,105 @@ if st.button("GENERAR ESTUDIO PREVIO"):
 # =====================================================
 st.header("ETAPA 2 — ÁREA DE COMPRAS")
 
-st.subheader("Generación de Documentos")
+# ================= PROONENTE 1 =================
+st.subheader("DATOS PROPONENTE 1")
+
+col1, col2, col3, col4, col5 = st.columns(5)
+
+with col1:
+    proponente_1 = st.text_input("PROPONENTE 1")
+
+with col2:
+    tipo_persona_1 = st.selectbox("TIPO PERSONA",
+        ["Persona Natural", "Persona Jurídica"],
+        key="tipo1")
+
+with col3:
+    if tipo_persona_1 == "Persona Natural":
+        identificacion_1 = st.text_input("CC", key="cc1")
+    else:
+        identificacion_1 = st.text_input("NIT", key="nit1")
+
+with col4:
+    valor_prop_1 = st.number_input(
+        "VALOR PROPUESTA",
+        min_value=0,
+        step=1000,
+        format="%d",
+        key="valor1"
+    )
+
+with col5:
+    valor_prop_letras_1 = num2words(valor_prop_1, lang="es").upper() if valor_prop_1 else ""
+    st.text_input(
+        "VALOR EN LETRAS",
+        value=valor_prop_letras_1,
+        disabled=True,
+        key="letras1"
+    )
+
+# ================= PROONENTE 2 =================
+st.subheader("DATOS PROPONENTE 2")
+
+col6, col7, col8, col9, col10 = st.columns(5)
+
+with col6:
+    proponente_2 = st.text_input("PROPONENTE 2")
+
+with col7:
+    tipo_persona_2 = st.selectbox("TIPO PERSONA",
+        ["Persona Natural", "Persona Jurídica"],
+        key="tipo2")
+
+with col8:
+    if tipo_persona_2 == "Persona Natural":
+        identificacion_2 = st.text_input("CC", key="cc2")
+    else:
+        identificacion_2 = st.text_input("NIT", key="nit2")
+
+with col9:
+    valor_prop_2 = st.number_input(
+        "VALOR PROPUESTA",
+        min_value=0,
+        step=1000,
+        format="%d",
+        key="valor2"
+    )
+
+with col10:
+    valor_prop_letras_2 = num2words(valor_prop_2, lang="es").upper() if valor_prop_2 else ""
+    st.text_input(
+        "VALOR EN LETRAS",
+        value=valor_prop_letras_2,
+        disabled=True,
+        key="letras2"
+    )
+
+# ================= DOCUMENTOS COMPRAS =================
+st.subheader("GENERACIÓN DOCUMENTOS ÁREA DE COMPRAS")
 
 if st.button("GENERAR SOLICITUD CDP"):
-    archivo = generar_doc("solicitud_cdp.docx", {
-        "ID_PROCESO": ID,
-        "OBJETO": objeto,
-        "VALOR": valor
-    })
+    archivo = generar_doc("solicitud_cdp.docx", {"ID_PROCESO": ID})
     st.download_button("Descargar Solicitud CDP", archivo,
                        file_name=f"solicitud_cdp_{ID}.docx")
 
 if st.button("GENERAR INVITACIÓN A COTIZAR"):
-    archivo = generar_doc("invitacion_cotizar.docx", {
-        "ID_PROCESO": ID
-    })
+    archivo = generar_doc("invitacion_cotizar.docx", {"ID_PROCESO": ID})
     st.download_button("Descargar Invitación Cotizar", archivo,
                        file_name=f"invitacion_cotizar_{ID}.docx")
 
 if st.button("GENERAR INVITACIÓN PROPUESTA 1"):
-    archivo = generar_doc("invitacion_1_presentar_propuesta.docx", {
-        "ID_PROCESO": ID
-    })
+    archivo = generar_doc("invitacion_1_presentar_propuesta.docx", {"ID_PROCESO": ID})
     st.download_button("Descargar Invitación Propuesta 1", archivo,
                        file_name=f"inv_prop1_{ID}.docx")
 
 if st.button("GENERAR INVITACIÓN PROPUESTA 2"):
-    archivo = generar_doc("invitacion_2_presentar_propuesta.docx", {
-        "ID_PROCESO": ID
-    })
+    archivo = generar_doc("invitacion_2_presentar_propuesta.docx", {"ID_PROCESO": ID})
     st.download_button("Descargar Invitación Propuesta 2", archivo,
                        file_name=f"inv_prop2_{ID}.docx")
 
 if st.button("GENERAR VERIFICACIÓN DE REQUISITOS"):
-    archivo = generar_doc("Verificacion_de_requisitos.docx", {
-        "ID_PROCESO": ID
-    })
+    archivo = generar_doc("Verificacion_de_requisitos.docx", {"ID_PROCESO": ID})
     st.download_button("Descargar Verificación", archivo,
                        file_name=f"verificacion_{ID}.docx")
 
@@ -178,7 +236,6 @@ fecha_firma = st.date_input("FECHA FIRMA")
 if st.button("GUARDAR CONTRATO"):
     conn = conectar_db()
     cursor = conn.cursor()
-
     cursor.execute("""
         INSERT INTO contratos
         (id_proceso, tipo_contrato, supervisor, cdp, fecha_firma)
@@ -186,23 +243,20 @@ if st.button("GUARDAR CONTRATO"):
     """, (
         ID, tipo, supervisor, cdp, str(fecha_firma)
     ))
-
     conn.commit()
     conn.close()
-
     st.success("Contrato guardado correctamente.")
 
 if st.button("GENERAR CONTRATO"):
     archivo = generar_doc("contrato.docx", {
         "ID_PROCESO": ID,
         "SUPERVISOR": supervisor,
-        "FECHA": fecha_firma,
-        "VALOR": valor
+        "FECHA": fecha_firma
     })
 
     st.download_button(
         "Descargar Contrato",
-        data=archivo,
+        archivo,
         file_name=f"contrato_{ID}.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
