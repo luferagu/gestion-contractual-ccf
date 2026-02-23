@@ -115,7 +115,8 @@ if st.button("GUARDAR ETAPA 1"):
 
 # -------- GENERAR ESTUDIO --------
 if st.button("GENERAR ESTUDIO PREVIO"):
-    generar_doc("estudio_previo.docx", {
+
+    archivo = generar_doc("estudio_previo.docx", {
         "ID_PROCESO": ID,
         "OBJETO": objeto,
         "NECESIDAD": necesidad,
@@ -124,7 +125,14 @@ if st.button("GENERAR ESTUDIO PREVIO"):
         "VALOR_LETRAS": valor_letras,
         "PLAZO": plazo
     })
-    st.success("Documento generado en 3_SALIDA")
+
+    st.download_button(
+        label="Descargar Estudio Previo",
+        data=archivo,
+        file_name=f"estudio_previo_{ID}.docx",
+        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )
+
 
 # =====================================================
 # ETAPA 3 — CONTRATOS
@@ -169,4 +177,5 @@ if st.button("GENERAR CONTRATO"):
     st.success("Contrato generado")
 
 st.success("Sistema funcionando correctamente.")
+
 
