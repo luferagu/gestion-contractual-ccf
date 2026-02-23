@@ -59,12 +59,18 @@ def reemplazar_doc(doc, datos):
                 for p in c.paragraphs:
                     reemplazar_texto(p, datos)
 
+from io import BytesIO
+
 def generar_doc(nombre, datos):
+
     doc = Document(os.path.join(PLANTILLAS, nombre))
     reemplazar_doc(doc, datos)
-    salida = os.path.join(SALIDA, f"{nombre[:-5]}_{ID}.docx")
-    doc.save(salida)
-    return salida
+
+    buffer = BytesIO()
+    doc.save(buffer)
+    buffer.seek(0)
+
+    return buffer
 
 # =====================================================
 # ETAPA 1 — ESTUDIO PREVIO
@@ -163,3 +169,4 @@ if st.button("GENERAR CONTRATO"):
     st.success("Contrato generado")
 
 st.success("Sistema funcionando correctamente.")
+
