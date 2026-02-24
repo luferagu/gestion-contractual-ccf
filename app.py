@@ -4,7 +4,8 @@ from database import conectar_db
 st.title("PRUEBA DE CONEXIÓN POSTGRESQL")
 
 try:
-    with conectar_db() as conn:
-        st.success("Conexión exitosa a PostgreSQL")
+    conn = conectar_db()
+    st.success("Conexión exitosa")
+    conn.close()
 except Exception as e:
-    st.error(e)
+    st.error(f"Error de conexión: {e}")
