@@ -145,7 +145,7 @@ ID_PROCESO generado automáticamente: {ID}
 """, unsafe_allow_html=True)
 
 # =====================================================
-# ETAPA 1
+# ETAPA 1 — ESTUDIO PREVIO (AJUSTADA A PLANTILLA)
 # =====================================================
 if etapa == "1 Estudio Previo":
 
@@ -162,16 +162,16 @@ if etapa == "1 Estudio Previo":
             placeholder="Describa el objeto contractual"
         )
 
-        necesidad = st.text_area(
-            "NECESIDAD",
-            height=150,
-            placeholder="Describa la necesidad que se pretende satisfacer"
-        )
-
         justificacion = st.text_area(
             "JUSTIFICACIÓN",
             height=150,
             placeholder="Fundamente técnica, jurídica y financieramente el proceso"
+        )
+
+        necesidad = st.text_area(
+            "1. DESCRIPCIÓN DE LA NECESIDAD QUE LA ENTIDAD PRETENDE SATISFACER CON LA CONTRATACIÓN",
+            height=180,
+            placeholder="Describa la necesidad que se pretende satisfacer"
         )
 
     # ---------------- COLUMNA DERECHA ----------------
@@ -187,8 +187,11 @@ if etapa == "1 Estudio Previo":
 
         if valor > 0:
             st.success(valor_en_letras(valor))
+            valor_letras = valor_en_letras(valor)
+        else:
+            valor_letras = ""
 
-        # 🔹 PLAZO MODIFICADO (REDUCIDO + SELECTOR)
+        # 🔹 PLAZO
         plazo_col1, plazo_col2 = st.columns([2,1])
 
         with plazo_col1:
@@ -209,11 +212,11 @@ if etapa == "1 Estudio Previo":
             value=date.today()
         )
 
-    # =====================================================
-    # CAMPOS ADICIONALES (SIN MODIFICAR LOS EXISTENTES)
-    # =====================================================
+    st.markdown("---")
 
-    st.markdown("## INFORMACIÓN PRESUPUESTAL Y DE PLANEACIÓN")
+    # =====================================================
+    # INFORMACIÓN PRESUPUESTAL Y PLANEACIÓN
+    # =====================================================
 
     c1, c2, c3, c4 = st.columns(4)
 
@@ -229,19 +232,25 @@ if etapa == "1 Estudio Previo":
     with c4:
         rubro = st.text_input("RUBRO")
 
-    st.markdown("## 2. DESCRIPCIÓN DEL OBJETO A CONTRATAR")
+    # =====================================================
+    # 2. DESCRIPCIÓN DEL OBJETO
+    # =====================================================
 
-    objeto_2 = st.text_area(
-        "2.1. OBJETO (DESCRIPCIÓN DETALLADA)",
+    st.markdown("## 2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES")
+
+    st.markdown("### 2.1 OBJETO")
+    objeto_detallado = st.text_area(
+        "DESCRIPCIÓN DETALLADA DEL OBJETO",
         height=120
     )
 
+    st.markdown("### 2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN")
     caracteristicas_tecnicas = st.text_area(
-        "2.2. CARACTERÍSTICAS TÉCNICAS DEL BIEN",
+        "CARACTERÍSTICAS TÉCNICAS",
         height=150
     )
 
-    st.markdown("## 2.3 FUNDAMENTOS JURÍDICOS")
+    st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
 
     fj1, fj2, fj3, fj4 = st.columns(4)
 
@@ -257,31 +266,27 @@ if etapa == "1 Estudio Previo":
     with fj4:
         literal = st.text_input("LITERAL")
 
+    # =====================================================
+    # 3. CONDICIONES DEL FUTURO CONTRATO
+    # =====================================================
+
     st.markdown("## 3. CONDICIONES DEL FUTURO CONTRATO")
 
-    oportunidad = st.text_input("3.1 OPORTUNIDAD (Mes de suscripción 2026)")
+    oportunidad = st.text_input("3.1 OPORTUNIDAD (Mes de suscripción en 2026)")
 
     forma_pago = st.text_area(
         "3.3 FORMA DE PAGO",
-        height=100
-    )
-
-    analisis = st.text_area(
-        "3.4 ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO",
         height=120
     )
 
-    st.markdown("## 3.5 PRESUPUESTO PROYECTADO")
-
-    valor_presupuesto = st.text_input(
-        "VALOR PRESUPUESTO ($)",
-        key="valor_presupuesto"
+    analisis = st.text_area(
+        "3.4 ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO (Literal)",
+        height=120
     )
 
-    valor_calc, _ = procesar_moneda("valor_presupuesto")
-
-    if valor_calc > 0:
-        st.success(valor_en_letras(valor_calc))
+    # =====================================================
+    # 5. GARANTÍAS
+    # =====================================================
 
     st.markdown("## 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS")
 
@@ -291,7 +296,7 @@ if etapa == "1 Estudio Previo":
     )
 
     # =====================================================
-    # BOTÓN ORIGINAL (SIN MODIFICACIÓN)
+    # GUARDAR (SE MANTIENE IGUAL)
     # =====================================================
 
     st.markdown("---")
@@ -493,6 +498,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
