@@ -47,7 +47,7 @@ def generar_id():
     conn.close()
     return f"{total+1:03d}-{year}"
 
-ID = generar_id()
+IID = "000-TEST"
 st.info(f"ID_PROCESO: {ID}")
 
 # =====================================================
@@ -263,5 +263,6 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema funcionando correctamente.")
+
 
 
