@@ -340,6 +340,17 @@ if etapa == "1 Estudio Previo":
         texto_oportunidad = ", ".join(oportunidad)
         st.info(f"El contrato se deberá suscribir en el mes de {texto_oportunidad} de 2026.")
 
+# ---------------- 3.2 PLAZO Y VIGENCIA DE EJECUCIÓN ----------------
+
+if plazo and unidad_plazo:
+    texto_plazo = f"{plazo} {unidad_plazo.lower()}"
+    
+    st.text_area(
+        "3.2 PLAZO Y VIGENCIA DE EJECUCIÓN",
+        value=f"El término de duración del presente contrato será de {texto_plazo}, contados a partir del acta de inicio.",
+        disabled=True,
+        height=100
+    )
 
     forma_pago = st.text_area(
         "3.3 FORMA DE PAGO",
@@ -592,6 +603,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
