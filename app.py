@@ -97,7 +97,7 @@ if st.button("GUARDAR ETAPA 1"):
     cursor.execute("""
         INSERT INTO procesos
         (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
     """, (
         ID, objeto, necesidad, justificacion,
         valor, plazo, str(fecha_estudio)
@@ -221,7 +221,7 @@ if st.button("GUARDAR CONTRATO"):
     cursor.execute("""
         INSERT INTO contratos
         (id_proceso, tipo_contrato, supervisor, cdp, fecha_firma)
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
     """, (
         ID, tipo, supervisor, cdp, str(fecha_firma)
     ))
@@ -245,3 +245,4 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema funcionando correctamente.")
+
