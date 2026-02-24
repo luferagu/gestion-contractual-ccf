@@ -111,7 +111,6 @@ def valor_en_letras(valor):
 
 def procesar_moneda(key):
     valor_texto = st.session_state.get(key, "")
-
     limpio = valor_texto.replace("$", "").replace(",", "").strip()
 
     if limpio.isdigit():
@@ -184,23 +183,32 @@ if etapa == "1 Estudio Previo":
             placeholder="Ej: 25,000,000"
         )
 
-        valor, valor_formateado = procesar_moneda("valor_ep")
+        valor, _ = procesar_moneda("valor_ep")
 
         if valor > 0:
             st.success(valor_en_letras(valor))
 
-        plazo = st.number_input(
-            "PLAZO (días)",
-            min_value=1,
-            value=1
-        )
+        # 🔹 PLAZO MODIFICADO (REDUCIDO + SELECTOR)
+        plazo_col1, plazo_col2 = st.columns([2,1])
+
+        with plazo_col1:
+            plazo = st.number_input(
+                "PLAZO",
+                min_value=1,
+                value=1
+            )
+
+        with plazo_col2:
+            unidad_plazo = st.selectbox(
+                "UNIDAD",
+                ["Días", "Meses"]
+            )
 
         fecha_estudio = st.date_input(
             "FECHA ESTUDIO",
             value=date.today()
         )
 
-    # ---------------- BOTÓN GUARDAR ----------------
     st.markdown("---")
 
     if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
@@ -222,7 +230,7 @@ if etapa == "1 Estudio Previo":
                     necesidad,
                     justificacion,
                     valor,
-                    plazo,
+                    f"{plazo} {unidad_plazo}",
                     fecha_estudio
                 ))
 
@@ -234,7 +242,6 @@ if etapa == "1 Estudio Previo":
 
             except Exception as e:
                 st.error(f"Error al guardar proceso: {e}")
-
 # =====================================================
 # ETAPA 2 — PLANEACIÓN
 # =====================================================
@@ -400,5 +407,6 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
