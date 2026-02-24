@@ -250,7 +250,7 @@ if etapa == "1 Estudio Previo":
         height=150
     )
 
-    # =====================================================
+       # =====================================================
     # 2.3 FUNDAMENTOS JURÍDICOS
     # =====================================================
 
@@ -279,13 +279,12 @@ if etapa == "1 Estudio Previo":
         articulo = "ARTÍCULO 18"
         opciones_numeral = ["1", "2", "3"]
 
-    # ---------------- ARTÍCULO (ALINEADO Y NO EDITABLE) ----------------
+    # ---------------- ARTÍCULO (DINÁMICO Y ALINEADO) ----------------
     with col_articulo:
         st.text_input(
             "ARTÍCULO",
             value=articulo,
-            disabled=True,
-            key="articulo_auto"
+            disabled=True
         )
 
     # ---------------- NUMERAL DINÁMICO ----------------
@@ -299,7 +298,6 @@ if etapa == "1 Estudio Previo":
     # ---------------- LITERAL CONDICIONAL ESTRICTO ----------------
     with col_literal:
 
-        # SOLO CUANDO SEA DIRECTA Y NUMERAL 2
         if modalidad == "DIRECTA" and numeral == "2":
 
             literal = st.selectbox(
@@ -313,8 +311,7 @@ if etapa == "1 Estudio Previo":
             st.text_input(
                 "LITERAL",
                 value="No aplica",
-                disabled=True,
-                key="literal_disabled"
+                disabled=True
             )
 
     # 🔹 CIERRE VISUAL DEL BLOQUE
@@ -579,6 +576,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
