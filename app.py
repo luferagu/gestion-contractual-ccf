@@ -145,38 +145,43 @@ ID_PROCESO generado automáticamente: {ID}
 """, unsafe_allow_html=True)
 
 # =====================================================
-# ETAPA 1 — ESTUDIO PREVIO (AJUSTADA A PLANTILLA)
+# ETAPA 1 — ESTUDIO PREVIO (AJUSTADA Y ORDENADA)
 # =====================================================
 if etapa == "1 Estudio Previo":
 
     st.markdown("### ETAPA 1 — ESTUDIO PREVIO")
 
-    col1, col2 = st.columns(2, gap="large")
+    # =====================================================
+    # CAMPOS PRINCIPALES (ANCHO COMPLETO)
+    # =====================================================
 
-    # ---------------- COLUMNA IZQUIERDA ----------------
+    objeto = st.text_area(
+        "OBJETO",
+        height=200,
+        placeholder="Describa el objeto contractual"
+    )
+
+    justificacion = st.text_area(
+        "JUSTIFICACIÓN",
+        height=200,
+        placeholder="Fundamente técnica, jurídica y financieramente el proceso"
+    )
+
+    necesidad = st.text_area(
+        "1. DESCRIPCIÓN DE LA NECESIDAD QUE LA ENTIDAD PRETENDE SATISFACER CON LA CONTRATACIÓN",
+        height=220,
+        placeholder="Describa la necesidad que se pretende satisfacer"
+    )
+
+    # =====================================================
+    # BLOQUE ECONÓMICO (DEBAJO DE LA NECESIDAD)
+    # =====================================================
+
+    st.markdown("### INFORMACIÓN ECONÓMICA Y PLAZO")
+
+    col1, col2, col3 = st.columns([2,1,1])
+
     with col1:
-
-        objeto = st.text_area(
-            "OBJETO",
-            height=150,
-            placeholder="Describa el objeto contractual"
-        )
-
-        justificacion = st.text_area(
-            "JUSTIFICACIÓN",
-            height=150,
-            placeholder="Fundamente técnica, jurídica y financieramente el proceso"
-        )
-
-        necesidad = st.text_area(
-            "1. DESCRIPCIÓN DE LA NECESIDAD QUE LA ENTIDAD PRETENDE SATISFACER CON LA CONTRATACIÓN",
-            height=180,
-            placeholder="Describa la necesidad que se pretende satisfacer"
-        )
-
-    # ---------------- COLUMNA DERECHA ----------------
-    with col2:
-
         st.text_input(
             "VALOR ($)",
             key="valor_ep",
@@ -191,26 +196,23 @@ if etapa == "1 Estudio Previo":
         else:
             valor_letras = ""
 
-        # 🔹 PLAZO
-        plazo_col1, plazo_col2 = st.columns([2,1])
-
-        with plazo_col1:
-            plazo = st.number_input(
-                "PLAZO",
-                min_value=1,
-                value=1
-            )
-
-        with plazo_col2:
-            unidad_plazo = st.selectbox(
-                "UNIDAD",
-                ["Días", "Meses"]
-            )
-
-        fecha_estudio = st.date_input(
-            "FECHA ESTUDIO",
-            value=date.today()
+    with col2:
+        plazo = st.number_input(
+            "PLAZO",
+            min_value=1,
+            value=1
         )
+
+    with col3:
+        unidad_plazo = st.selectbox(
+            "UNIDAD",
+            ["Días", "Meses"]
+        )
+
+    fecha_estudio = st.date_input(
+        "FECHA ESTUDIO",
+        value=date.today()
+    )
 
     st.markdown("---")
 
@@ -238,17 +240,19 @@ if etapa == "1 Estudio Previo":
 
     st.markdown("## 2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES")
 
-    st.markdown("### 2.1 OBJETO")
     objeto_detallado = st.text_area(
-        "DESCRIPCIÓN DETALLADA DEL OBJETO",
-        height=120
-    )
-
-    st.markdown("### 2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN")
-    caracteristicas_tecnicas = st.text_area(
-        "CARACTERÍSTICAS TÉCNICAS",
+        "2.1 OBJETO (DESCRIPCIÓN DETALLADA)",
         height=150
     )
+
+    caracteristicas_tecnicas = st.text_area(
+        "2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN",
+        height=150
+    )
+
+    # =====================================================
+    # 2.3 FUNDAMENTOS JURÍDICOS
+    # =====================================================
 
     st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
 
@@ -285,18 +289,18 @@ if etapa == "1 Estudio Previo":
     )
 
     # =====================================================
-    # 5. GARANTÍAS
+    # 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS
     # =====================================================
 
     st.markdown("## 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS")
 
     garantias = st.text_area(
         "GARANTÍAS EXIGIDAS",
-        height=100
+        height=120
     )
 
     # =====================================================
-    # GUARDAR (SE MANTIENE IGUAL)
+    # GUARDAR (LÓGICA ORIGINAL)
     # =====================================================
 
     st.markdown("---")
@@ -310,7 +314,6 @@ if etapa == "1 Estudio Previo":
                 conn = conectar_db()
                 cursor = conn.cursor()
 
-                
                 cursor.execute("""
                     INSERT INTO procesos
                     (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
@@ -324,7 +327,6 @@ if etapa == "1 Estudio Previo":
                     plazo,
                     fecha_estudio
                 ))
-
 
                 conn.commit()
                 conn.close()
@@ -500,6 +502,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
