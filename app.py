@@ -256,41 +256,31 @@ if etapa == "1 Estudio Previo":
 
     st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
 
-    fj1, fj2, fj3, fj4 = st.columns(4)
-
-    with fj1:
-        st.selectbox(
+    col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
+    
+    with col_modalidad:
+        modalidad = st.selectbox(
             "MODALIDAD DE CONTRATACIÓN",
             ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"],
-            key="modalidad_contratacion"
+            key="modalidad_unica"
         )
     
-    # Leer siempre desde session_state
-    modalidad = st.session_state["modalidad_contratacion"]
-    
-    # Asignación automática del artículo
+    # Lógica automática del artículo
     if modalidad == "DIRECTA":
-        articulo = "16"
+        articulo = "ARTÍCULO 16"
     elif modalidad == "PRIVADA":
-        articulo = "17"
-    elif modalidad == "CONVOCATORIA ABIERTA":
-        articulo = "18"
+        articulo = "ARTÍCULO 17"
+    else:
+        articulo = "ARTÍCULO 18"
     
-    with fj2:
-        st.text_input(
-            "ARTÍCULO",
-            value=f"ARTÍCULO {articulo}",
-            disabled=True,
-            key="articulo_auto"
-        )
-
-
-
-
-    with fj3:
+    with col_articulo:
+        st.markdown("**ARTÍCULO**")
+        st.info(articulo)
+    
+    with col_numeral:
         numeral = st.text_input("NUMERAL")
-
-    with fj4:
+    
+    with col_literal:
         literal = st.text_input("LITERAL")
 
     # =====================================================
@@ -525,6 +515,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
