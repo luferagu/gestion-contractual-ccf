@@ -109,19 +109,15 @@ def valor_en_letras(valor):
     return texto.upper() + " PESOS M/CTE"
 
 
-def limpiar_valor(texto):
-    texto = texto.replace("$", "").replace(",", "").strip()
-    return int(texto) if texto.isdigit() else 0
-
-
-def formatear_moneda(key):
+def obtener_valor_formateado(key):
     valor = st.session_state.get(key, "")
     limpio = valor.replace("$", "").replace(",", "").strip()
+
     if limpio.isdigit():
         numero = int(limpio)
-        st.session_state[key] = f"$ {numero:,.0f}"
-        return numero
-    return 0
+        return numero, f"$ {numero:,.0f}"
+
+    return 0, ""
 
 
 # =====================================================
@@ -166,10 +162,12 @@ if etapa == "1 Estudio Previo":
     with col2:
         st.markdown('<div class="card">', unsafe_allow_html=True)
 
-        st.text_input("VALOR ($)", key="valor_ep", on_change=formatear_moneda, args=("valor_ep",))
-        valor = formatear_moneda("valor_ep")
+        st.text_input("VALOR ($)", key="valor_ep")
+
+        valor, valor_formateado = obtener_valor_formateado("valor_ep")
 
         if valor > 0:
+            st.write("Valor formateado:", valor_formateado)
             st.success(valor_en_letras(valor))
 
         plazo = st.number_input("PLAZO (días)", min_value=1)
@@ -231,11 +229,12 @@ if etapa == "2 Planeación":
         id1 = st.text_input("N° CC" if tipo1=="Persona Natural" else "N° NIT", key="id1")
 
     with c4:
-        st.text_input("VALOR PROPUESTA 1", key="valor1", on_change=formatear_moneda, args=("valor1",))
+        st.text_input("VALOR PROPUESTA 1", key="valor1")
 
-    valor1 = formatear_moneda("valor1")
+    valor1, valor1_formateado = obtener_valor_formateado("valor1")
 
     if valor1 > 0:
+        st.write("Valor formateado:", valor1_formateado)
         st.success(valor_en_letras(valor1))
 
     st.divider()
@@ -255,11 +254,12 @@ if etapa == "2 Planeación":
         id2 = st.text_input("N° CC" if tipo2=="Persona Natural" else "N° NIT", key="id2")
 
     with c8:
-        st.text_input("VALOR PROPUESTA 2", key="valor2", on_change=formatear_moneda, args=("valor2",))
+        st.text_input("VALOR PROPUESTA 2", key="valor2")
 
-    valor2 = formatear_moneda("valor2")
+    valor2, valor2_formateado = obtener_valor_formateado("valor2")
 
     if valor2 > 0:
+        st.write("Valor formateado:", valor2_formateado)
         st.success(valor_en_letras(valor2))
 
 # =====================================================
