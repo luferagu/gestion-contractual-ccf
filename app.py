@@ -216,19 +216,31 @@ if etapa == "2 Planeación":
 
     st.markdown("### ETAPA 2 — PLANEACIÓN")
 
+    # =================================================
     # PROPONENTE 1
+    # =================================================
     st.markdown("#### PROPONENTE 1")
 
     c1, c2, c3, c4 = st.columns([2,2,2,3])
 
     with c1:
-        tipo1 = st.selectbox("TIPO PERSONA", ["Persona Natural", "Persona Jurídica"], key="tipo1")
+        tipo1 = st.selectbox(
+            "TIPO PERSONA",
+            ["Persona Natural", "Persona Jurídica"],
+            key="tipo1"
+        )
 
     with c2:
-        nombre1 = st.text_input("NOMBRE / RAZÓN SOCIAL", key="nombre1")
+        nombre1 = st.text_input(
+            "NOMBRE / RAZÓN SOCIAL",
+            key="nombre1"
+        )
 
     with c3:
-        id1 = st.text_input("N° CC" if tipo1=="Persona Natural" else "N° NIT", key="id1")
+        id1 = st.text_input(
+            "N° CC" if tipo1 == "Persona Natural" else "N° NIT",
+            key="id1"
+        )
 
     with c4:
         st.text_input("VALOR PROPUESTA 1", key="valor1")
@@ -239,21 +251,52 @@ if etapa == "2 Planeación":
         st.write("Valor formateado:", valor1_formateado)
         st.success(valor_en_letras(valor1))
 
+    # ---- REPRESENTANTE LEGAL (SOLO SI ES JURÍDICA) ----
+    if tipo1 == "Persona Jurídica":
+
+        st.markdown("##### REPRESENTANTE LEGAL — PROPONENTE 1")
+
+        rl1_col1, rl1_col2 = st.columns(2)
+
+        with rl1_col1:
+            representante1 = st.text_input(
+                "NOMBRE DEL REPRESENTANTE LEGAL",
+                key="rep1"
+            )
+
+        with rl1_col2:
+            cc_rep1 = st.text_input(
+                "N° CC REPRESENTANTE LEGAL",
+                key="cc_rep1"
+            )
+
     st.divider()
 
+    # =================================================
     # PROPONENTE 2
+    # =================================================
     st.markdown("#### PROPONENTE 2")
 
     c5, c6, c7, c8 = st.columns([2,2,2,3])
 
     with c5:
-        tipo2 = st.selectbox("TIPO PERSONA", ["Persona Natural", "Persona Jurídica"], key="tipo2")
+        tipo2 = st.selectbox(
+            "TIPO PERSONA",
+            ["Persona Natural", "Persona Jurídica"],
+            key="tipo2"
+        )
 
     with c6:
-        nombre2 = st.text_input("NOMBRE / RAZÓN SOCIAL", key="nombre2")
+        nombre2 = st.text_input(
+            "NOMBRE / RAZÓN SOCIAL",
+            key="nombre2"
+        )
 
     with c7:
-        id2 = st.text_input("N° CC" if tipo2=="Persona Natural" else "N° NIT", key="id2")
+        id2 = st.text_input(
+            "N° CC" if tipo2 == "Persona Natural" else "N° NIT",
+            key="id2"
+        )
 
     with c8:
         st.text_input("VALOR PROPUESTA 2", key="valor2")
@@ -263,6 +306,25 @@ if etapa == "2 Planeación":
     if valor2 > 0:
         st.write("Valor formateado:", valor2_formateado)
         st.success(valor_en_letras(valor2))
+
+    # ---- REPRESENTANTE LEGAL (SOLO SI ES JURÍDICA) ----
+    if tipo2 == "Persona Jurídica":
+
+        st.markdown("##### REPRESENTANTE LEGAL — PROPONENTE 2")
+
+        rl2_col1, rl2_col2 = st.columns(2)
+
+        with rl2_col1:
+            representante2 = st.text_input(
+                "NOMBRE DEL REPRESENTANTE LEGAL",
+                key="rep2"
+            )
+
+        with rl2_col2:
+            cc_rep2 = st.text_input(
+                "N° CC REPRESENTANTE LEGAL",
+                key="cc_rep2"
+            )
 
 # =====================================================
 # ETAPA 3 — CONTRATACIÓN
@@ -312,3 +374,4 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
