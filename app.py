@@ -264,8 +264,27 @@ if etapa == "1 Estudio Previo":
             ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"]
         )
 
+    with fj1:
+        modalidad = st.selectbox(
+            "MODALIDAD DE CONTRATACIÓN",
+            ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"]
+        )
+    
+    # ARTÍCULO AUTOMÁTICO SEGÚN MODALIDAD
+    if modalidad == "DIRECTA":
+        articulo = "16"
+    elif modalidad == "PRIVADA":
+        articulo = "17"
+    else:
+        articulo = "18"
+    
     with fj2:
-        articulo = st.text_input("ARTÍCULO")
+        st.text_input(
+            "ARTÍCULO",
+            value=f"ARTÍCULO {articulo}",
+            disabled=True
+        )
+
 
     with fj3:
         numeral = st.text_input("NUMERAL")
@@ -505,6 +524,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
