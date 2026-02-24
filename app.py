@@ -261,13 +261,8 @@ if etapa == "1 Estudio Previo":
     with fj1:
         modalidad = st.selectbox(
             "MODALIDAD DE CONTRATACIÓN",
-            ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"]
-        )
-
-    with fj1:
-        modalidad = st.selectbox(
-            "MODALIDAD DE CONTRATACIÓN",
-            ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"]
+            ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"],
+            key="modalidad_contratacion"
         )
     
     # ARTÍCULO AUTOMÁTICO SEGÚN MODALIDAD
@@ -282,8 +277,10 @@ if etapa == "1 Estudio Previo":
         st.text_input(
             "ARTÍCULO",
             value=f"ARTÍCULO {articulo}",
-            disabled=True
+            disabled=True,
+            key="articulo_auto"
         )
+
 
 
     with fj3:
@@ -524,6 +521,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
