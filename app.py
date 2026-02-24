@@ -295,6 +295,7 @@ if etapa == "1 Estudio Previo":
 with col_literal:
     literal = st.text_input("LITERAL")
 
+    
     # =====================================================
     # 3. CONDICIONES DEL FUTURO CONTRATO
     # =====================================================
@@ -527,6 +528,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
