@@ -17,26 +17,11 @@ st.set_page_config(
 # =====================================================
 st.markdown("""
 <style>
-
-body {
-    background-color: #0f172a;
-}
-
-.main {
-    background-color: #0f172a;
-}
-
-.sidebar .sidebar-content {
-    background-color: #111827;
-}
-
-h1, h2, h3 {
-    color: white;
-}
-
-.block-container {
-    padding-top: 2rem;
-}
+body { background-color: #0f172a; }
+.main { background-color: #0f172a; }
+.sidebar .sidebar-content { background-color: #111827; }
+h1, h2, h3 { color: white; }
+.block-container { padding-top: 2rem; }
 
 .card {
     background-color: #1e293b;
@@ -47,7 +32,7 @@ h1, h2, h3 {
 
 .stepper {
     display: flex;
-    gap: 2rem;
+    gap: 1rem;
     margin-bottom: 1rem;
 }
 
@@ -58,9 +43,7 @@ h1, h2, h3 {
     color: white;
 }
 
-.step.active {
-    background-color: #2563eb;
-}
+.step.active { background-color: #2563eb; }
 
 .banner-id {
     background: linear-gradient(90deg, #14532d, #166534);
@@ -70,7 +53,6 @@ h1, h2, h3 {
     font-weight: bold;
     margin-bottom: 2rem;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -95,7 +77,6 @@ with st.sidebar:
 def generar_id():
     conn = conectar_db()
     cursor = conn.cursor()
-
     year = date.today().year
 
     cursor.execute(
@@ -105,22 +86,18 @@ def generar_id():
 
     total = cursor.fetchone()[0]
     conn.close()
-
     return f"{total+1:03d}-{year}"
 
 
 def proceso_existe(id_proceso):
     conn = conectar_db()
     cursor = conn.cursor()
-
     cursor.execute(
         "SELECT 1 FROM procesos WHERE id_proceso = %s",
         (id_proceso,)
     )
-
     existe = cursor.fetchone()
     conn.close()
-
     return existe is not None
 
 
@@ -137,8 +114,18 @@ def limpiar_valor(texto):
     return int(texto) if texto.isdigit() else 0
 
 
+def formatear_moneda(key):
+    valor = st.session_state.get(key, "")
+    limpio = valor.replace("$", "").replace(",", "").strip()
+    if limpio.isdigit():
+        numero = int(limpio)
+        st.session_state[key] = f"$ {numero:,.0f}"
+        return numero
+    return 0
+
+
 # =====================================================
-# CONTROL DE ID EN SESIÓN
+# CONTROL DE ID
 # =====================================================
 if "ID_PROCESO" not in st.session_state:
     st.session_state.ID_PROCESO = generar_id()
@@ -146,18 +133,13 @@ if "ID_PROCESO" not in st.session_state:
 ID = st.session_state.ID_PROCESO
 
 # =====================================================
-# ENCABEZADO PRINCIPAL
+# NAVEGACIÓN ETAPAS
 # =====================================================
-st.markdown("## SISTEMA DE GESTIÓN CONTRACTUAL – CCF")
-
-st.markdown("""
-<div class="stepper">
-<div class="step active">1 Estudio Previo</div>
-<div class="step">2 Planeación</div>
-<div class="step">3 Contratación</div>
-<div class="step">4 Ejecución</div>
-</div>
-""", unsafe_allow_html=True)
+etapa = st.radio(
+    "",
+    ["1 Estudio Previo", "2 Planeación", "3 Contratación", "4 Ejecución"],
+    horizontal=True
+)
 
 st.markdown(f"""
 <div class="banner-id">
@@ -166,111 +148,162 @@ ID_PROCESO generado automáticamente: {ID}
 """, unsafe_allow_html=True)
 
 # =====================================================
-# ETAPA 1 — ESTUDIO PREVIO
+# ETAPA 1
 # =====================================================
-st.markdown("### ETAPA 1 — ESTUDIO PREVIO")
+if etapa == "1 Estudio Previo":
 
-col1, col2 = st.columns(2)
+    st.markdown("### ETAPA 1 — ESTUDIO PREVIO")
 
-with col1:
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    objeto = st.text_area("OBJETO")
-    necesidad = st.text_area("NECESIDAD")
-    justificacion = st.text_area("JUSTIFICACIÓN")
-    st.markdown('</div>', unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
 
-with col2:
-    st.markdown('<div class="card">', unsafe_allow_html=True)
+    with col1:
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        objeto = st.text_area("OBJETO")
+        necesidad = st.text_area("NECESIDAD")
+        justificacion = st.text_area("JUSTIFICACIÓN")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    valor_input = st.text_input("VALOR ($)")
-    valor = limpiar_valor(valor_input)
+    with col2:
+        st.markdown('<div class="card">', unsafe_allow_html=True)
 
-    if valor > 0:
-        st.success(valor_en_letras(valor))
+        st.text_input("VALOR ($)", key="valor_ep", on_change=formatear_moneda, args=("valor_ep",))
+        valor = formatear_moneda("valor_ep")
 
-    plazo = st.number_input("PLAZO (días)", min_value=1)
-    fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
+        if valor > 0:
+            st.success(valor_en_letras(valor))
 
-    st.markdown('</div>', unsafe_allow_html=True)
+        plazo = st.number_input("PLAZO (días)", min_value=1)
+        fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
-# ---------- GUARDAR PROCESO ----------
-if st.button("GUARDAR ESTUDIO PREVIO"):
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    if proceso_existe(ID):
-        st.warning("Este proceso ya está registrado.")
-    else:
-        try:
-            conn = conectar_db()
-            cursor = conn.cursor()
+    if st.button("GUARDAR ESTUDIO PREVIO"):
 
-            cursor.execute("""
-                INSERT INTO procesos
-                (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """, (
-                ID,
-                objeto,
-                necesidad,
-                justificacion,
-                valor,
-                plazo,
-                fecha_estudio
-            ))
+        if proceso_existe(ID):
+            st.warning("Este proceso ya está registrado.")
+        else:
+            try:
+                conn = conectar_db()
+                cursor = conn.cursor()
 
-            conn.commit()
-            conn.close()
+                cursor.execute("""
+                    INSERT INTO procesos
+                    (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    ID,
+                    objeto,
+                    necesidad,
+                    justificacion,
+                    valor,
+                    plazo,
+                    fecha_estudio
+                ))
 
-            st.success("Proceso guardado correctamente en PostgreSQL.")
-            st.session_state.ID_PROCESO = generar_id()
+                conn.commit()
+                conn.close()
 
-        except Exception as e:
-            st.error(f"Error al guardar proceso: {e}")
+                st.success("Proceso guardado correctamente.")
+                st.session_state.ID_PROCESO = generar_id()
+
+            except Exception as e:
+                st.error(f"Error al guardar proceso: {e}")
 
 # =====================================================
-# ETAPA 3 — CONTRATOS
+# ETAPA 2 — PLANEACIÓN
 # =====================================================
-st.markdown("### ETAPA 3 — CONTRATOS")
+if etapa == "2 Planeación":
 
-st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.markdown("### ETAPA 2 — PLANEACIÓN")
 
-tipo = st.selectbox("TIPO CONTRATO",
-    ["Obra", "Consultoría", "Prestación de Servicios", "Suministro"])
+    # -------- PROPONENTE 1 --------
+    st.markdown("#### PROPONENTE 1")
 
-supervisor = st.text_input("SUPERVISOR")
-cdp = st.text_input("CDP")
-fecha_firma = st.date_input("FECHA FIRMA")
+    c1, c2, c3, c4 = st.columns([2,2,2,3])
 
-st.markdown('</div>', unsafe_allow_html=True)
+    with c1:
+        tipo1 = st.selectbox("TIPO PERSONA", ["Persona Natural", "Persona Jurídica"], key="tipo1")
 
-# ---------- GUARDAR CONTRATO ----------
-if st.button("GUARDAR CONTRATO"):
+    with c2:
+        nombre1 = st.text_input("NOMBRE / RAZÓN SOCIAL", key="nombre1")
 
-    if not proceso_existe(ID):
-        st.error("Debe guardar primero el Estudio Previo antes de registrar el contrato.")
-    else:
-        try:
-            conn = conectar_db()
-            cursor = conn.cursor()
+    with c3:
+        id1 = st.text_input("N° CC" if tipo1=="Persona Natural" else "N° NIT", key="id1")
 
-            cursor.execute("""
-                INSERT INTO contratos
-                (id_proceso, tipo_contrato, supervisor, cdp, fecha_firma)
-                VALUES (%s, %s, %s, %s, %s)
-            """, (
-                ID,
-                tipo,
-                supervisor,
-                cdp,
-                fecha_firma
-            ))
+    with c4:
+        st.text_input("VALOR PROPUESTA 1", key="valor1", on_change=formatear_moneda, args=("valor1",))
 
-            conn.commit()
-            conn.close()
+    valor1 = formatear_moneda("valor1")
 
-            st.success("Contrato guardado correctamente en PostgreSQL.")
+    if valor1 > 0:
+        st.success(valor_en_letras(valor1))
 
-        except Exception as e:
-            st.error(f"Error al guardar contrato: {e}")
+    st.divider()
+
+    # -------- PROPONENTE 2 --------
+    st.markdown("#### PROPONENTE 2")
+
+    c5, c6, c7, c8 = st.columns([2,2,2,3])
+
+    with c5:
+        tipo2 = st.selectbox("TIPO PERSONA", ["Persona Natural", "Persona Jurídica"], key="tipo2")
+
+    with c6:
+        nombre2 = st.text_input("NOMBRE / RAZÓN SOCIAL", key="nombre2")
+
+    with c7:
+        id2 = st.text_input("N° CC" if tipo2=="Persona Natural" else "N° NIT", key="id2")
+
+    with c8:
+        st.text_input("VALOR PROPUESTA 2", key="valor2", on_change=formatear_moneda, args=("valor2",))
+
+    valor2 = formatear_moneda("valor2")
+
+    if valor2 > 0:
+        st.success(valor_en_letras(valor2))
+
+# =====================================================
+# ETAPA 3 — CONTRATACIÓN
+# =====================================================
+if etapa == "3 Contratación":
+
+    st.markdown("### ETAPA 3 — CONTRATOS")
+
+    tipo = st.selectbox("TIPO CONTRATO",
+        ["Obra", "Consultoría", "Prestación de Servicios", "Suministro"])
+
+    supervisor = st.text_input("SUPERVISOR")
+    cdp = st.text_input("CDP")
+    fecha_firma = st.date_input("FECHA FIRMA")
+
+    if st.button("GUARDAR CONTRATO"):
+
+        if not proceso_existe(ID):
+            st.error("Debe guardar primero el Estudio Previo.")
+        else:
+            try:
+                conn = conectar_db()
+                cursor = conn.cursor()
+
+                cursor.execute("""
+                    INSERT INTO contratos
+                    (id_proceso, tipo_contrato, supervisor, cdp, fecha_firma)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (
+                    ID,
+                    tipo,
+                    supervisor,
+                    cdp,
+                    fecha_firma
+                ))
+
+                conn.commit()
+                conn.close()
+
+                st.success("Contrato guardado correctamente.")
+
+            except Exception as e:
+                st.error(f"Error al guardar contrato: {e}")
 
 # =====================================================
 # FINAL
