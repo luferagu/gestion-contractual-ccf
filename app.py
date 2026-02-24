@@ -250,7 +250,7 @@ if etapa == "1 Estudio Previo":
         height=150
     )
 
-      # =====================================================
+    # =====================================================
     # 2.3 FUNDAMENTOS JURÍDICOS
     # =====================================================
 
@@ -292,10 +292,11 @@ if etapa == "1 Estudio Previo":
             key="numeral_dinamico"
         )
 
-    # ---------------- LITERAL CONDICIONAL ----------------
+    # ---------------- LITERAL CONDICIONAL ESTRICTO ----------------
     with col_literal:
 
-        if numeral == "2":   # 🔹 SOLO SE ACTIVA PARA NUMERAL 2
+        # SOLO CUANDO SEA DIRECTA Y NUMERAL 2
+        if modalidad == "DIRECTA" and numeral == "2":
 
             literal = st.selectbox(
                 "LITERAL",
@@ -547,6 +548,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
