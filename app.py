@@ -259,18 +259,21 @@ if etapa == "1 Estudio Previo":
     fj1, fj2, fj3, fj4 = st.columns(4)
 
     with fj1:
-        modalidad = st.selectbox(
+        st.selectbox(
             "MODALIDAD DE CONTRATACIÓN",
             ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"],
             key="modalidad_contratacion"
         )
     
-    # ARTÍCULO AUTOMÁTICO SEGÚN MODALIDAD
+    # Leer siempre desde session_state
+    modalidad = st.session_state["modalidad_contratacion"]
+    
+    # Asignación automática del artículo
     if modalidad == "DIRECTA":
         articulo = "16"
     elif modalidad == "PRIVADA":
         articulo = "17"
-    else:
+    elif modalidad == "CONVOCATORIA ABIERTA":
         articulo = "18"
     
     with fj2:
@@ -280,6 +283,7 @@ if etapa == "1 Estudio Previo":
             disabled=True,
             key="articulo_auto"
         )
+
 
 
 
@@ -521,6 +525,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
