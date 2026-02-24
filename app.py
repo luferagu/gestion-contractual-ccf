@@ -338,16 +338,43 @@ if etapa == "1 Estudio Previo":
         height=120
     )
 
-    # =====================================================
+       # =====================================================
     # 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS
     # =====================================================
 
     st.markdown("## 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS")
 
-    garantias = st.text_area(
+    opciones_garantias = {
+        "Anticipo": """1. Anticipo: Para garantizar el Buen manejo y Correcta Inversión del Anticipo, por la suma equivalente al cien por cien (100%) del mismo, por el término del contrato de ejecución contractual y seis (6) meses más.""",
+
+        "Cumplimiento": """2. Cumplimiento: Para precaver los perjuicios derivados del incumplimiento del contrato, por un valor equivalente al veinte (20%) del valor del mismo y con una vigencia igual al término de ejecución contractual y seis (6) meses más.""",
+
+        "Salarios y Prestaciones": """3. Salarios, Prestaciones Sociales e Indemnizaciones: Para cubrir el riesgo de incumplimiento de las obligaciones laborales, de acuerdo con lo consagrado en el artículo 64 del Código Sustantivo de Trabajo, a que esté obligado el afianzado y relacionadas con el personal utilizado para la ejecución del contrato, por un valor equivalente al quince por ciento (15%) del contrato y por una vigencia igual al término del contrato y tres (3) años más.""",
+
+        "Responsabilidad Civil Extracontractual": """4. Responsabilidad Civil Extracontractual: Para indemnizar los perjuicios patrimoniales que se causen por el Contratista a la salud o bienes de terceros, por los doscientos salarios mínimos mensuales vigentes (200 SMLMV) y una vigencia igual al término del mismo.""",
+
+        "Estabilidad de la Obra": """5. Estabilidad y Conservación de la Obra Ejecutada: En cuantía equivalente al veinte por ciento (20%), del valor del contrato y con una vigencia de cinco (5) años contados a partir del recibo a entera satisfacción de las obras civiles objeto del contrato.""",
+
+        "Calidad del Servicio": """6. Calidad de los Elementos o Servicios: De las especificaciones técnicas contractuales que determinan la calidad del elemento o servicio contratado. El cual deberá constituirse por el treinta (30%) del valor del contrato, que cubra el término del mismo y un año más."""
+    }
+
+    garantias_seleccionadas = st.multiselect(
         "GARANTÍAS EXIGIDAS",
-        height=120
+        list(opciones_garantias.keys()),
+        key="garantias_select"
     )
+
+    if garantias_seleccionadas:
+        texto_garantias = "\n\n".join(
+            [opciones_garantias[g] for g in garantias_seleccionadas]
+        )
+
+        st.text_area(
+            "Detalle de Garantías Seleccionadas",
+            value=texto_garantias,
+            height=300,
+            disabled=True
+        )
 
     # =====================================================
     # GUARDAR (LÓGICA ORIGINAL)
@@ -552,6 +579,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
