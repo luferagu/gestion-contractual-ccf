@@ -259,7 +259,10 @@ if etapa == "1 Estudio Previo":
     fj1, fj2, fj3, fj4 = st.columns(4)
 
     with fj1:
-        modalidad = st.text_input("MODALIDAD")
+    modalidad = st.selectbox(
+        "MODALIDAD DE CONTRATACIÓN",
+        ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"]
+    )
 
     with fj2:
         articulo = st.text_input("ARTÍCULO")
@@ -502,6 +505,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
