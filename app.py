@@ -279,10 +279,14 @@ if etapa == "1 Estudio Previo":
         articulo = "ARTÍCULO 18"
         opciones_numeral = ["1", "2", "3"]
 
-    # ---------------- ARTÍCULO (NO EDITABLE) ----------------
+    # ---------------- ARTÍCULO (ALINEADO Y NO EDITABLE) ----------------
     with col_articulo:
-        st.markdown("**ARTÍCULO**")
-        st.info(articulo)
+        st.text_input(
+            "ARTÍCULO",
+            value=articulo,
+            disabled=True,
+            key="articulo_auto"
+        )
 
     # ---------------- NUMERAL DINÁMICO ----------------
     with col_numeral:
@@ -548,6 +552,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
