@@ -109,13 +109,15 @@ def valor_en_letras(valor):
     return texto.upper() + " PESOS M/CTE"
 
 
-def obtener_valor_formateado(key):
-    valor = st.session_state.get(key, "")
-    limpio = valor.replace("$", "").replace(",", "").strip()
+def procesar_moneda(key):
+    valor_texto = st.session_state.get(key, "")
+
+    limpio = valor_texto.replace("$", "").replace(",", "").strip()
 
     if limpio.isdigit():
         numero = int(limpio)
-        return numero, f"$ {numero:,.0f}"
+        formateado = f"$ {numero:,.0f}"
+        return numero, formateado
 
     return 0, ""
 
@@ -164,7 +166,7 @@ if etapa == "1 Estudio Previo":
 
         st.text_input("VALOR ($)", key="valor_ep")
 
-        valor, valor_formateado = obtener_valor_formateado("valor_ep")
+        valor, valor_formateado = procesar_moneda("valor_ep")
 
         if valor > 0:
             st.write("Valor formateado:", valor_formateado)
@@ -214,7 +216,7 @@ if etapa == "2 Planeación":
 
     st.markdown("### ETAPA 2 — PLANEACIÓN")
 
-    # -------- PROPONENTE 1 --------
+    # PROPONENTE 1
     st.markdown("#### PROPONENTE 1")
 
     c1, c2, c3, c4 = st.columns([2,2,2,3])
@@ -231,7 +233,7 @@ if etapa == "2 Planeación":
     with c4:
         st.text_input("VALOR PROPUESTA 1", key="valor1")
 
-    valor1, valor1_formateado = obtener_valor_formateado("valor1")
+    valor1, valor1_formateado = procesar_moneda("valor1")
 
     if valor1 > 0:
         st.write("Valor formateado:", valor1_formateado)
@@ -239,7 +241,7 @@ if etapa == "2 Planeación":
 
     st.divider()
 
-    # -------- PROPONENTE 2 --------
+    # PROPONENTE 2
     st.markdown("#### PROPONENTE 2")
 
     c5, c6, c7, c8 = st.columns([2,2,2,3])
@@ -256,7 +258,7 @@ if etapa == "2 Planeación":
     with c8:
         st.text_input("VALOR PROPUESTA 2", key="valor2")
 
-    valor2, valor2_formateado = obtener_valor_formateado("valor2")
+    valor2, valor2_formateado = procesar_moneda("valor2")
 
     if valor2 > 0:
         st.write("Valor formateado:", valor2_formateado)
