@@ -250,14 +250,14 @@ if etapa == "1 Estudio Previo":
         height=150
     )
 
-    # =====================================================
+       # =====================================================
     # 2.3 FUNDAMENTOS JURÍDICOS
     # =====================================================
 
     st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
 
     col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
-    
+
     # ---------------- MODALIDAD ----------------
     with col_modalidad:
         modalidad = st.selectbox(
@@ -265,24 +265,25 @@ if etapa == "1 Estudio Previo":
             ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"],
             key="modalidad_unica"
         )
-    
+
     # ---------------- ARTÍCULO AUTOMÁTICO ----------------
     if modalidad == "DIRECTA":
         articulo = "ARTÍCULO 16"
         opciones_numeral = ["1", "2", "3"]
-    
+
     elif modalidad == "PRIVADA":
         articulo = "ARTÍCULO 17"
         opciones_numeral = ["1", "2", "3", "4"]
-    
+
     else:
         articulo = "ARTÍCULO 18"
         opciones_numeral = ["1", "2", "3"]
-    
+
+    # ---------------- ARTÍCULO (NO EDITABLE) ----------------
     with col_articulo:
         st.markdown("**ARTÍCULO**")
         st.info(articulo)
-    
+
     # ---------------- NUMERAL DINÁMICO ----------------
     with col_numeral:
         numeral = st.selectbox(
@@ -291,11 +292,16 @@ if etapa == "1 Estudio Previo":
             key="numeral_dinamico"
         )
 
-# ---------------- LITERAL ----------------
-with col_literal:
-    literal = st.text_input("LITERAL")
+    # ---------------- LITERAL ----------------
+    with col_literal:
+        literal = st.text_input(
+            "LITERAL",
+            key="literal_input"
+        )
 
-    
+    # 🔹 ESTA LÍNEA CIERRA VISUALMENTE LAS COLUMNAS
+    st.markdown("---")
+
     # =====================================================
     # 3. CONDICIONES DEL FUTURO CONTRATO
     # =====================================================
@@ -528,6 +534,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
