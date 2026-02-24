@@ -310,6 +310,7 @@ if etapa == "1 Estudio Previo":
                 conn = conectar_db()
                 cursor = conn.cursor()
 
+                
                 cursor.execute("""
                     INSERT INTO procesos
                     (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
@@ -320,9 +321,10 @@ if etapa == "1 Estudio Previo":
                     necesidad,
                     justificacion,
                     valor,
-                    f"{plazo} {unidad_plazo}",
+                    plazo,
                     fecha_estudio
                 ))
+
 
                 conn.commit()
                 conn.close()
@@ -498,6 +500,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
