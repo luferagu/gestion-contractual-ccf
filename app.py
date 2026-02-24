@@ -343,22 +343,23 @@ if etapa == "1 Estudio Previo":
 # ---------------- 3.2 PLAZO Y VIGENCIA DE EJECUCIÓN ----------------
 
 if plazo and unidad_plazo:
-    texto_plazo = f"{plazo} {unidad_plazo.lower()}"
-    
+
+    # Manejo singular / plural
+    if plazo == 1:
+        unidad_texto = unidad_plazo[:-1].lower() if unidad_plazo.endswith("s") else unidad_plazo.lower()
+    else:
+        unidad_texto = unidad_plazo.lower()
+
+    texto_plazo = f"{plazo} {unidad_texto}"
+
     st.text_area(
         "3.2 PLAZO Y VIGENCIA DE EJECUCIÓN",
-        value=f"El término de duración del presente contrato será de {texto_plazo}, contados a partir del acta de inicio.",
+        value=(
+            f"El término de duración del presente contrato será de {texto_plazo}, "
+            "contados a partir del acta de inicio. "
+            "La vigencia comprende el plazo de ejecución y cuatro (4) meses más."
+        ),
         disabled=True,
-        height=100
-    )
-
-    forma_pago = st.text_area(
-        "3.3 FORMA DE PAGO",
-        height=120
-    )
-
-    analisis = st.text_area(
-        "3.4 ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO (Literal)",
         height=120
     )
 
@@ -603,6 +604,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
