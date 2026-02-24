@@ -209,6 +209,91 @@ if etapa == "1 Estudio Previo":
             value=date.today()
         )
 
+    # =====================================================
+    # CAMPOS ADICIONALES (SIN MODIFICAR LOS EXISTENTES)
+    # =====================================================
+
+    st.markdown("## INFORMACIÓN PRESUPUESTAL Y DE PLANEACIÓN")
+
+    c1, c2, c3, c4 = st.columns(4)
+
+    with c1:
+        centro_costos = st.text_input("CENTRO DE COSTOS")
+
+    with c2:
+        programa = st.text_input("PROGRAMA")
+
+    with c3:
+        codigo_planeacion = st.text_input("ACTIVIDAD DE PLANEACIÓN")
+
+    with c4:
+        rubro = st.text_input("RUBRO")
+
+    st.markdown("## 2. DESCRIPCIÓN DEL OBJETO A CONTRATAR")
+
+    objeto_2 = st.text_area(
+        "2.1. OBJETO (DESCRIPCIÓN DETALLADA)",
+        height=120
+    )
+
+    caracteristicas_tecnicas = st.text_area(
+        "2.2. CARACTERÍSTICAS TÉCNICAS DEL BIEN",
+        height=150
+    )
+
+    st.markdown("## 2.3 FUNDAMENTOS JURÍDICOS")
+
+    fj1, fj2, fj3, fj4 = st.columns(4)
+
+    with fj1:
+        modalidad = st.text_input("MODALIDAD")
+
+    with fj2:
+        articulo = st.text_input("ARTÍCULO")
+
+    with fj3:
+        numeral = st.text_input("NUMERAL")
+
+    with fj4:
+        literal = st.text_input("LITERAL")
+
+    st.markdown("## 3. CONDICIONES DEL FUTURO CONTRATO")
+
+    oportunidad = st.text_input("3.1 OPORTUNIDAD (Mes de suscripción 2026)")
+
+    forma_pago = st.text_area(
+        "3.3 FORMA DE PAGO",
+        height=100
+    )
+
+    analisis = st.text_area(
+        "3.4 ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO",
+        height=120
+    )
+
+    st.markdown("## 3.5 PRESUPUESTO PROYECTADO")
+
+    valor_presupuesto = st.text_input(
+        "VALOR PRESUPUESTO ($)",
+        key="valor_presupuesto"
+    )
+
+    valor_calc, _ = procesar_moneda("valor_presupuesto")
+
+    if valor_calc > 0:
+        st.success(valor_en_letras(valor_calc))
+
+    st.markdown("## 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS")
+
+    garantias = st.text_area(
+        "GARANTÍAS EXIGIDAS",
+        height=100
+    )
+
+    # =====================================================
+    # BOTÓN ORIGINAL (SIN MODIFICACIÓN)
+    # =====================================================
+
     st.markdown("---")
 
     if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
@@ -242,6 +327,7 @@ if etapa == "1 Estudio Previo":
 
             except Exception as e:
                 st.error(f"Error al guardar proceso: {e}")
+
 # =====================================================
 # ETAPA 2 — PLANEACIÓN
 # =====================================================
@@ -407,6 +493,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
