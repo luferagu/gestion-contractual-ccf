@@ -11,6 +11,24 @@ from database import conectar_db, crear_tablas
 # =====================================================
 st.set_page_config(layout="wide")
 st.title("SISTEMA DE GESTIÓN CONTRACTUAL")
+from database import conectar_db
+
+st.divider()
+st.subheader("PRUEBA DE CONEXIÓN POSTGRESQL")
+
+try:
+    conn = conectar_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT version();")
+    version = cursor.fetchone()
+    conn.close()
+
+    st.success("Conexión exitosa a PostgreSQL")
+    st.write("Versión:", version[0])
+
+except Exception as e:
+    st.error("Error de conexión:")
+    st.write(e)
 
 crear_tablas()
 
@@ -245,4 +263,5 @@ if st.button("GENERAR CONTRATO"):
     )
 
 st.success("Sistema funcionando correctamente.")
+
 
