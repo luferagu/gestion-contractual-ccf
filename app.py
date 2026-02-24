@@ -258,6 +258,7 @@ if etapa == "1 Estudio Previo":
 
     col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
     
+    # ---------------- MODALIDAD ----------------
     with col_modalidad:
         modalidad = st.selectbox(
             "MODALIDAD DE CONTRATACIÓN",
@@ -265,23 +266,34 @@ if etapa == "1 Estudio Previo":
             key="modalidad_unica"
         )
     
-    # Lógica automática del artículo
+    # ---------------- ARTÍCULO AUTOMÁTICO ----------------
     if modalidad == "DIRECTA":
         articulo = "ARTÍCULO 16"
+        opciones_numeral = ["1", "2", "3"]
+    
     elif modalidad == "PRIVADA":
         articulo = "ARTÍCULO 17"
+        opciones_numeral = ["1", "2", "3", "4"]
+    
     else:
         articulo = "ARTÍCULO 18"
+        opciones_numeral = ["1", "2", "3"]
     
     with col_articulo:
         st.markdown("**ARTÍCULO**")
         st.info(articulo)
     
+    # ---------------- NUMERAL DINÁMICO ----------------
     with col_numeral:
-        numeral = st.text_input("NUMERAL")
-    
-    with col_literal:
-        literal = st.text_input("LITERAL")
+        numeral = st.selectbox(
+            "NUMERAL",
+            opciones_numeral,
+            key="numeral_dinamico"
+        )
+
+# ---------------- LITERAL ----------------
+with col_literal:
+    literal = st.text_input("LITERAL")
 
     # =====================================================
     # 3. CONDICIONES DEL FUTURO CONTRATO
@@ -515,6 +527,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
