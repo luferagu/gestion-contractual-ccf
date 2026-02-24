@@ -152,32 +152,58 @@ if etapa == "1 Estudio Previo":
 
     st.markdown("### ETAPA 1 — ESTUDIO PREVIO")
 
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2, gap="large")
 
+    # ---------------- COLUMNA IZQUIERDA ----------------
     with col1:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        objeto = st.text_area("OBJETO")
-        necesidad = st.text_area("NECESIDAD")
-        justificacion = st.text_area("JUSTIFICACIÓN")
-        st.markdown('</div>', unsafe_allow_html=True)
 
+        objeto = st.text_area(
+            "OBJETO",
+            height=150,
+            placeholder="Describa el objeto contractual"
+        )
+
+        necesidad = st.text_area(
+            "NECESIDAD",
+            height=150,
+            placeholder="Describa la necesidad que se pretende satisfacer"
+        )
+
+        justificacion = st.text_area(
+            "JUSTIFICACIÓN",
+            height=150,
+            placeholder="Fundamente técnica, jurídica y financieramente el proceso"
+        )
+
+    # ---------------- COLUMNA DERECHA ----------------
     with col2:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
 
-        st.text_input("VALOR ($)", key="valor_ep")
+        st.text_input(
+            "VALOR ($)",
+            key="valor_ep",
+            placeholder="Ej: 25,000,000"
+        )
 
         valor, valor_formateado = procesar_moneda("valor_ep")
 
         if valor > 0:
-            st.write("Valor formateado:", valor_formateado)
             st.success(valor_en_letras(valor))
 
-        plazo = st.number_input("PLAZO (días)", min_value=1)
-        fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
+        plazo = st.number_input(
+            "PLAZO (días)",
+            min_value=1,
+            value=1
+        )
 
-        st.markdown('</div>', unsafe_allow_html=True)
+        fecha_estudio = st.date_input(
+            "FECHA ESTUDIO",
+            value=date.today()
+        )
 
-    if st.button("GUARDAR ESTUDIO PREVIO"):
+    # ---------------- BOTÓN GUARDAR ----------------
+    st.markdown("---")
+
+    if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
 
         if proceso_existe(ID):
             st.warning("Este proceso ya está registrado.")
@@ -374,4 +400,5 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
