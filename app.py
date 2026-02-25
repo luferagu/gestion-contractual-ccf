@@ -250,7 +250,7 @@ if etapa == "1 Estudio Previo":
         height=150
     )
 
-    # =====================================================
+      # =====================================================
     # 2.3 FUNDAMENTOS JURÍDICOS
     # =====================================================
 
@@ -258,6 +258,7 @@ if etapa == "1 Estudio Previo":
 
     col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
 
+    # ---------------- MODALIDAD ----------------
     with col_modalidad:
         modalidad = st.selectbox(
             "MODALIDAD DE CONTRATACIÓN",
@@ -265,23 +266,29 @@ if etapa == "1 Estudio Previo":
             key="modalidad_unica"
         )
 
+    # ---------------- DEFINICIÓN AUTOMÁTICA ARTÍCULO Y NUMERALES ----------------
     if modalidad == "DIRECTA":
         articulo = "ARTÍCULO 16"
         opciones_numeral = ["1", "2", "3"]
+
     elif modalidad == "PRIVADA":
         articulo = "ARTÍCULO 17"
         opciones_numeral = ["1", "2", "3", "4"]
-    else:
+
+    else:  # CONVOCATORIA ABIERTA
         articulo = "ARTÍCULO 18"
         opciones_numeral = ["1", "2", "3"]
 
+    # ---------------- ARTÍCULO (NO EDITABLE) ----------------
     with col_articulo:
         st.text_input(
             "ARTÍCULO",
             value=articulo,
-            disabled=True
+            disabled=True,
+            key="articulo_auto"
         )
 
+    # ---------------- NUMERAL ----------------
     with col_numeral:
         numeral = st.selectbox(
             "NUMERAL",
@@ -289,7 +296,9 @@ if etapa == "1 Estudio Previo":
             key="numeral_dinamico"
         )
 
+    # ---------------- LITERAL CONDICIONAL ----------------
     with col_literal:
+
         if modalidad == "DIRECTA" and numeral == "2":
             literal = st.selectbox(
                 "LITERAL",
@@ -301,14 +310,22 @@ if etapa == "1 Estudio Previo":
             st.text_input(
                 "LITERAL",
                 value="No aplica",
-                disabled=True
+                disabled=True,
+                key="literal_disabled"
             )
 
     st.markdown("---")
 
+
+    # =====================================================
+    # 3. CONDICIONES DEL FUTURO CONTRATO
+    # =====================================================
+
     st.markdown("## 3. CONDICIONES DEL FUTURO CONTRATO")
 
-    oportunidad = st.text_input("3.1 OPORTUNIDAD (Mes de suscripción en 2026)")
+    oportunidad = st.text_input(
+        "3.1 OPORTUNIDAD (Mes de suscripción en 2026)"
+    )
 
     forma_pago = st.text_area(
         "3.3 FORMA DE PAGO",
@@ -316,24 +333,32 @@ if etapa == "1 Estudio Previo":
     )
 
     analisis = st.text_area(
-        "3.4 ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO (Literal)",
+        "3.4 ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO",
         height=120
     )
+
+    st.markdown("---")
+
+
+    # =====================================================
+    # 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS
+    # =====================================================
 
     st.markdown("## 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS")
 
     opciones_garantias = {
+
         "Anticipo": """1. Anticipo: Para garantizar el Buen manejo y Correcta Inversión del Anticipo, por la suma equivalente al cien por cien (100%) del mismo, por el término del contrato de ejecución contractual y seis (6) meses más.""",
 
-        "Cumplimiento": """2. Cumplimiento: Para precaver los perjuicios derivados del incumplimiento del contrato, por un valor equivalente al veinte (20%) del valor del mismo y con una vigencia igual al término de ejecución contractual y seis (6) meses más.""",
+        "Cumplimiento": """2. Cumplimiento: Para precaver los perjuicios derivados del incumplimiento del contrato, por un valor equivalente al veinte por ciento (20%) del valor del mismo y con una vigencia igual al término de ejecución contractual y seis (6) meses más.""",
 
-        "Salarios y Prestaciones": """3. Salarios, Prestaciones Sociales e Indemnizaciones: Para cubrir el riesgo de incumplimiento de las obligaciones laborales, de acuerdo con lo consagrado en el artículo 64 del Código Sustantivo de Trabajo, a que esté obligado el afianzado y relacionadas con el personal utilizado para la ejecución del contrato, por un valor equivalente al quince por ciento (15%) del contrato y por una vigencia igual al término del contrato y tres (3) años más.""",
+        "Salarios y Prestaciones": """3. Salarios, Prestaciones Sociales e Indemnizaciones: Para cubrir el riesgo de incumplimiento de las obligaciones laborales, conforme al artículo 64 del Código Sustantivo del Trabajo, por un valor equivalente al quince por ciento (15%) del contrato y por una vigencia igual al término del contrato y tres (3) años más.""",
 
-        "Responsabilidad Civil Extracontractual": """4. Responsabilidad Civil Extracontractual: Para indemnizar los perjuicios patrimoniales que se causen por el Contratista a la salud o bienes de terceros, por los doscientos salarios mínimos mensuales vigentes (200 SMLMV) y una vigencia igual al término del mismo.""",
+        "Responsabilidad Civil Extracontractual": """4. Responsabilidad Civil Extracontractual: Para indemnizar los perjuicios patrimoniales que se causen a terceros, por doscientos (200) SMLMV y una vigencia igual al término del contrato.""",
 
-        "Estabilidad de la Obra": """5. Estabilidad y Conservación de la Obra Ejecutada: En cuantía equivalente al veinte por ciento (20%), del valor del contrato y con una vigencia de cinco (5) años contados a partir del recibo a entera satisfacción de las obras civiles objeto del contrato.""",
+        "Estabilidad de la Obra": """5. Estabilidad y Conservación de la Obra Ejecutada: Por el veinte por ciento (20%) del valor del contrato y con vigencia de cinco (5) años contados desde el recibo a satisfacción.""",
 
-        "Calidad del Servicio": """6. Calidad de los Elementos o Servicios: De las especificaciones técnicas contractuales que determinan la calidad del elemento o servicio contratado. El cual deberá constituirse por el treinta (30%) del valor del contrato, que cubra el término del mismo y un año más."""
+        "Calidad del Servicio": """6. Calidad de los Elementos o Servicios: Por el treinta por ciento (30%) del valor del contrato, con vigencia igual al término del mismo y un (1) año adicional."""
     }
 
     garantias_seleccionadas = st.multiselect(
@@ -343,6 +368,7 @@ if etapa == "1 Estudio Previo":
     )
 
     if garantias_seleccionadas:
+
         texto_garantias = "\n\n".join(
             [opciones_garantias[g] for g in garantias_seleccionadas]
         )
@@ -356,10 +382,16 @@ if etapa == "1 Estudio Previo":
 
     st.markdown("---")
 
+
+    # =====================================================
+    # GUARDAR ESTUDIO PREVIO
+    # =====================================================
+
     if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
 
         if proceso_existe(ID):
             st.warning("Este proceso ya está registrado.")
+
         else:
             try:
                 conn = conectar_db()
@@ -387,7 +419,6 @@ if etapa == "1 Estudio Previo":
 
             except Exception as e:
                 st.error(f"Error al guardar proceso: {e}")
-
 # =====================================================
 # ETAPA 2 — PLANEACIÓN
 # =====================================================
@@ -545,3 +576,4 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
