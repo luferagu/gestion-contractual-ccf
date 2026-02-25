@@ -548,7 +548,7 @@ if etapa == "2 Planeación":
                 cursor = conn.cursor()
 
                 cursor.execute("""
-                    INSERT INTO planeacion (
+                    INSERT INTO public.planeacion (
                         id_proceso,
                         tipo1, nombre1, identificacion1, valor1,
                         representante1, cc_representante1,
@@ -628,6 +628,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
