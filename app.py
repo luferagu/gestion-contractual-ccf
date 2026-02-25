@@ -418,6 +418,10 @@ if etapa == "2 Planeación":
 
     st.markdown("### ETAPA 2 — PLANEACIÓN")
 
+    # -------------------------------------------------
+    # PROPONENTE 1
+    # -------------------------------------------------
+
     st.markdown("#### PROPONENTE 1")
 
     c1, c2, c3, c4 = st.columns([2,2,2,3])
@@ -450,29 +454,31 @@ if etapa == "2 Planeación":
         st.write("Valor formateado:", valor1_formateado)
         st.success(valor_en_letras(valor1))
 
-    # Inicializar variables por seguridad
     representante1 = None
     cc_rep1 = None
 
     if tipo1 == "Persona Jurídica":
-
         st.markdown("##### REPRESENTANTE LEGAL — PROPONENTE 1")
 
-        rl1_col1, rl1_col2 = st.columns(2)
+        col_a, col_b = st.columns(2)
 
-        with rl1_col1:
+        with col_a:
             representante1 = st.text_input(
                 "NOMBRE DEL REPRESENTANTE LEGAL",
                 key="rep1"
             )
 
-        with rl1_col2:
+        with col_b:
             cc_rep1 = st.text_input(
                 "N° CC REPRESENTANTE LEGAL",
                 key="cc_rep1"
             )
 
     st.divider()
+
+    # -------------------------------------------------
+    # PROPONENTE 2
+    # -------------------------------------------------
 
     st.markdown("#### PROPONENTE 2")
 
@@ -506,38 +512,36 @@ if etapa == "2 Planeación":
         st.write("Valor formateado:", valor2_formateado)
         st.success(valor_en_letras(valor2))
 
-    # Inicializar variables por seguridad
     representante2 = None
     cc_rep2 = None
 
     if tipo2 == "Persona Jurídica":
-
         st.markdown("##### REPRESENTANTE LEGAL — PROPONENTE 2")
 
-        rl2_col1, rl2_col2 = st.columns(2)
+        col_c, col_d = st.columns(2)
 
-        with rl2_col1:
+        with col_c:
             representante2 = st.text_input(
                 "NOMBRE DEL REPRESENTANTE LEGAL",
                 key="rep2"
             )
 
-        with rl2_col2:
+        with col_d:
             cc_rep2 = st.text_input(
                 "N° CC REPRESENTANTE LEGAL",
                 key="cc_rep2"
             )
 
-    # =====================================================
+    # -------------------------------------------------
     # BOTÓN GUARDAR PLANEACIÓN
-    # =====================================================
+    # -------------------------------------------------
 
     st.markdown("---")
 
     if st.button("GUARDAR PLANEACIÓN", use_container_width=True):
 
         if not proceso_existe(ID):
-            st.error("Debe guardar primero el Estudio Previo.")
+            st.error("Debe existir un Estudio Previo antes de guardar la Planeación.")
         else:
             try:
                 conn = conectar_db()
@@ -571,10 +575,11 @@ if etapa == "2 Planeación":
                 conn.commit()
                 conn.close()
 
-                st.success("Planeación guardada correctamente en Supabase.")
+                st.success("Planeación guardada correctamente.")
 
             except Exception as e:
                 st.error(f"Error al guardar planeación: {e}")
+
 # =====================================================
 # ETAPA 3 — CONTRATACIÓN
 # =====================================================
@@ -623,6 +628,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
