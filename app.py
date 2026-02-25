@@ -145,188 +145,11 @@ ID_PROCESO generado automáticamente: {ID}
 """, unsafe_allow_html=True)
 
 # =====================================================
-# ETAPA 1 — ESTUDIO PREVIO
+# ETAPA 1 — ESTUDIO PREVIO (AJUSTADA Y ORDENADA)
 # =====================================================
 if etapa == "1 Estudio Previo":
 
     st.markdown("### ETAPA 1 — ESTUDIO PREVIO")
-
-    # =====================================================
-    # 1. INFORMACIÓN GENERAL
-    # =====================================================
-
-    objeto = st.text_area(
-        "OBJETO",
-        height=200
-    )
-
-    justificacion = st.text_area(
-        "JUSTIFICACIÓN",
-        height=200
-    )
-
-    necesidad = st.text_area(
-        "1. DESCRIPCIÓN DE LA NECESIDAD QUE LA ENTIDAD PRETENDE SATISFACER CON LA CONTRATACIÓN",
-        height=220
-    )
-
-    st.markdown("---")
-
-    # =====================================================
-    # INFORMACIÓN ECONÓMICA
-    # =====================================================
-
-    col_valor, col_plazo, col_unidad = st.columns([2,1,1])
-
-    with col_valor:
-        st.text_input(
-            "VALOR ($)",
-            key="valor_ep"
-        )
-
-        valor, _ = procesar_moneda("valor_ep")
-
-        if valor > 0:
-            st.success(valor_en_letras(valor))
-
-    with col_plazo:
-        plazo = st.number_input(
-            "PLAZO",
-            min_value=1,
-            value=1,
-            key="plazo_input"
-        )
-
-    with col_unidad:
-        unidad_plazo = st.selectbox(
-            "UNIDAD",
-            ["Días", "Meses"],
-            key="unidad_plazo_input"
-        )
-
-    fecha_estudio = st.date_input(
-        "FECHA ESTUDIO"
-    )
-
-    st.markdown("---")
-
-    # =====================================================
-    # 3. CONDICIONES DEL FUTURO CONTRATO
-    # =====================================================
-
-    st.markdown("## 3. CONDICIONES DEL FUTURO CONTRATO")
-
-    # 3.1 OPORTUNIDAD
-    meses = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    ]
-
-    oportunidad = st.multiselect(
-        "3.1 OPORTUNIDAD (Mes de suscripción)",
-        meses,
-        key="meses_suscripcion"
-    )
-
-    # 3.2 PLAZO Y VIGENCIA
-    if plazo and unidad_plazo:
-
-        unidad_texto = unidad_plazo.lower()
-        texto_plazo = f"{plazo} {unidad_texto}"
-
-        st.text_area(
-            "3.2 PLAZO Y VIGENCIA DE EJECUCIÓN",
-            value=(
-                f"El término de duración del presente contrato será de {texto_plazo}, "
-                "contados a partir del acta de inicio. "
-                "La vigencia comprende el plazo de ejecución y cuatro (4) meses más."
-            ),
-            disabled=True,
-            height=120
-        )
-
-    # 3.3 FORMA DE PAGO
-    forma_pago = st.text_area(
-        "3.3 FORMA DE PAGO",
-        height=120
-    )
-
-    # 3.4 ANÁLISIS
-    analisis = st.text_area(
-        "3.4 ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO",
-        height=120
-    )
-
-    st.markdown("---")
-
-    # =====================================================
-    # 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS
-    # =====================================================
-
-    opciones_garantias = {
-        "Anticipo": "Anticipo: 100% del anticipo por el término del contrato y seis (6) meses más.",
-        "Cumplimiento": "Cumplimiento: 20% del valor del contrato por el término del mismo y seis (6) meses más.",
-        "Salarios y Prestaciones": "Salarios y Prestaciones: 15% del valor del contrato y tres (3) años más.",
-        "Responsabilidad Civil": "Responsabilidad Civil Extracontractual: 200 SMLMV por el término del contrato.",
-        "Estabilidad de la Obra": "Estabilidad: 20% del valor del contrato por cinco (5) años.",
-        "Calidad del Servicio": "Calidad: 30% del valor del contrato por el término del mismo y un (1) año más."
-    }
-
-    garantias_seleccionadas = st.multiselect(
-        "GARANTÍAS EXIGIDAS",
-        list(opciones_garantias.keys()),
-        key="garantias_select"
-    )
-
-    if garantias_seleccionadas:
-        texto_garantias = "\n\n".join(
-            [opciones_garantias[g] for g in garantias_seleccionadas]
-        )
-
-        st.text_area(
-            "Detalle de Garantías",
-            value=texto_garantias,
-            disabled=True,
-            height=200
-        )
-
-    st.markdown("---")
-
-    # =====================================================
-    # BOTÓN GUARDAR
-    # =====================================================
-
-    if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
-
-        if proceso_existe(ID):
-            st.warning("Este proceso ya está registrado.")
-        else:
-            try:
-                conn = conectar_db()
-                cursor = conn.cursor()
-
-                cursor.execute("""
-                    INSERT INTO procesos
-                    (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
-                """, (
-                    ID,
-                    objeto,
-                    necesidad,
-                    justificacion,
-                    valor,
-                    plazo,
-                    fecha_estudio
-                ))
-
-                conn.commit()
-                conn.close()
-
-                st.success("Proceso guardado correctamente.")
-                st.session_state.ID_PROCESO = generar_id()
-
-            except Exception as e:
-                st.error(f"Error al guardar proceso: {e}")
 
     # =====================================================
     # CAMPOS PRINCIPALES (ANCHO COMPLETO)
@@ -427,7 +250,7 @@ if etapa == "1 Estudio Previo":
         height=150
     )
 
-       # =====================================================
+    # =====================================================
     # 2.3 FUNDAMENTOS JURÍDICOS
     # =====================================================
 
@@ -435,7 +258,6 @@ if etapa == "1 Estudio Previo":
 
     col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
 
-    # ---------------- MODALIDAD ----------------
     with col_modalidad:
         modalidad = st.selectbox(
             "MODALIDAD DE CONTRATACIÓN",
@@ -443,20 +265,16 @@ if etapa == "1 Estudio Previo":
             key="modalidad_unica"
         )
 
-    # ---------------- ARTÍCULO AUTOMÁTICO + NUMERALES ----------------
     if modalidad == "DIRECTA":
         articulo = "ARTÍCULO 16"
         opciones_numeral = ["1", "2", "3"]
-
     elif modalidad == "PRIVADA":
         articulo = "ARTÍCULO 17"
         opciones_numeral = ["1", "2", "3", "4"]
-
     else:
         articulo = "ARTÍCULO 18"
         opciones_numeral = ["1", "2", "3"]
 
-    # ---------------- ARTÍCULO (DINÁMICO Y ALINEADO) ----------------
     with col_articulo:
         st.text_input(
             "ARTÍCULO",
@@ -464,7 +282,6 @@ if etapa == "1 Estudio Previo":
             disabled=True
         )
 
-    # ---------------- NUMERAL DINÁMICO ----------------
     with col_numeral:
         numeral = st.selectbox(
             "NUMERAL",
@@ -472,17 +289,13 @@ if etapa == "1 Estudio Previo":
             key="numeral_dinamico"
         )
 
-    # ---------------- LITERAL CONDICIONAL ESTRICTO ----------------
     with col_literal:
-
         if modalidad == "DIRECTA" and numeral == "2":
-
             literal = st.selectbox(
                 "LITERAL",
                 ["a", "b", "c", "d", "e", "f", "g", "h"],
                 key="literal_dinamico"
             )
-
         else:
             literal = None
             st.text_input(
@@ -491,59 +304,21 @@ if etapa == "1 Estudio Previo":
                 disabled=True
             )
 
-    # 🔹 CIERRE VISUAL DEL BLOQUE
     st.markdown("---")
-
-    # =====================================================
-    # 3. CONDICIONES DEL FUTURO CONTRATO
-    # =====================================================
 
     st.markdown("## 3. CONDICIONES DEL FUTURO CONTRATO")
 
-   # ---------------- 3.1 OPORTUNIDAD ----------------
-    meses = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    ]
-    
-    oportunidad = st.multiselect(
-        "3.1 OPORTUNIDAD (Mes de suscripción)",
-        meses,
-        key="meses_suscripcion"
-    )
-    
-    # Mostrar texto consolidado si selecciona meses
-    if oportunidad:
-        texto_oportunidad = ", ".join(oportunidad)
-        st.info(f"El contrato se deberá suscribir en el mes de {texto_oportunidad} de 2026.")
+    oportunidad = st.text_input("3.1 OPORTUNIDAD (Mes de suscripción en 2026)")
 
-# ---------------- 3.2 PLAZO Y VIGENCIA DE EJECUCIÓN ----------------
-
-plazo = st.session_state.get("plazo_input", None)
-unidad_plazo = st.session_state.get("unidad_plazo_input", None)
-
-if plazo and unidad_plazo:
-
-    if plazo == 1:
-        unidad_texto = unidad_plazo[:-1].lower()
-    else:
-        unidad_texto = unidad_plazo.lower()
-
-    texto_plazo = f"{plazo} {unidad_texto}"
-
-    st.text_area(
-        "3.2 PLAZO Y VIGENCIA DE EJECUCIÓN",
-        value=(
-            f"El término de duración del presente contrato será de {texto_plazo}, "
-            "contados a partir del acta de inicio. "
-            "La vigencia comprende el plazo de ejecución y cuatro (4) meses más."
-        ),
-        disabled=True,
+    forma_pago = st.text_area(
+        "3.3 FORMA DE PAGO",
         height=120
     )
-       # =====================================================
-    # 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS
-    # =====================================================
+
+    analisis = st.text_area(
+        "3.4 ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO (Literal)",
+        height=120
+    )
 
     st.markdown("## 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS")
 
@@ -578,10 +353,6 @@ if plazo and unidad_plazo:
             height=300,
             disabled=True
         )
-
-    # =====================================================
-    # GUARDAR (LÓGICA ORIGINAL)
-    # =====================================================
 
     st.markdown("---")
 
@@ -624,9 +395,6 @@ if etapa == "2 Planeación":
 
     st.markdown("### ETAPA 2 — PLANEACIÓN")
 
-    # =================================================
-    # PROPONENTE 1
-    # =================================================
     st.markdown("#### PROPONENTE 1")
 
     c1, c2, c3, c4 = st.columns([2,2,2,3])
@@ -659,7 +427,6 @@ if etapa == "2 Planeación":
         st.write("Valor formateado:", valor1_formateado)
         st.success(valor_en_letras(valor1))
 
-    # ---- REPRESENTANTE LEGAL (SOLO SI ES JURÍDICA) ----
     if tipo1 == "Persona Jurídica":
 
         st.markdown("##### REPRESENTANTE LEGAL — PROPONENTE 1")
@@ -680,9 +447,6 @@ if etapa == "2 Planeación":
 
     st.divider()
 
-    # =================================================
-    # PROPONENTE 2
-    # =================================================
     st.markdown("#### PROPONENTE 2")
 
     c5, c6, c7, c8 = st.columns([2,2,2,3])
@@ -715,7 +479,6 @@ if etapa == "2 Planeación":
         st.write("Valor formateado:", valor2_formateado)
         st.success(valor_en_letras(valor2))
 
-    # ---- REPRESENTANTE LEGAL (SOLO SI ES JURÍDICA) ----
     if tipo2 == "Persona Jurídica":
 
         st.markdown("##### REPRESENTANTE LEGAL — PROPONENTE 2")
@@ -782,6 +545,69 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+        rl2_col1, rl2_col2 = st.columns(2)
+
+        with rl2_col1:
+            representante2 = st.text_input(
+                "NOMBRE DEL REPRESENTANTE LEGAL",
+                key="rep2"
+            )
+
+        with rl2_col2:
+            cc_rep2 = st.text_input(
+                "N° CC REPRESENTANTE LEGAL",
+                key="cc_rep2"
+            )
+
+# =====================================================
+# ETAPA 3 — CONTRATACIÓN
+# =====================================================
+if etapa == "3 Contratación":
+
+    st.markdown("### ETAPA 3 — CONTRATOS")
+
+    tipo = st.selectbox("TIPO CONTRATO",
+        ["Obra", "Consultoría", "Prestación de Servicios", "Suministro"])
+
+    supervisor = st.text_input("SUPERVISOR")
+    cdp = st.text_input("CDP")
+    fecha_firma = st.date_input("FECHA FIRMA")
+
+    if st.button("GUARDAR CONTRATO"):
+
+        if not proceso_existe(ID):
+            st.error("Debe guardar primero el Estudio Previo.")
+        else:
+            try:
+                conn = conectar_db()
+                cursor = conn.cursor()
+
+                cursor.execute("""
+                    INSERT INTO contratos
+                    (id_proceso, tipo_contrato, supervisor, cdp, fecha_firma)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (
+                    ID,
+                    tipo,
+                    supervisor,
+                    cdp,
+                    fecha_firma
+                ))
+
+                conn.commit()
+                conn.close()
+
+                st.success("Contrato guardado correctamente.")
+
+            except Exception as e:
+                st.error(f"Error al guardar contrato: {e}")
+
+# =====================================================
+# FINAL
+# =====================================================
+st.divider()
+st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
