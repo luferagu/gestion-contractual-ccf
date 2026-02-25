@@ -415,7 +415,7 @@ if etapa == "1 Estudio Previo":
                 conn.close()
 
                 st.success("Proceso guardado correctamente.")
-                st.session_state.ID_PROCESO = generar_id()
+                # st.session_state.ID_PROCESO = generar_id()
 
             except Exception as e:
                 st.error(f"Error al guardar proceso: {e}")
@@ -645,5 +645,6 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
