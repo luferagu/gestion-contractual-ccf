@@ -124,10 +124,13 @@ def procesar_moneda(key):
 # =====================================================
 # CONTROL DE ID
 # =====================================================
-if "ID_PROCESO" not in st.session_state:
-    st.session_state.ID_PROCESO = generar_id()
+if "ID_ACTUAL" not in st.session_state:
+    st.session_state.ID_ACTUAL = generar_id()
 
-ID = st.session_state.ID_PROCESO
+if "ID_SIGUIENTE" not in st.session_state:
+    st.session_state.ID_SIGUIENTE = generar_id()
+
+ID = st.session_state.ID_ACTUAL
 
 # =====================================================
 # NAVEGACIÓN ETAPAS
@@ -383,11 +386,45 @@ if etapa == "1 Estudio Previo":
                 conn.close()
 
                 st.success("Proceso guardado correctamente.")
-                st.session_state.ID_PROCESO = generar_id()
+                if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
 
-            except Exception as e:
-                st.error(f"Error al guardar proceso: {e}")
-
+                    if proceso_existe(ID):
+                        st.warning("Este proceso ya está registrado.")
+                    else:
+                        try:
+                            conn = conectar_db()
+                            cursor = conn.cursor()
+                
+                            cursor.execute("""
+                                INSERT INTO procesos
+                                (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
+                                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                            """, (
+                                ID,
+                                objeto,
+                                necesidad,
+                                justificacion,
+                                valor,
+                                plazo,
+                                fecha_estudio
+                            ))
+                
+                            conn.commit()
+                            conn.close()
+                
+                            st.success("Proceso guardado correctamente.")
+                
+                            # 🔹 Generar siguiente consecutivo (preparado)
+                            st.session_state.ID_SIGUIENTE = generar_id()
+                
+                            # 🔹 Cambiar automáticamente a Planeación
+                            st.session_state.radio = "2 Planeación"
+                
+                            st.rerun()
+                
+                        except Exception as e:
+                            st.error(f"Error al guardar proceso: {e}")
+                
 # =====================================================
 # ETAPA 2 — PLANEACIÓN
 # =====================================================
@@ -600,4 +637,5 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
