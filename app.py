@@ -342,11 +342,13 @@ if etapa == "1 Estudio Previo":
 
 # ---------------- 3.2 PLAZO Y VIGENCIA DE EJECUCIÓN ----------------
 
+plazo = st.session_state.get("plazo_input", None)
+unidad_plazo = st.session_state.get("unidad_plazo_input", None)
+
 if plazo and unidad_plazo:
 
-    # Manejo singular / plural
     if plazo == 1:
-        unidad_texto = unidad_plazo[:-1].lower() if unidad_plazo.endswith("s") else unidad_plazo.lower()
+        unidad_texto = unidad_plazo[:-1].lower()
     else:
         unidad_texto = unidad_plazo.lower()
 
@@ -362,7 +364,6 @@ if plazo and unidad_plazo:
         disabled=True,
         height=120
     )
-
        # =====================================================
     # 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS
     # =====================================================
@@ -604,6 +605,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
