@@ -427,6 +427,10 @@ if etapa == "2 Planeación":
         st.write("Valor formateado:", valor1_formateado)
         st.success(valor_en_letras(valor1))
 
+    # Inicializar variables por seguridad
+    representante1 = None
+    cc_rep1 = None
+
     if tipo1 == "Persona Jurídica":
 
         st.markdown("##### REPRESENTANTE LEGAL — PROPONENTE 1")
@@ -479,6 +483,10 @@ if etapa == "2 Planeación":
         st.write("Valor formateado:", valor2_formateado)
         st.success(valor_en_letras(valor2))
 
+    # Inicializar variables por seguridad
+    representante2 = None
+    cc_rep2 = None
+
     if tipo2 == "Persona Jurídica":
 
         st.markdown("##### REPRESENTANTE LEGAL — PROPONENTE 2")
@@ -497,6 +505,53 @@ if etapa == "2 Planeación":
                 key="cc_rep2"
             )
 
+    # =====================================================
+    # BOTÓN GUARDAR PLANEACIÓN
+    # =====================================================
+
+    st.markdown("---")
+
+    if st.button("GUARDAR PLANEACIÓN", use_container_width=True):
+
+        if not proceso_existe(ID):
+            st.error("Debe guardar primero el Estudio Previo.")
+        else:
+            try:
+                conn = conectar_db()
+                cursor = conn.cursor()
+
+                cursor.execute("""
+                    INSERT INTO planeacion (
+                        id_proceso,
+                        tipo1, nombre1, identificacion1, valor1,
+                        representante1, cc_representante1,
+                        tipo2, nombre2, identificacion2, valor2,
+                        representante2, cc_representante2
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    ID,
+                    tipo1,
+                    nombre1,
+                    id1,
+                    valor1,
+                    representante1,
+                    cc_rep1,
+                    tipo2,
+                    nombre2,
+                    id2,
+                    valor2,
+                    representante2,
+                    cc_rep2
+                ))
+
+                conn.commit()
+                conn.close()
+
+                st.success("Planeación guardada correctamente en Supabase.")
+
+            except Exception as e:
+                st.error(f"Error al guardar planeación: {e}")
 # =====================================================
 # ETAPA 3 — CONTRATACIÓN
 # =====================================================
@@ -545,3 +600,4 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
