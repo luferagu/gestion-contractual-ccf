@@ -219,8 +219,8 @@ if etapa == "1 Estudio Previo":
 
     st.markdown("---")
 
- # =====================================================
-# INFORMACIÓN PRESUPUESTAL (DINÁMICA Y ORDENADA 2x2)
+# =====================================================
+# INFORMACIÓN PRESUPUESTAL (COMPLETA Y CONSOLIDADA)
 # =====================================================
 
 estructura_presupuestal = {
@@ -248,6 +248,11 @@ estructura_presupuestal = {
         }
     },
 
+    "4120": {
+        "nombre": "NOMINA JURIDICA",
+        "programas": {}
+    },
+
     "4200": {
         "nombre": "MASC - METODOS ALTERNATIVOS DE SOLUCION",
         "programas": {
@@ -265,6 +270,11 @@ estructura_presupuestal = {
         }
     },
 
+    "4201": {
+        "nombre": "METODOS ALTERNATIVO SOL Y CON",
+        "programas": {}
+    },
+
     "4300": {
         "nombre": "CIVICOS, SOCIALES Y CULTURALES",
         "programas": {
@@ -279,6 +289,22 @@ estructura_presupuestal = {
         }
     },
 
+    "4400": {
+        "nombre": "MEJORAMIENTO DEL ENTORNO",
+        "programas": {
+            "4400-4410": "VEEDURIAS",
+            "4400-4411": "CENSO",
+            "4400-4412": "NOMINA",
+            "4400-4413": "FUNCIONAMIENTO",
+            "4400-4414": "ESTUDIOS E INVESTIGACIONES",
+            "4400-4415": "MEJORAMIENTO Y CONSERVACION DEL MEDIO",
+            "4400-4416": "SEGURIDAD, CONVIVENCIA Y PROMOCION CIUDADANA",
+            "4400-4417": "GESTION Y FORTALECIMIENTO A LA COMPETITIVIDAD EMPRESARIAL",
+            "4400-4418": "PROGRAMA DE INTERNACIONALIZACION",
+            "4400-4420": "VEEDURIAS CIUDADANAS"
+        }
+    },
+
     "4500": {
         "nombre": "DESARROLLO EMPRESARIAL",
         "programas": {
@@ -286,9 +312,56 @@ estructura_presupuestal = {
             "4500-4511": "FERIAS CAMARA DE FACATATIVA",
             "4500-4512": "OBLIGACIONES TRIBUTARIAS",
             "4500-4513": "CAPACITACION",
+            "4500-4514": "LUSTRABOTAS",
+            "4500-4515": "PANADEROS",
+            "4500-4516": "SALONES DE BELLEZA",
+            "4500-4517": "FORTALECIMIENTO SECTOR TURISTICO",
+            "4500-4518": "PROYECTO AGRO ECO TURISTICO",
+            "4500-4519": "MEGA PROYECTO INDUSTRIAL",
             "4500-4520": "RUEDA DE NEGOCIOS",
+            "4500-4521": "APORTES Y CONTRIBUCIONES",
+            "4500-4522": "CARTILLA INFORMATIVA",
+            "4500-4523": "SEGUNDA EMISION CARTILLA TENDERO",
+            "4500-4524": "SUSCRIPCION CONVENIOS",
+            "4500-4525": "CENTRO DE ATENCION EMPRESARIAL",
             "4500-4526": "NOMINA",
-            "4500-4531": "PROGRAMA DE INNOVACION"
+            "4500-4527": "FUNCIONAMIENTO",
+            "4500-4528": "PROMOCION Y APOYO EMPRENDIMIENTO",
+            "4500-4529": "APOYO DESARROLLO AGROINDUSTRIAL",
+            "4500-4530": "GESTION DE PROYECTOS",
+            "4500-4531": "PROGRAMA DE INNOVACION",
+            "4500-4532": "NOMINA GESTION PROYECTOS"
+        }
+    },
+
+    "4600": {
+        "nombre": "PROMOCION DEL COMERCIO",
+        "programas": {
+            "4600-4609": "FERIAS, RUEDAS, MISIONES Y ENCUENTROS",
+            "4600-4610": "CAMPANAS COMERCIALES",
+            "4600-4611": "NOMINA",
+            "4600-4612": "FUNCIONAMIENTO"
+        }
+    },
+
+    "4700": {
+        "nombre": "GESTION ESTRATEGICA",
+        "programas": {
+            "4700-4704": "FUNCIONAMIENTO CONTROL INTERNO",
+            "4700-4705": "GESTION DE CALIDAD",
+            "4700-4707": "CONTROL INTERNO",
+            "4700-4708": "PLANEACION INSTITUCIONAL",
+            "4700-4709": "GESTION DOCUMENTAL",
+            "4700-4710": "PROMOCION INSTITUCIONAL E IMAGEN CORPORATIVA",
+            "4700-4711": "CAMPANA AFILIACION MTTO Y EVENTOS AFILIADOS",
+            "4700-4712": "ELABORACION DE CREDENCIALES",
+            "4700-4713": "ELABORACION PORTAFOLIO AFILIADOS",
+            "4700-4714": "NOMINA",
+            "4700-4715": "FUNCIONAMIENTO PRESIDENCIA EJECUTIVA",
+            "4700-4716": "FUNCIONAMIENTO JUNTA DIRECTIVA PUBLICO",
+            "4700-4720": "FORMACION EMPRESARIAL",
+            "4700-4721": "HOJAS VERDES",
+            "4700-4726": "FUNCIONAMIENTO JUNTA DIRECTIVA PRIVADO"
         }
     },
 
@@ -299,6 +372,13 @@ estructura_presupuestal = {
             "4800-4807": "FUNCIONAMIENTO TALENTO HUMANO",
             "4800-4809": "GESTION DEL TALENTO HUMANO",
             "4800-4810": "NOMINA",
+            "4800-4811": "FUNCIONAMIENTO GENERAL PUBLICO",
+            "4800-4812": "FUNCIONAMIENTO FUNZA",
+            "4800-4813": "FUNCIONAMIENTO VILLETA",
+            "4800-4814": "FUNCIONAMIENTO PACHO",
+            "4800-4815": "JURIDICA",
+            "4800-4816": "GESTION INFRAESTRUCTURA FISICA",
+            "4800-4821": "FUNCIONAMIENTO GENERAL PRIVADO",
             "4800-4890": "INVERSION PUBLICA",
             "4800-4892": "INVERSION PRIVADA"
         }
@@ -311,42 +391,6 @@ estructura_presupuestal = {
         }
     }
 }
-
-# ===================== FILA 1 =====================
-col1, col2 = st.columns(2)
-
-with col1:
-    centro_label = st.selectbox(
-        "CENTRO DE COSTOS",
-        [
-            f"{codigo} - {datos['nombre']}"
-            for codigo, datos in estructura_presupuestal.items()
-        ],
-        key="centro_costos_select"
-    )
-    centro_codigo = centro_label.split(" - ")[0]
-
-with col2:
-    programas_disponibles = estructura_presupuestal[centro_codigo]["programas"]
-
-    programa_label = st.selectbox(
-        "PROGRAMA",
-        [
-            f"{codigo} - {nombre}"
-            for codigo, nombre in programas_disponibles.items()
-        ],
-        key="programa_select"
-    )
-    programa_codigo = programa_label.split(" - ")[0]
-
-# ===================== FILA 2 =====================
-col3, col4 = st.columns(2)
-
-with col3:
-    codigo_planeacion = st.text_input("ACTIVIDAD DE PLANEACIÓN")
-
-with col4:
-    rubro = st.text_input("RUBRO")
     # =====================================================
     # 2. DESCRIPCIÓN DEL OBJETO
     # =====================================================
@@ -739,6 +783,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
