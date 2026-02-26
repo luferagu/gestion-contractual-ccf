@@ -226,8 +226,30 @@ if etapa == "1 Estudio Previo":
     c1, c2, c3, c4 = st.columns(4)
 
     with c1:
-        centro_costos = st.text_input("CENTRO DE COSTOS")
 
+        opciones_centro_costos = {
+            "4100 - REGISTROS PUBLICOS": "4100",
+            "4120 - NOMINA JURIDICA": "4120",
+            "4200 - MASC - METODOS ALTERNATIVOS DE SOLUCION": "4200",
+            "4201 - METODOS ALTERNATIVO SOL Y CON": "4201",
+            "4300 - CIVICOS, SOCIALES Y CULTURALES": "4300",
+            "4400 - MEJORAMIENTO DEL ENTORNO": "4400",
+            "4500 - DESARROLLO EMPRESARIAL": "4500",
+            "4600 - PROMOCION DEL COMERCIO": "4600",
+            "4700 - GESTION ESTRATEGICA": "4700",
+            "4800 - GESTION ADMINISTRATIVA": "4800",
+            "9999 - OTROS": "9999",
+            "9999-9999 - OTROS NO CODIFICADOS": "9999-9999"
+        }
+    
+        centro_costos_label = st.selectbox(
+            "CENTRO DE COSTOS",
+            list(opciones_centro_costos.keys()),
+            key="centro_costos_select"
+        )
+    
+        centro_costos = opciones_centro_costos[centro_costos_label]
+    
     with c2:
         programa = st.text_input("PROGRAMA")
 
@@ -629,6 +651,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
