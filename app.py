@@ -219,188 +219,188 @@ if etapa == "1 Estudio Previo":
 
     st.markdown("---")
 
-# =====================================================
-# INFORMACIÓN PRESUPUESTAL (COMPLETA Y CONSOLIDADA)
-# =====================================================
+    # =====================================================
+    # INFORMACIÓN PRESUPUESTAL (COMPLETA Y CONSOLIDADA)
+    # =====================================================
 
-estructura_presupuestal = {
+    estructura_presupuestal = {
 
-    "4100": {
-        "nombre": "REGISTROS PUBLICOS",
-        "programas": {
-            "4100-4110": "FUNCIONAMIENTO SISTEMAS",
-            "4100-4111": "BRIGADAS DE REGISTRO",
-            "4100-4112": "COSTUBRE MERCANTIL",
-            "4100-4113": "BRIGADA DE REGISTRO DE PROPONENTES",
-            "4100-4114": "JORNADAS DE RENOVACIONES",
-            "4100-4115": "CONFERENCIAS TALLER",
-            "4100-4116": "REVISORIA FISCAL",
-            "4100-4117": "PARTE TECNICA PROYECTO RUE",
-            "4100-4118": "PROYECTO COMUNICACIONES",
-            "4100-4119": "OTRAS NECESIDADES DE SISTEMAS",
-            "4100-4120": "NOMINA",
-            "4100-4121": "FUNCIONAMIENTO FACA",
-            "4100-4122": "FUNCIONAMIENTO FUNZA",
-            "4100-4123": "FUNCIONAMIENTO VILLETA",
-            "4100-4124": "FUNCIONAMIENTO PACHO",
-            "4100-4125": "FUNCIONAMIENTO GENERAL",
-            "4100-4126": "LISTA CONTRALORES Y PERITOS"
-        }
-    },
+        "4100": {
+            "nombre": "REGISTROS PUBLICOS",
+            "programas": {
+                "4100-4110": "FUNCIONAMIENTO SISTEMAS",
+                "4100-4111": "BRIGADAS DE REGISTRO",
+                "4100-4112": "COSTUBRE MERCANTIL",
+                "4100-4113": "BRIGADA DE REGISTRO DE PROPONENTES",
+                "4100-4114": "JORNADAS DE RENOVACIONES",
+                "4100-4115": "CONFERENCIAS TALLER",
+                "4100-4116": "REVISORIA FISCAL",
+                "4100-4117": "PARTE TECNICA PROYECTO RUE",
+                "4100-4118": "PROYECTO COMUNICACIONES",
+                "4100-4119": "OTRAS NECESIDADES DE SISTEMAS",
+                "4100-4120": "NOMINA",
+                "4100-4121": "FUNCIONAMIENTO FACA",
+                "4100-4122": "FUNCIONAMIENTO FUNZA",
+                "4100-4123": "FUNCIONAMIENTO VILLETA",
+                "4100-4124": "FUNCIONAMIENTO PACHO",
+                "4100-4125": "FUNCIONAMIENTO GENERAL",
+                "4100-4126": "LISTA CONTRALORES Y PERITOS"
+            }
+        },
 
-    "4120": {
-        "nombre": "NOMINA JURIDICA",
-        "programas": {}
-    },
+        "4120": {
+            "nombre": "NOMINA JURIDICA",
+            "programas": {}
+        },
 
-    "4200": {
-        "nombre": "MASC - METODOS ALTERNATIVOS DE SOLUCION",
-        "programas": {
-            "4200-4210": "CURSO FORMACION DE CONCILIADORES",
-            "4200-4211": "EDUCACION CONTINUADA",
-            "4200-4212": "SERVICIO SOCIAL DEL CENTRO DE CONCILIACION",
-            "4200-4213": "PLEGABLES INFORMATIVOS",
-            "4200-4214": "SEMINARIO TALLER CAPACITACION",
-            "4200-4215": "JORNADA CONCILIACION ESCOLAR",
-            "4200-4216": "NOMINA",
-            "4200-4217": "FUNCIONAMIENTO MASC",
-            "4200-4218": "SERVICIO DE CONCILIACION Y ARBITRAJE",
-            "4200-4220": "INVESTIGACION",
-            "4200-4221": "CURSO DE FORMACION DE CONCILIADORES PRIV"
-        }
-    },
+        "4200": {
+            "nombre": "MASC - METODOS ALTERNATIVOS DE SOLUCION",
+            "programas": {
+                "4200-4210": "CURSO FORMACION DE CONCILIADORES",
+                "4200-4211": "EDUCACION CONTINUADA",
+                "4200-4212": "SERVICIO SOCIAL DEL CENTRO DE CONCILIACION",
+                "4200-4213": "PLEGABLES INFORMATIVOS",
+                "4200-4214": "SEMINARIO TALLER CAPACITACION",
+                "4200-4215": "JORNADA CONCILIACION ESCOLAR",
+                "4200-4216": "NOMINA",
+                "4200-4217": "FUNCIONAMIENTO MASC",
+                "4200-4218": "SERVICIO DE CONCILIACION Y ARBITRAJE",
+                "4200-4220": "INVESTIGACION",
+                "4200-4221": "CURSO DE FORMACION DE CONCILIADORES PRIV"
+            }
+        },
 
-    "4201": {
-        "nombre": "METODOS ALTERNATIVO SOL Y CON",
-        "programas": {}
-    },
+        "4201": {
+            "nombre": "METODOS ALTERNATIVO SOL Y CON",
+            "programas": {}
+        },
 
-    "4300": {
-        "nombre": "CIVICOS, SOCIALES Y CULTURALES",
-        "programas": {
-            "4300-4310": "DESARROLLO CULTURAL, DEPORTIVO Y SOCIAL",
-            "4300-4311": "PROMOCION A LA GESTION CIVICA SOCIAL",
-            "4300-4312": "ACTIVIDADES CULTURALES DEPORTIVAS",
-            "4300-4313": "NOMINA",
-            "4300-4314": "FUNCIONAMIENTO",
-            "4300-4317": "CONSTRUYENDO FUTURO",
-            "4300-4320": "CONSULTORIO JURIDICO",
-            "4300-4321": "ELECCION DE GREMIOS"
-        }
-    },
+        "4300": {
+            "nombre": "CIVICOS, SOCIALES Y CULTURALES",
+            "programas": {
+                "4300-4310": "DESARROLLO CULTURAL, DEPORTIVO Y SOCIAL",
+                "4300-4311": "PROMOCION A LA GESTION CIVICA SOCIAL",
+                "4300-4312": "ACTIVIDADES CULTURALES DEPORTIVAS",
+                "4300-4313": "NOMINA",
+                "4300-4314": "FUNCIONAMIENTO",
+                "4300-4317": "CONSTRUYENDO FUTURO",
+                "4300-4320": "CONSULTORIO JURIDICO",
+                "4300-4321": "ELECCION DE GREMIOS"
+            }
+        },
 
-    "4400": {
-        "nombre": "MEJORAMIENTO DEL ENTORNO",
-        "programas": {
-            "4400-4410": "VEEDURIAS",
-            "4400-4411": "CENSO",
-            "4400-4412": "NOMINA",
-            "4400-4413": "FUNCIONAMIENTO",
-            "4400-4414": "ESTUDIOS E INVESTIGACIONES",
-            "4400-4415": "MEJORAMIENTO Y CONSERVACION DEL MEDIO",
-            "4400-4416": "SEGURIDAD, CONVIVENCIA Y PROMOCION CIUDADANA",
-            "4400-4417": "GESTION Y FORTALECIMIENTO A LA COMPETITIVIDAD EMPRESARIAL",
-            "4400-4418": "PROGRAMA DE INTERNACIONALIZACION",
-            "4400-4420": "VEEDURIAS CIUDADANAS"
-        }
-    },
+        "4400": {
+            "nombre": "MEJORAMIENTO DEL ENTORNO",
+            "programas": {
+                "4400-4410": "VEEDURIAS",
+                "4400-4411": "CENSO",
+                "4400-4412": "NOMINA",
+                "4400-4413": "FUNCIONAMIENTO",
+                "4400-4414": "ESTUDIOS E INVESTIGACIONES",
+                "4400-4415": "MEJORAMIENTO Y CONSERVACION DEL MEDIO",
+                "4400-4416": "SEGURIDAD, CONVIVENCIA Y PROMOCION CIUDADANA",
+                "4400-4417": "GESTION Y FORTALECIMIENTO A LA COMPETITIVIDAD EMPRESARIAL",
+                "4400-4418": "PROGRAMA DE INTERNACIONALIZACION",
+                "4400-4420": "VEEDURIAS CIUDADANAS"
+            }
+        },
 
-    "4500": {
-        "nombre": "DESARROLLO EMPRESARIAL",
-        "programas": {
-            "4500-4510": "FERIAS, RUEDAS Y EVENTOS",
-            "4500-4511": "FERIAS CAMARA DE FACATATIVA",
-            "4500-4512": "OBLIGACIONES TRIBUTARIAS",
-            "4500-4513": "CAPACITACION",
-            "4500-4514": "LUSTRABOTAS",
-            "4500-4515": "PANADEROS",
-            "4500-4516": "SALONES DE BELLEZA",
-            "4500-4517": "FORTALECIMIENTO SECTOR TURISTICO",
-            "4500-4518": "PROYECTO AGRO ECO TURISTICO",
-            "4500-4519": "MEGA PROYECTO INDUSTRIAL",
-            "4500-4520": "RUEDA DE NEGOCIOS",
-            "4500-4521": "APORTES Y CONTRIBUCIONES",
-            "4500-4522": "CARTILLA INFORMATIVA",
-            "4500-4523": "SEGUNDA EMISION CARTILLA TENDERO",
-            "4500-4524": "SUSCRIPCION CONVENIOS",
-            "4500-4525": "CENTRO DE ATENCION EMPRESARIAL",
-            "4500-4526": "NOMINA",
-            "4500-4527": "FUNCIONAMIENTO",
-            "4500-4528": "PROMOCION Y APOYO EMPRENDIMIENTO",
-            "4500-4529": "APOYO DESARROLLO AGROINDUSTRIAL",
-            "4500-4530": "GESTION DE PROYECTOS",
-            "4500-4531": "PROGRAMA DE INNOVACION",
-            "4500-4532": "NOMINA GESTION PROYECTOS"
-        }
-    },
+        "4500": {
+            "nombre": "DESARROLLO EMPRESARIAL",
+            "programas": {
+                "4500-4510": "FERIAS, RUEDAS Y EVENTOS",
+                "4500-4511": "FERIAS CAMARA DE FACATATIVA",
+                "4500-4512": "OBLIGACIONES TRIBUTARIAS",
+                "4500-4513": "CAPACITACION",
+                "4500-4514": "LUSTRABOTAS",
+                "4500-4515": "PANADEROS",
+                "4500-4516": "SALONES DE BELLEZA",
+                "4500-4517": "FORTALECIMIENTO SECTOR TURISTICO",
+                "4500-4518": "PROYECTO AGRO ECO TURISTICO",
+                "4500-4519": "MEGA PROYECTO INDUSTRIAL",
+                "4500-4520": "RUEDA DE NEGOCIOS",
+                "4500-4521": "APORTES Y CONTRIBUCIONES",
+                "4500-4522": "CARTILLA INFORMATIVA",
+                "4500-4523": "SEGUNDA EMISION CARTILLA TENDERO",
+                "4500-4524": "SUSCRIPCION CONVENIOS",
+                "4500-4525": "CENTRO DE ATENCION EMPRESARIAL",
+                "4500-4526": "NOMINA",
+                "4500-4527": "FUNCIONAMIENTO",
+                "4500-4528": "PROMOCION Y APOYO EMPRENDIMIENTO",
+                "4500-4529": "APOYO DESARROLLO AGROINDUSTRIAL",
+                "4500-4530": "GESTION DE PROYECTOS",
+                "4500-4531": "PROGRAMA DE INNOVACION",
+                "4500-4532": "NOMINA GESTION PROYECTOS"
+            }
+        },
 
-    "4600": {
-        "nombre": "PROMOCION DEL COMERCIO",
-        "programas": {
-            "4600-4609": "FERIAS, RUEDAS, MISIONES Y ENCUENTROS",
-            "4600-4610": "CAMPANAS COMERCIALES",
-            "4600-4611": "NOMINA",
-            "4600-4612": "FUNCIONAMIENTO"
-        }
-    },
+        "4600": {
+            "nombre": "PROMOCION DEL COMERCIO",
+            "programas": {
+                "4600-4609": "FERIAS, RUEDAS, MISIONES Y ENCUENTROS",
+                "4600-4610": "CAMPANAS COMERCIALES",
+                "4600-4611": "NOMINA",
+                "4600-4612": "FUNCIONAMIENTO"
+            }
+        },
 
-    "4700": {
-        "nombre": "GESTION ESTRATEGICA",
-        "programas": {
-            "4700-4704": "FUNCIONAMIENTO CONTROL INTERNO",
-            "4700-4705": "GESTION DE CALIDAD",
-            "4700-4707": "CONTROL INTERNO",
-            "4700-4708": "PLANEACION INSTITUCIONAL",
-            "4700-4709": "GESTION DOCUMENTAL",
-            "4700-4710": "PROMOCION INSTITUCIONAL E IMAGEN CORPORATIVA",
-            "4700-4711": "CAMPANA AFILIACION MTTO Y EVENTOS AFILIADOS",
-            "4700-4712": "ELABORACION DE CREDENCIALES",
-            "4700-4713": "ELABORACION PORTAFOLIO AFILIADOS",
-            "4700-4714": "NOMINA",
-            "4700-4715": "FUNCIONAMIENTO PRESIDENCIA EJECUTIVA",
-            "4700-4716": "FUNCIONAMIENTO JUNTA DIRECTIVA PUBLICO",
-            "4700-4720": "FORMACION EMPRESARIAL",
-            "4700-4721": "HOJAS VERDES",
-            "4700-4726": "FUNCIONAMIENTO JUNTA DIRECTIVA PRIVADO"
-        }
-    },
+        "4700": {
+            "nombre": "GESTION ESTRATEGICA",
+            "programas": {
+                "4700-4704": "FUNCIONAMIENTO CONTROL INTERNO",
+                "4700-4705": "GESTION DE CALIDAD",
+                "4700-4707": "CONTROL INTERNO",
+                "4700-4708": "PLANEACION INSTITUCIONAL",
+                "4700-4709": "GESTION DOCUMENTAL",
+                "4700-4710": "PROMOCION INSTITUCIONAL E IMAGEN CORPORATIVA",
+                "4700-4711": "CAMPANA AFILIACION MTTO Y EVENTOS AFILIADOS",
+                "4700-4712": "ELABORACION DE CREDENCIALES",
+                "4700-4713": "ELABORACION PORTAFOLIO AFILIADOS",
+                "4700-4714": "NOMINA",
+                "4700-4715": "FUNCIONAMIENTO PRESIDENCIA EJECUTIVA",
+                "4700-4716": "FUNCIONAMIENTO JUNTA DIRECTIVA PUBLICO",
+                "4700-4720": "FORMACION EMPRESARIAL",
+                "4700-4721": "HOJAS VERDES",
+                "4700-4726": "FUNCIONAMIENTO JUNTA DIRECTIVA PRIVADO"
+            }
+        },
 
-    "4800": {
-        "nombre": "GESTION ADMINISTRATIVA",
-        "programas": {
-            "4800-4806": "NOMINA APRENDIZ SENA",
-            "4800-4807": "FUNCIONAMIENTO TALENTO HUMANO",
-            "4800-4809": "GESTION DEL TALENTO HUMANO",
-            "4800-4810": "NOMINA",
-            "4800-4811": "FUNCIONAMIENTO GENERAL PUBLICO",
-            "4800-4812": "FUNCIONAMIENTO FUNZA",
-            "4800-4813": "FUNCIONAMIENTO VILLETA",
-            "4800-4814": "FUNCIONAMIENTO PACHO",
-            "4800-4815": "JURIDICA",
-            "4800-4816": "GESTION INFRAESTRUCTURA FISICA",
-            "4800-4821": "FUNCIONAMIENTO GENERAL PRIVADO",
-            "4800-4890": "INVERSION PUBLICA",
-            "4800-4892": "INVERSION PRIVADA"
-        }
-    },
+        "4800": {
+            "nombre": "GESTION ADMINISTRATIVA",
+            "programas": {
+                "4800-4806": "NOMINA APRENDIZ SENA",
+                "4800-4807": "FUNCIONAMIENTO TALENTO HUMANO",
+                "4800-4809": "GESTION DEL TALENTO HUMANO",
+                "4800-4810": "NOMINA",
+                "4800-4811": "FUNCIONAMIENTO GENERAL PUBLICO",
+                "4800-4812": "FUNCIONAMIENTO FUNZA",
+                "4800-4813": "FUNCIONAMIENTO VILLETA",
+                "4800-4814": "FUNCIONAMIENTO PACHO",
+                "4800-4815": "JURIDICA",
+                "4800-4816": "GESTION INFRAESTRUCTURA FISICA",
+                "4800-4821": "FUNCIONAMIENTO GENERAL PRIVADO",
+                "4800-4890": "INVERSION PUBLICA",
+                "4800-4892": "INVERSION PRIVADA"
+            }
+        },
 
-    "9999": {
-        "nombre": "OTROS",
-        "programas": {
-            "9999-9999": "OTROS NO CODIFICADOS"
+        "9999": {
+            "nombre": "OTROS",
+            "programas": {
+                "9999-9999": "OTROS NO CODIFICADOS"
+            }
         }
     }
-}
-       # =====================================================
+
+    # =====================================================
     # 2. DESCRIPCIÓN DEL OBJETO
     # =====================================================
 
     st.markdown("## 2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES")
 
-    # 2.1 generado automáticamente desde OBJETO (no editable)
     st.text_area(
         "2.1 OBJETO (DESCRIPCIÓN DETALLADA)",
-        value=objeto,  # usa directamente la variable del campo principal
+        value=objeto,
         height=150,
         disabled=True
     )
@@ -782,6 +782,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
