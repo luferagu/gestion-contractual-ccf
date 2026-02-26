@@ -106,7 +106,7 @@ def valor_en_letras(valor):
         return ""
     texto = num2words(valor, lang="es")
     texto = texto.replace("uno", "un")
-    return texto.upper() + " PESOS M/CTE"
+    return texto.upper() + " DE PESOS M/CTE"
 
 
 def procesar_moneda(key):
@@ -629,6 +629,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
