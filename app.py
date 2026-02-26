@@ -219,40 +219,132 @@ if etapa == "1 Estudio Previo":
 
     st.markdown("---")
 
+       # =====================================================
+    # INFORMACIÓN PRESUPUESTAL (DINÁMICA)
     # =====================================================
-    # INFORMACIÓN PRESUPUESTAL
-    # =====================================================
+
+    estructura_presupuestal = {
+
+        "4100": {
+            "nombre": "REGISTROS PUBLICOS",
+            "programas": {
+                "4100-4110": "FUNCIONAMIENTO SISTEMAS",
+                "4100-4111": "BRIGADAS DE REGISTRO",
+                "4100-4112": "COSTUBRE MERCANTIL",
+                "4100-4113": "BRIGADA DE REGISTRO DE PROPONENTES",
+                "4100-4114": "JORNADAS DE RENOVACIONES",
+                "4100-4115": "CONFERENCIAS TALLER",
+                "4100-4116": "REVISORIA FISCAL",
+                "4100-4117": "PARTE TECNICA PROYECTO RUE",
+                "4100-4118": "PROYECTO COMUNICACIONES",
+                "4100-4119": "OTRAS NECESIDADES DE SISTEMAS",
+                "4100-4120": "NOMINA",
+                "4100-4121": "FUNCIONAMIENTO FACA",
+                "4100-4122": "FUNCIONAMIENTO FUNZA",
+                "4100-4123": "FUNCIONAMIENTO VILLETA",
+                "4100-4124": "FUNCIONAMIENTO PACHO",
+                "4100-4125": "FUNCIONAMIENTO GENERAL",
+                "4100-4126": "LISTA CONTRALORES Y PERITOS"
+            }
+        },
+
+        "4200": {
+            "nombre": "MASC - METODOS ALTERNATIVOS DE SOLUCION",
+            "programas": {
+                "4200-4210": "CURSO FORMACION DE CONCILIADORES",
+                "4200-4211": "EDUCACION CONTINUADA",
+                "4200-4212": "SERVICIO SOCIAL DEL CENTRO DE CONCILIACION",
+                "4200-4213": "PLEGABLES INFORMATIVOS",
+                "4200-4214": "SEMINARIO TALLER CAPACITACION",
+                "4200-4215": "JORNADA CONCILIACION ESCOLAR",
+                "4200-4216": "NOMINA",
+                "4200-4217": "FUNCIONAMIENTO MASC",
+                "4200-4218": "SERVICIO DE CONCILIACION Y ARBITRAJE",
+                "4200-4220": "INVESTIGACION",
+                "4200-4221": "CURSO DE FORMACION DE CONCILIADORES PRIV"
+            }
+        },
+
+        "4300": {
+            "nombre": "CIVICOS, SOCIALES Y CULTURALES",
+            "programas": {
+                "4300-4310": "DESARROLLO CULTURAL, DEPORTIVO Y SOCIAL",
+                "4300-4311": "PROMOCION A LA GESTION CIVICA SOCIAL",
+                "4300-4312": "ACTIVIDADES CULTURALES DEPORTIVAS",
+                "4300-4313": "NOMINA",
+                "4300-4314": "FUNCIONAMIENTO",
+                "4300-4317": "CONSTRUYENDO FUTURO",
+                "4300-4320": "CONSULTORIO JURIDICO",
+                "4300-4321": "ELECCION DE GREMIOS"
+            }
+        },
+
+        "4500": {
+            "nombre": "DESARROLLO EMPRESARIAL",
+            "programas": {
+                "4500-4510": "FERIAS, RUEDAS Y EVENTOS",
+                "4500-4511": "FERIAS CAMARA DE FACATATIVA",
+                "4500-4512": "OBLIGACIONES TRIBUTARIAS",
+                "4500-4513": "CAPACITACION",
+                "4500-4520": "RUEDA DE NEGOCIOS",
+                "4500-4526": "NOMINA",
+                "4500-4531": "PROGRAMA DE INNOVACION"
+            }
+        },
+
+        "4800": {
+            "nombre": "GESTION ADMINISTRATIVA",
+            "programas": {
+                "4800-4806": "NOMINA APRENDIZ SENA",
+                "4800-4807": "FUNCIONAMIENTO TALENTO HUMANO",
+                "4800-4809": "GESTION DEL TALENTO HUMANO",
+                "4800-4810": "NOMINA",
+                "4800-4890": "INVERSION PUBLICA",
+                "4800-4892": "INVERSION PRIVADA"
+            }
+        },
+
+        "9999": {
+            "nombre": "OTROS",
+            "programas": {
+                "9999-9999": "OTROS NO CODIFICADOS"
+            }
+        }
+    }
 
     c1, c2, c3, c4 = st.columns(4)
 
+    # ---------------- CENTRO DE COSTOS ----------------
     with c1:
 
-        opciones_centro_costos = {
-            "4100 - REGISTROS PUBLICOS": "4100",
-            "4120 - NOMINA JURIDICA": "4120",
-            "4200 - MASC - METODOS ALTERNATIVOS DE SOLUCION": "4200",
-            "4201 - METODOS ALTERNATIVO SOL Y CON": "4201",
-            "4300 - CIVICOS, SOCIALES Y CULTURALES": "4300",
-            "4400 - MEJORAMIENTO DEL ENTORNO": "4400",
-            "4500 - DESARROLLO EMPRESARIAL": "4500",
-            "4600 - PROMOCION DEL COMERCIO": "4600",
-            "4700 - GESTION ESTRATEGICA": "4700",
-            "4800 - GESTION ADMINISTRATIVA": "4800",
-            "9999 - OTROS": "9999",
-            "9999-9999 - OTROS NO CODIFICADOS": "9999-9999"
-        }
-    
-        centro_costos_label = st.selectbox(
+        centro_label = st.selectbox(
             "CENTRO DE COSTOS",
-            list(opciones_centro_costos.keys()),
+            [
+                f"{codigo} - {datos['nombre']}"
+                for codigo, datos in estructura_presupuestal.items()
+            ],
             key="centro_costos_select"
         )
-    
-        centro_costos = opciones_centro_costos[centro_costos_label]
-    
-    with c2:
-        programa = st.text_input("PROGRAMA")
 
+        centro_codigo = centro_label.split(" - ")[0]
+
+    # ---------------- PROGRAMA DINÁMICO ----------------
+    with c2:
+
+        programas_disponibles = estructura_presupuestal[centro_codigo]["programas"]
+
+        programa_label = st.selectbox(
+            "PROGRAMA",
+            [
+                f"{codigo} - {nombre}"
+                for codigo, nombre in programas_disponibles.items()
+            ],
+            key="programa_select"
+        )
+
+        programa_codigo = programa_label.split(" - ")[0]
+
+    # ---------------- CAMPOS RESTANTES ----------------
     with c3:
         codigo_planeacion = st.text_input("ACTIVIDAD DE PLANEACIÓN")
 
@@ -651,6 +743,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
