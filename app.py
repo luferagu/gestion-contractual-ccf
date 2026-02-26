@@ -391,7 +391,7 @@ estructura_presupuestal = {
         }
     }
 }
-    # =====================================================
+       # =====================================================
     # 2. DESCRIPCIÓN DEL OBJETO
     # =====================================================
 
@@ -400,7 +400,7 @@ estructura_presupuestal = {
     # 2.1 generado automáticamente desde OBJETO (no editable)
     st.text_area(
         "2.1 OBJETO (DESCRIPCIÓN DETALLADA)",
-        value=st.session_state.get("objeto_principal", ""),
+        value=objeto,  # usa directamente la variable del campo principal
         height=150,
         disabled=True
     )
@@ -409,7 +409,6 @@ estructura_presupuestal = {
         "2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN",
         height=150
     )
-
     # =====================================================
     # 2.3 FUNDAMENTOS JURÍDICOS
     # =====================================================
@@ -783,6 +782,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
