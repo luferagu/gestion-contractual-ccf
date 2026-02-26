@@ -250,72 +250,83 @@ if etapa == "1 Estudio Previo":
         height=150
     )
 
-      # =====================================================
-    # 2.3 FUNDAMENTOS JURÍDICOS
-    # =====================================================
+   # =====================================================
+# 2.3 FUNDAMENTOS JURÍDICOS
+# =====================================================
 
-    st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
+st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
 
-    col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
+# ---------------- INICIALIZACIÓN DE ESTADOS ----------------
+if "articulo_auto" not in st.session_state:
+    st.session_state.articulo_auto = "ARTÍCULO 16"
 
-    # ---------------- MODALIDAD ----------------
-    with col_modalidad:
-        modalidad = st.selectbox(
-            "MODALIDAD DE CONTRATACIÓN",
-            ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"],
-            key="modalidad_unica"
+if "numeral_dinamico" not in st.session_state:
+    st.session_state.numeral_dinamico = "1"
+
+if "literal_dinamico" not in st.session_state:
+    st.session_state.literal_dinamico = "a"
+
+col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
+
+# ---------------- MODALIDAD ----------------
+with col_modalidad:
+    modalidad = st.selectbox(
+        "MODALIDAD DE CONTRATACIÓN",
+        ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"],
+        key="modalidad_unica"
+    )
+
+# ---------------- DEFINICIÓN AUTOMÁTICA ARTÍCULO Y NUMERALES ----------------
+if modalidad == "DIRECTA":
+    st.session_state.articulo_auto = "ARTÍCULO 16"
+    opciones_numeral = ["1", "2", "3"]
+
+elif modalidad == "PRIVADA":
+    st.session_state.articulo_auto = "ARTÍCULO 17"
+    opciones_numeral = ["1", "2", "3", "4"]
+
+else:  # CONVOCATORIA ABIERTA
+    st.session_state.articulo_auto = "ARTÍCULO 18"
+    opciones_numeral = ["1", "2", "3"]
+
+# Reiniciar numeral si deja de ser válido
+if st.session_state.numeral_dinamico not in opciones_numeral:
+    st.session_state.numeral_dinamico = opciones_numeral[0]
+
+# ---------------- ARTÍCULO (NO EDITABLE) ----------------
+with col_articulo:
+    st.text_input(
+        "ARTÍCULO",
+        key="articulo_auto",
+        disabled=True
+    )
+
+# ---------------- NUMERAL ----------------
+with col_numeral:
+    numeral = st.selectbox(
+        "NUMERAL",
+        opciones_numeral,
+        key="numeral_dinamico"
+    )
+
+# ---------------- LITERAL CONDICIONAL ----------------
+with col_literal:
+
+    if modalidad == "DIRECTA" and numeral == "2":
+        literal = st.selectbox(
+            "LITERAL",
+            ["a", "b", "c", "d", "e", "f", "g", "h"],
+            key="literal_dinamico"
         )
-
-    # ---------------- DEFINICIÓN AUTOMÁTICA ARTÍCULO Y NUMERALES ----------------
-    if modalidad == "DIRECTA":
-        articulo = "ARTÍCULO 16"
-        opciones_numeral = ["1", "2", "3"]
-
-    elif modalidad == "PRIVADA":
-        articulo = "ARTÍCULO 17"
-        opciones_numeral = ["1", "2", "3", "4"]
-
-    else:  # CONVOCATORIA ABIERTA
-        articulo = "ARTÍCULO 18"
-        opciones_numeral = ["1", "2", "3"]
-
-    # ---------------- ARTÍCULO (NO EDITABLE) ----------------
-    with col_articulo:
+    else:
+        st.session_state.literal_dinamico = None
         st.text_input(
-            "ARTÍCULO",
-            value=articulo,
-            disabled=True,
-            key="articulo_auto"
+            "LITERAL",
+            value="No aplica",
+            disabled=True
         )
 
-    # ---------------- NUMERAL ----------------
-    with col_numeral:
-        numeral = st.selectbox(
-            "NUMERAL",
-            opciones_numeral,
-            key="numeral_dinamico"
-        )
-
-    # ---------------- LITERAL CONDICIONAL ----------------
-    with col_literal:
-
-        if modalidad == "DIRECTA" and numeral == "2":
-            literal = st.selectbox(
-                "LITERAL",
-                ["a", "b", "c", "d", "e", "f", "g", "h"],
-                key="literal_dinamico"
-            )
-        else:
-            literal = None
-            st.text_input(
-                "LITERAL",
-                value="No aplica",
-                disabled=True,
-                key="literal_disabled"
-            )
-
-    st.markdown("---")
-
+st.markdown("---")
 
     # =====================================================
     # 3. CONDICIONES DEL FUTURO CONTRATO
@@ -645,6 +656,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
