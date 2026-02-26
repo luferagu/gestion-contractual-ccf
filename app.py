@@ -404,8 +404,7 @@ with st.container():
                 st.success("Proceso guardado correctamente.")
 
             except Exception as e:
-                st.error(f"Error al guardar proceso: {e}")# 
-=====================================================
+                st.error(f"Error al guardar proceso: {e}")#=====================================================
 # ETAPA 2 — PLANEACIÓN
 # =====================================================
 if etapa == "2 Planeación":
@@ -631,6 +630,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
