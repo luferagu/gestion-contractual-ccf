@@ -151,14 +151,15 @@ if etapa == "1 Estudio Previo":
 
     st.markdown("### ETAPA 1 — ESTUDIO PREVIO")
 
-    # =====================================================
+       # =====================================================
     # CAMPOS PRINCIPALES (ANCHO COMPLETO)
     # =====================================================
 
     objeto = st.text_area(
         "OBJETO",
         height=200,
-        placeholder="Describa el objeto contractual"
+        placeholder="Describa el objeto contractual",
+        key="objeto_principal"
     )
 
     justificacion = st.text_area(
@@ -203,31 +204,20 @@ if etapa == "1 Estudio Previo":
 
     st.markdown("---")
 
-# =====================================================
-# TIPO DE PRESUPUESTO
-# =====================================================
+    # =====================================================
+    # TIPO DE PRESUPUESTO
+    # =====================================================
 
-st.markdown("### PRESUPUESTO")
-
-with st.container():
-
-    st.markdown("""
-    <div style="
-        background-color:#1e293b;
-        padding:20px;
-        border-radius:12px;
-        margin-bottom:20px;
-    ">
-    """, unsafe_allow_html=True)
+    st.markdown("### PRESUPUESTO")
 
     presupuesto_tipo = st.radio(
-        "Seleccione el tipo de presupuesto:",
+        "",
         ["FUNCIONAMIENTO", "INVERSIÓN", "PAT"],
         horizontal=True,
         key="tipo_presupuesto"
     )
 
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("---")
 
     # =====================================================
     # INFORMACIÓN PRESUPUESTAL
@@ -253,9 +243,18 @@ with st.container():
 
     st.markdown("## 2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES")
 
-    objeto_detallado = st.text_area("2.1 OBJETO (DESCRIPCIÓN DETALLADA)", height=150)
+    # 2.1 generado automáticamente desde OBJETO (no editable)
+    st.text_area(
+        "2.1 OBJETO (DESCRIPCIÓN DETALLADA)",
+        value=st.session_state.get("objeto_principal", ""),
+        height=150,
+        disabled=True
+    )
 
-    caracteristicas_tecnicas = st.text_area("2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN", height=150)
+    caracteristicas_tecnicas = st.text_area(
+        "2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN",
+        height=150
+    )
 
     # =====================================================
     # 2.3 FUNDAMENTOS JURÍDICOS
@@ -630,6 +629,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
