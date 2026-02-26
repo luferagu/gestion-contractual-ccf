@@ -218,7 +218,6 @@ if etapa == "1 Estudio Previo":
     )
 
     st.markdown("---")
-
     # =====================================================
     # INFORMACIÓN PRESUPUESTAL (COMPLETA Y CONSOLIDADA)
     # =====================================================
@@ -248,10 +247,7 @@ if etapa == "1 Estudio Previo":
             }
         },
 
-        "4120": {
-            "nombre": "NOMINA JURIDICA",
-            "programas": {}
-        },
+        "4120": {"nombre": "NOMINA JURIDICA", "programas": {}},
 
         "4200": {
             "nombre": "MASC - METODOS ALTERNATIVOS DE SOLUCION",
@@ -270,10 +266,7 @@ if etapa == "1 Estudio Previo":
             }
         },
 
-        "4201": {
-            "nombre": "METODOS ALTERNATIVO SOL Y CON",
-            "programas": {}
-        },
+        "4201": {"nombre": "METODOS ALTERNATIVO SOL Y CON", "programas": {}},
 
         "4300": {
             "nombre": "CIVICOS, SOCIALES Y CULTURALES",
@@ -392,12 +385,45 @@ if etapa == "1 Estudio Previo":
         }
     }
 
+    # ===================== FILA 1 =====================
+    col1, col2 = st.columns(2)
+
+    with col1:
+        centro_label = st.selectbox(
+            "CENTRO DE COSTOS",
+            [f"{c} - {d['nombre']}" for c, d in estructura_presupuestal.items()],
+            key="centro_costos_select"
+        )
+        centro_codigo = centro_label.split(" - ")[0]
+
+    with col2:
+        programas = estructura_presupuestal[centro_codigo]["programas"]
+
+        if programas:
+            programa_label = st.selectbox(
+                "PROGRAMA",
+                [f"{c} - {n}" for c, n in programas.items()],
+                key="programa_select"
+            )
+        else:
+            st.selectbox("PROGRAMA", ["NO APLICA"], disabled=True)
+
+    # ===================== FILA 2 =====================
+    col3, col4 = st.columns(2)
+
+    with col3:
+        codigo_planeacion = st.text_input("ACTIVIDAD DE PLANEACIÓN")
+
+    with col4:
+        rubro = st.text_input("RUBRO")
+
+    st.markdown("---")
+
     # =====================================================
     # 2. DESCRIPCIÓN DEL OBJETO
     # =====================================================
 
     st.markdown("## 2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES")
-
     st.text_area(
         "2.1 OBJETO (DESCRIPCIÓN DETALLADA)",
         value=objeto,
@@ -782,6 +808,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
