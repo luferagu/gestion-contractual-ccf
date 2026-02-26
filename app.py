@@ -174,12 +174,12 @@ if etapa == "1 Estudio Previo":
     )
 
     # =====================================================
-    # BLOQUE ECONÓMICO (DEBAJO DE LA NECESIDAD)
+    # BLOQUE ECONÓMICO
     # =====================================================
 
     st.markdown("### INFORMACIÓN ECONÓMICA Y PLAZO")
 
-    col1, col2, col3 = st.columns([2,1,1])
+    col1, col2, col3 = st.columns([2, 1, 1])
 
     with col1:
         st.text_input(
@@ -192,32 +192,19 @@ if etapa == "1 Estudio Previo":
 
         if valor > 0:
             st.success(valor_en_letras(valor))
-            valor_letras = valor_en_letras(valor)
-        else:
-            valor_letras = ""
 
     with col2:
-        plazo = st.number_input(
-            "PLAZO",
-            min_value=1,
-            value=1
-        )
+        plazo = st.number_input("PLAZO", min_value=1, value=1)
 
     with col3:
-        unidad_plazo = st.selectbox(
-            "UNIDAD",
-            ["Días", "Meses"]
-        )
+        unidad_plazo = st.selectbox("UNIDAD", ["Días", "Meses"])
 
-    fecha_estudio = st.date_input(
-        "FECHA ESTUDIO",
-        value=date.today()
-    )
+    fecha_estudio = st.date_input("FECHA ESTUDIO", value=date.today())
 
     st.markdown("---")
 
     # =====================================================
-    # INFORMACIÓN PRESUPUESTAL Y PLANEACIÓN
+    # INFORMACIÓN PRESUPUESTAL
     # =====================================================
 
     c1, c2, c3, c4 = st.columns(4)
@@ -240,93 +227,71 @@ if etapa == "1 Estudio Previo":
 
     st.markdown("## 2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES")
 
-    objeto_detallado = st.text_area(
-        "2.1 OBJETO (DESCRIPCIÓN DETALLADA)",
-        height=150
-    )
+    objeto_detallado = st.text_area("2.1 OBJETO (DESCRIPCIÓN DETALLADA)", height=150)
 
-    caracteristicas_tecnicas = st.text_area(
-        "2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN",
-        height=150
-    )
+    caracteristicas_tecnicas = st.text_area("2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN", height=150)
 
-   # =====================================================
-# 2.3 FUNDAMENTOS JURÍDICOS
-# =====================================================
+    # =====================================================
+    # 2.3 FUNDAMENTOS JURÍDICOS
+    # =====================================================
 
-st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
+    st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
 
-# ---------------- INICIALIZACIÓN DE ESTADOS ----------------
-if "articulo_auto" not in st.session_state:
-    st.session_state.articulo_auto = "ARTÍCULO 16"
+    # Inicialización de estados
+    if "articulo_auto" not in st.session_state:
+        st.session_state.articulo_auto = "ARTÍCULO 16"
 
-if "numeral_dinamico" not in st.session_state:
-    st.session_state.numeral_dinamico = "1"
+    if "numeral_dinamico" not in st.session_state:
+        st.session_state.numeral_dinamico = "1"
 
-if "literal_dinamico" not in st.session_state:
-    st.session_state.literal_dinamico = "a"
+    if "literal_dinamico" not in st.session_state:
+        st.session_state.literal_dinamico = "a"
 
-col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
+    col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
 
-# ---------------- MODALIDAD ----------------
-with col_modalidad:
-    modalidad = st.selectbox(
-        "MODALIDAD DE CONTRATACIÓN",
-        ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"],
-        key="modalidad_unica"
-    )
-
-# ---------------- DEFINICIÓN AUTOMÁTICA ARTÍCULO Y NUMERALES ----------------
-if modalidad == "DIRECTA":
-    st.session_state.articulo_auto = "ARTÍCULO 16"
-    opciones_numeral = ["1", "2", "3"]
-
-elif modalidad == "PRIVADA":
-    st.session_state.articulo_auto = "ARTÍCULO 17"
-    opciones_numeral = ["1", "2", "3", "4"]
-
-else:  # CONVOCATORIA ABIERTA
-    st.session_state.articulo_auto = "ARTÍCULO 18"
-    opciones_numeral = ["1", "2", "3"]
-
-# Reiniciar numeral si deja de ser válido
-if st.session_state.numeral_dinamico not in opciones_numeral:
-    st.session_state.numeral_dinamico = opciones_numeral[0]
-
-# ---------------- ARTÍCULO (NO EDITABLE) ----------------
-with col_articulo:
-    st.text_input(
-        "ARTÍCULO",
-        key="articulo_auto",
-        disabled=True
-    )
-
-# ---------------- NUMERAL ----------------
-with col_numeral:
-    numeral = st.selectbox(
-        "NUMERAL",
-        opciones_numeral,
-        key="numeral_dinamico"
-    )
-
-# ---------------- LITERAL CONDICIONAL ----------------
-with col_literal:
-
-    if modalidad == "DIRECTA" and numeral == "2":
-        literal = st.selectbox(
-            "LITERAL",
-            ["a", "b", "c", "d", "e", "f", "g", "h"],
-            key="literal_dinamico"
+    with col_modalidad:
+        modalidad = st.selectbox(
+            "MODALIDAD DE CONTRATACIÓN",
+            ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"],
+            key="modalidad_unica"
         )
+
+    if modalidad == "DIRECTA":
+        st.session_state.articulo_auto = "ARTÍCULO 16"
+        opciones_numeral = ["1", "2", "3"]
+
+    elif modalidad == "PRIVADA":
+        st.session_state.articulo_auto = "ARTÍCULO 17"
+        opciones_numeral = ["1", "2", "3", "4"]
+
     else:
-        st.session_state.literal_dinamico = None
-        st.text_input(
-            "LITERAL",
-            value="No aplica",
-            disabled=True
+        st.session_state.articulo_auto = "ARTÍCULO 18"
+        opciones_numeral = ["1", "2", "3"]
+
+    if st.session_state.numeral_dinamico not in opciones_numeral:
+        st.session_state.numeral_dinamico = opciones_numeral[0]
+
+    with col_articulo:
+        st.text_input("ARTÍCULO", key="articulo_auto", disabled=True)
+
+    with col_numeral:
+        numeral = st.selectbox(
+            "NUMERAL",
+            opciones_numeral,
+            key="numeral_dinamico"
         )
 
-st.markdown("---")
+    with col_literal:
+        if modalidad == "DIRECTA" and numeral == "2":
+            literal = st.selectbox(
+                "LITERAL",
+                ["a", "b", "c", "d", "e", "f", "g", "h"],
+                key="literal_dinamico"
+            )
+        else:
+            st.text_input("LITERAL", value="No aplica", disabled=True)
+
+    st.markdown("---")
 
     # =====================================================
     # 3. CONDICIONES DEL FUTURO CONTRATO
@@ -334,14 +299,9 @@ st.markdown("---")
 
     st.markdown("## 3. CONDICIONES DEL FUTURO CONTRATO")
 
-    oportunidad = st.text_input(
-        "3.1 OPORTUNIDAD (Mes de suscripción en 2026)"
-    )
+    oportunidad = st.text_input("3.1 OPORTUNIDAD (Mes de suscripción en 2026)")
 
-    forma_pago = st.text_area(
-        "3.3 FORMA DE PAGO",
-        height=120
-    )
+    forma_pago = st.text_area("3.3 FORMA DE PAGO", height=120)
 
     analisis = st.text_area(
         "3.4 ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO",
@@ -350,7 +310,6 @@ st.markdown("---")
 
     st.markdown("---")
 
-
     # =====================================================
     # 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS
     # =====================================================
@@ -358,18 +317,12 @@ st.markdown("---")
     st.markdown("## 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS")
 
     opciones_garantias = {
-
-        "Anticipo": """1. Anticipo: Para garantizar el Buen manejo y Correcta Inversión del Anticipo, por la suma equivalente al cien por cien (100%) del mismo, por el término del contrato de ejecución contractual y seis (6) meses más.""",
-
-        "Cumplimiento": """2. Cumplimiento: Para precaver los perjuicios derivados del incumplimiento del contrato, por un valor equivalente al veinte por ciento (20%) del valor del mismo y con una vigencia igual al término de ejecución contractual y seis (6) meses más.""",
-
-        "Salarios y Prestaciones": """3. Salarios, Prestaciones Sociales e Indemnizaciones: Para cubrir el riesgo de incumplimiento de las obligaciones laborales, conforme al artículo 64 del Código Sustantivo del Trabajo, por un valor equivalente al quince por ciento (15%) del contrato y por una vigencia igual al término del contrato y tres (3) años más.""",
-
-        "Responsabilidad Civil Extracontractual": """4. Responsabilidad Civil Extracontractual: Para indemnizar los perjuicios patrimoniales que se causen a terceros, por doscientos (200) SMLMV y una vigencia igual al término del contrato.""",
-
-        "Estabilidad de la Obra": """5. Estabilidad y Conservación de la Obra Ejecutada: Por el veinte por ciento (20%) del valor del contrato y con vigencia de cinco (5) años contados desde el recibo a satisfacción.""",
-
-        "Calidad del Servicio": """6. Calidad de los Elementos o Servicios: Por el treinta por ciento (30%) del valor del contrato, con vigencia igual al término del mismo y un (1) año adicional."""
+        "Anticipo": """1. Anticipo: Para garantizar el Buen manejo y Correcta Inversión del Anticipo, por el 100% del mismo.""",
+        "Cumplimiento": """2. Cumplimiento: Por el 20% del valor del contrato.""",
+        "Salarios y Prestaciones": """3. Salarios y Prestaciones: Por el 15% del contrato.""",
+        "Responsabilidad Civil Extracontractual": """4. Responsabilidad Civil Extracontractual: 200 SMLMV.""",
+        "Estabilidad de la Obra": """5. Estabilidad de la Obra: 20% por 5 años.""",
+        "Calidad del Servicio": """6. Calidad del Servicio: 30% con vigencia adicional."""
     }
 
     garantias_seleccionadas = st.multiselect(
@@ -379,7 +332,6 @@ st.markdown("---")
     )
 
     if garantias_seleccionadas:
-
         texto_garantias = "\n\n".join(
             [opciones_garantias[g] for g in garantias_seleccionadas]
         )
@@ -393,16 +345,14 @@ st.markdown("---")
 
     st.markdown("---")
 
-
     # =====================================================
-    # GUARDAR ESTUDIO PREVIO
+    # GUARDAR
     # =====================================================
 
     if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
 
         if proceso_existe(ID):
             st.warning("Este proceso ya está registrado.")
-
         else:
             try:
                 conn = conectar_db()
@@ -426,11 +376,9 @@ st.markdown("---")
                 conn.close()
 
                 st.success("Proceso guardado correctamente.")
-                # st.session_state.ID_PROCESO = generar_id()
 
             except Exception as e:
-                st.error(f"Error al guardar proceso: {e}")
-# =====================================================
+                st.error(f"Error al guardar proceso: {e}")# =====================================================
 # ETAPA 2 — PLANEACIÓN
 # =====================================================
 if etapa == "2 Planeación":
@@ -656,6 +604,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
