@@ -203,6 +203,32 @@ if etapa == "1 Estudio Previo":
 
     st.markdown("---")
 
+# =====================================================
+# TIPO DE PRESUPUESTO
+# =====================================================
+
+st.markdown("### PRESUPUESTO")
+
+with st.container():
+
+    st.markdown("""
+    <div style="
+        background-color:#1e293b;
+        padding:20px;
+        border-radius:12px;
+        margin-bottom:20px;
+    ">
+    """, unsafe_allow_html=True)
+
+    presupuesto_tipo = st.radio(
+        "Seleccione el tipo de presupuesto:",
+        ["FUNCIONAMIENTO", "INVERSIÓN", "PAT"],
+        horizontal=True,
+        key="tipo_presupuesto"
+    )
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
     # =====================================================
     # INFORMACIÓN PRESUPUESTAL
     # =====================================================
@@ -378,7 +404,8 @@ if etapa == "1 Estudio Previo":
                 st.success("Proceso guardado correctamente.")
 
             except Exception as e:
-                st.error(f"Error al guardar proceso: {e}")# =====================================================
+                st.error(f"Error al guardar proceso: {e}")# 
+=====================================================
 # ETAPA 2 — PLANEACIÓN
 # =====================================================
 if etapa == "2 Planeación":
@@ -604,6 +631,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
