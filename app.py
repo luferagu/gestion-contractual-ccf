@@ -209,26 +209,14 @@ if etapa == "1 Estudio Previo":
 
 st.markdown("### PRESUPUESTO")
 
-with st.container():
+presupuesto_tipo = st.radio(
+    "Seleccione el tipo de presupuesto:",
+    ["FUNCIONAMIENTO", "INVERSIÓN", "PAT"],
+    horizontal=True,
+    key="tipo_presupuesto"
+)
 
-    st.markdown("""
-    <div style="
-        background-color:#1e293b;
-        padding:20px;
-        border-radius:12px;
-        margin-bottom:20px;
-    ">
-    """, unsafe_allow_html=True)
-
-    presupuesto_tipo = st.radio(
-        "Seleccione el tipo de presupuesto:",
-        ["FUNCIONAMIENTO", "INVERSIÓN", "PAT"],
-        horizontal=True,
-        key="tipo_presupuesto"
-    )
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
+st.markdown("---")
     # =====================================================
     # INFORMACIÓN PRESUPUESTAL
     # =====================================================
@@ -630,6 +618,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
