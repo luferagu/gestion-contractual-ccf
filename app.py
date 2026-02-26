@@ -217,6 +217,7 @@ presupuesto_tipo = st.radio(
 )
 
 st.markdown("---")
+
     # =====================================================
     # INFORMACIÓN PRESUPUESTAL
     # =====================================================
@@ -618,6 +619,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
