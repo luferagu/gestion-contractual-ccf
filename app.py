@@ -581,76 +581,80 @@ analisis = st.text_area(
 st.markdown("---")
 
     # =====================================================
-    # 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS
-    # =====================================================
+# 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS
+# =====================================================
 
-    st.markdown("## 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS")
+st.markdown("## 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS")
 
-    opciones_garantias = {
-        "Anticipo": """1. Anticipo: Para garantizar el Buen manejo y Correcta Inversión del Anticipo, por el 100% del mismo.""",
-        "Cumplimiento": """2. Cumplimiento: Por el 20% del valor del contrato.""",
-        "Salarios y Prestaciones": """3. Salarios y Prestaciones: Por el 15% del contrato.""",
-        "Responsabilidad Civil Extracontractual": """4. Responsabilidad Civil Extracontractual: 200 SMLMV.""",
-        "Estabilidad de la Obra": """5. Estabilidad de la Obra: 20% por 5 años.""",
-        "Calidad del Servicio": """6. Calidad del Servicio: 30% con vigencia adicional."""
-    }
+opciones_garantias = {
+    "Anticipo": """1. Anticipo: Para garantizar el Buen manejo y Correcta Inversión del Anticipo, por el 100% del mismo.""",
+    "Cumplimiento": """2. Cumplimiento: Por el 20% del valor del contrato.""",
+    "Salarios y Prestaciones": """3. Salarios y Prestaciones: Por el 15% del contrato.""",
+    "Responsabilidad Civil Extracontractual": """4. Responsabilidad Civil Extracontractual: 200 SMLMV.""",
+    "Estabilidad de la Obra": """5. Estabilidad de la Obra: 20% por 5 años.""",
+    "Calidad del Servicio": """6. Calidad del Servicio: 30% con vigencia adicional."""
+}
 
-    garantias_seleccionadas = st.multiselect(
-        "GARANTÍAS EXIGIDAS",
-        list(opciones_garantias.keys()),
-        key="garantias_select"
+garantias_seleccionadas = st.multiselect(
+    "GARANTÍAS EXIGIDAS",
+    list(opciones_garantias.keys()),
+    key="garantias_select"
+)
+
+if garantias_seleccionadas:
+    texto_garantias = "\n\n".join(
+        [opciones_garantias[g] for g in garantias_seleccionadas]
     )
 
-    if garantias_seleccionadas:
-        texto_garantias = "\n\n".join(
-            [opciones_garantias[g] for g in garantias_seleccionadas]
-        )
+    st.text_area(
+        "Detalle de Garantías Seleccionadas",
+        value=texto_garantias,
+        height=300,
+        disabled=True
+    )
 
-        st.text_area(
-            "Detalle de Garantías Seleccionadas",
-            value=texto_garantias,
-            height=300,
-            disabled=True
-        )
+st.markdown("---")
 
-    st.markdown("---")
+# =====================================================
+# GUARDAR
+# =====================================================
 
-    # =====================================================
-    # GUARDAR
-    # =====================================================
+if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
 
-    if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
+    if proceso_existe(ID):
+        st.warning("Este proceso ya está registrado.")
+    else:
+        try:
+            conn = conectar_db()
+            cursor = conn.cursor()
 
-        if proceso_existe(ID):
-            st.warning("Este proceso ya está registrado.")
-        else:
-            try:
-                conn = conectar_db()
-                cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO procesos
+                (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (
+                ID,
+                objeto,
+                necesidad,
+                justificacion,
+                valor,
+                plazo,
+                fecha_estudio
+            ))
 
-                cursor.execute("""
-                    INSERT INTO procesos
-                    (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
-                """, (
-                    ID,
-                    objeto,
-                    necesidad,
-                    justificacion,
-                    valor,
-                    plazo,
-                    fecha_estudio
-                ))
+            conn.commit()
+            conn.close()
 
-                conn.commit()
-                conn.close()
+            st.success("Proceso guardado correctamente.")
 
-                st.success("Proceso guardado correctamente.")
+        except Exception as e:
+            st.error(f"Error al guardar proceso: {e}")
 
-            except Exception as e:
-                st.error(f"Error al guardar proceso: {e}")#=====================================================
+
+# =====================================================
 # ETAPA 2 — PLANEACIÓN
 # =====================================================
+
 if etapa == "2 Planeación":
 
     st.markdown("### ETAPA 2 — PLANEACIÓN")
@@ -771,23 +775,21 @@ if etapa == "2 Planeación":
                 key="cc_rep2"
             )
 
+    st.markdown("---")
+
     # =====================================================
     # GUARDAR PLANEACIÓN
     # =====================================================
-
-    st.markdown("---")
 
     if st.button("GUARDAR PLANEACIÓN", use_container_width=True):
 
         if not proceso_existe(ID):
             st.error("Debe guardar primero el Estudio Previo.")
-
         else:
             try:
                 conn = conectar_db()
                 cursor = conn.cursor()
 
-                # Verificar si ya existe planeación para este proceso
                 cursor.execute(
                     "SELECT 1 FROM public.planeacion WHERE id_proceso = %s",
                     (ID,)
@@ -798,7 +800,6 @@ if etapa == "2 Planeación":
                 if existe_planeacion:
                     st.warning("La planeación ya fue registrada para este proceso.")
                     conn.close()
-
                 else:
                     cursor.execute("""
                         INSERT INTO public.planeacion
@@ -825,16 +826,20 @@ if etapa == "2 Planeación":
 
             except Exception as e:
                 st.error(f"Error al guardar planeación: {e}")
-                
+
+
 # =====================================================
 # ETAPA 3 — CONTRATACIÓN
 # =====================================================
+
 if etapa == "3 Contratación":
 
     st.markdown("### ETAPA 3 — CONTRATOS")
 
-    tipo = st.selectbox("TIPO CONTRATO",
-        ["Obra", "Consultoría", "Prestación de Servicios", "Suministro"])
+    tipo = st.selectbox(
+        "TIPO CONTRATO",
+        ["Obra", "Consultoría", "Prestación de Servicios", "Suministro"]
+    )
 
     supervisor = st.text_input("SUPERVISOR")
     cdp = st.text_input("CDP")
@@ -869,26 +874,13 @@ if etapa == "3 Contratación":
             except Exception as e:
                 st.error(f"Error al guardar contrato: {e}")
 
+
 # =====================================================
 # FINAL
 # =====================================================
+
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
