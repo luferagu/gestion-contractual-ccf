@@ -2,7 +2,8 @@ import streamlit as st
 from datetime import date
 from num2words import num2words
 from database import conectar_db
-from convertir_rubros import datos_rubros  
+from convertir_rubros import datos_rubros
+from actividades_planeacion import actividades_planeacion
 
 
 # =====================================================
@@ -882,6 +883,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
