@@ -974,107 +974,64 @@ if etapa == "2 Planeación":
 
     st.markdown("---")
 
-    # =====================================================
-    # GUARDAR PLANEACIÓN
-    # =====================================================
+ # =====================================================
+# GUARDAR PLANEACIÓN
+# =====================================================
 
-    if st.button("GUARDAR PLANEACIÓN", use_container_width=True):
+st.markdown("---")
 
-        if not proceso_existe(ID):
-            st.error("Debe guardar primero el Estudio Previo.")
+if st.button("GUARDAR PLANEACIÓN", use_container_width=True):
 
-        else:
-            conn = None
-            try:
-                conn = conectar_db()
-                cursor = conn.cursor()
+    if not proceso_existe(ID):
+        st.error("Debe guardar primero el Estudio Previo.")
 
-                # Verificar si ya existe planeación
-                cursor.execute(
-                    "SELECT 1 FROM public.planeacion WHERE id_proceso = %s",
-                    (ID,)
-                )
+    else:
+        conn = None
 
-                existe_planeacion = cursor.fetchone()
+        try:
+            conn = conectar_db()
+            cursor = conn.cursor()
 
-                if existe_planeacion:
-                    st.warning("La planeación ya fue registrada para este proceso.")
+            # Verificar si ya existe planeación para este proceso
+            cursor.execute(
+                "SELECT 1 FROM public.planeacion WHERE id_proceso = %s",
+                (ID,)
+            )
 
-                else:
-                    cursor.execute("""
-                        INSERT INTO public.planeacion
-                        (
-                            id_proceso,
-                            tipo1, nombre1, identificacion1, valor1,
-                            representante1, cc_representante1,
-                            tipo2, nombre2, identificacion2, valor2,
-                            representante2, cc_representante2
-                        )
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """, (
-                        ID,
+            existe_planeacion = cursor.fetchone()
+
+            if existe_planeacion:
+                st.warning("La planeación ya fue registrada para este proceso.")
+
+            else:
+                cursor.execute("""
+                    INSERT INTO public.planeacion
+                    (
+                        id_proceso,
                         tipo1, nombre1, identificacion1, valor1,
-                        representante1, cc_rep1,
+                        representante1, cc_representante1,
                         tipo2, nombre2, identificacion2, valor2,
-                        representante2, cc_rep2
-                    ))
+                        representante2, cc_representante2
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    ID,
+                    tipo1, nombre1, identificacion1, valor1,
+                    representante1, cc_rep1,
+                    tipo2, nombre2, identificacion2, valor2,
+                    representante2, cc_rep2
+                ))
 
-                    conn.commit()
-                    st.success("Planeación guardada correctamente.")
+                conn.commit()
 
-            except Exception as e:
-                st.error(f"Error al guardar planeación: {e}")
+                st.success("Planeación guardada correctamente.")
 
-            finally:
-                if conn:
-                    conn.close()
+        except Exception as e:
+            st.error(f"Error al guardar planeación: {e}")
 
-    if st.button("GUARDAR PLANEACIÓN", use_container_width=True):
-
-        if not proceso_existe(ID):
-            st.error("Debe guardar primero el Estudio Previo.")
-        else:
-            try:
-                conn = conectar_db()
-                cursor = conn.cursor()
-
-                cursor.execute(
-                    "SELECT 1 FROM public.planeacion WHERE id_proceso = %s",
-                    (ID,)
-                )
-
-                existe_planeacion = cursor.fetchone()
-
-                if existe_planeacion:
-                    st.warning("La planeación ya fue registrada para este proceso.")
-                    conn.close()
-                else:
-                    cursor.execute("""
-                        INSERT INTO public.planeacion
-                        (
-                            id_proceso,
-                            tipo1, nombre1, identificacion1, valor1,
-                            representante1, cc_representante1,
-                            tipo2, nombre2, identificacion2, valor2,
-                            representante2, cc_representante2
-                        )
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """, (
-                        ID,
-                        tipo1, nombre1, id1, valor1,
-                        representante1, cc_rep1,
-                        tipo2, nombre2, id2, valor2,
-                        representante2, cc_rep2
-                    ))
-
-                    conn.commit()
-                    conn.close()
-
-                    st.success("Planeación guardada correctamente.")
-
-            except Exception as e:
-                st.error(f"Error al guardar planeación: {e}")
-
+        finally:
+            if conn:
+                conn.close()
 
 # =====================================================
 # ETAPA 3 — CONTRATACIÓN
@@ -1129,6 +1086,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
