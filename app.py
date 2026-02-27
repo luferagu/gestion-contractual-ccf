@@ -485,7 +485,7 @@ caracteristicas_tecnicas = st.text_area(
     # 2.3 FUNDAMENTOS JURÍDICOS
     # =====================================================
 
-    st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
+st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
 
     # Inicialización de estados
     if "articulo_auto" not in st.session_state:
@@ -854,6 +854,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
