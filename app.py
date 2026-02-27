@@ -134,6 +134,7 @@ ID = st.session_state.ID_PROCESO
 # =====================================================
 # NAVEGACIÓN ETAPAS
 # =====================================================
+
 etapa = st.radio(
     "",
     ["1 Estudio Previo", "2 Planeación", "3 Contratación", "4 Ejecución"],
@@ -145,6 +146,164 @@ st.markdown(f"""
 ID_PROCESO generado automáticamente: {ID}
 </div>
 """, unsafe_allow_html=True)
+
+# =====================================================
+# FUNCIONES DE RENDERIZADO POR ETAPA
+# =====================================================
+
+def render_estudio_previo():
+    st.markdown("### ETAPA 1 — ESTUDIO PREVIO")
+    st.info("Contenido del Estudio Previo aquí.")
+
+
+def render_planeacion():
+
+    st.markdown("### ETAPA 2 — PLANEACIÓN")
+
+    # =====================================================
+    # PROPONENTE 1
+    # =====================================================
+
+    st.markdown("#### PROPONENTE 1")
+
+    col1, col2, col3, col4 = st.columns([2, 2, 2, 3])
+
+    with col1:
+        tipo1 = st.selectbox(
+            "TIPO PERSONA",
+            ["Persona Natural", "Persona Jurídica"],
+            key="tipo1"
+        )
+
+    with col2:
+        nombre1 = st.text_input(
+            "NOMBRE / RAZÓN SOCIAL",
+            key="nombre1"
+        )
+
+    with col3:
+        identificacion1 = st.text_input(
+            "N° CC" if tipo1 == "Persona Natural" else "N° NIT",
+            key="id1"
+        )
+
+    with col4:
+        st.text_input("VALOR PROPUESTA 1", key="valor1")
+
+    valor1, valor1_formateado = procesar_moneda("valor1")
+
+    if valor1 > 0:
+        st.write("Valor formateado:", valor1_formateado)
+        st.success(valor_en_letras(valor1))
+
+    representante1 = None
+    cc_rep1 = None
+
+    if tipo1 == "Persona Jurídica":
+
+        st.markdown("##### REPRESENTANTE LEGAL — PROPONENTE 1")
+
+        rl1_col1, rl1_col2 = st.columns(2)
+
+        with rl1_col1:
+            representante1 = st.text_input(
+                "NOMBRE DEL REPRESENTANTE LEGAL",
+                key="rep1"
+            )
+
+        with rl1_col2:
+            cc_rep1 = st.text_input(
+                "N° CC REPRESENTANTE LEGAL",
+                key="cc_rep1"
+            )
+
+    st.divider()
+
+    # =====================================================
+    # PROPONENTE 2
+    # =====================================================
+
+    st.markdown("#### PROPONENTE 2")
+
+    col5, col6, col7, col8 = st.columns([2, 2, 2, 3])
+
+    with col5:
+        tipo2 = st.selectbox(
+            "TIPO PERSONA",
+            ["Persona Natural", "Persona Jurídica"],
+            key="tipo2"
+        )
+
+    with col6:
+        nombre2 = st.text_input(
+            "NOMBRE / RAZÓN SOCIAL",
+            key="nombre2"
+        )
+
+    with col7:
+        identificacion2 = st.text_input(
+            "N° CC" if tipo2 == "Persona Natural" else "N° NIT",
+            key="id2"
+        )
+
+    with col8:
+        st.text_input("VALOR PROPUESTA 2", key="valor2")
+
+    valor2, valor2_formateado = procesar_moneda("valor2")
+
+    if valor2 > 0:
+        st.write("Valor formateado:", valor2_formateado)
+        st.success(valor_en_letras(valor2))
+
+    representante2 = None
+    cc_rep2 = None
+
+    if tipo2 == "Persona Jurídica":
+
+        st.markdown("##### REPRESENTANTE LEGAL — PROPONENTE 2")
+
+        rl2_col1, rl2_col2 = st.columns(2)
+
+        with rl2_col1:
+            representante2 = st.text_input(
+                "NOMBRE DEL REPRESENTANTE LEGAL",
+                key="rep2"
+            )
+
+        with rl2_col2:
+            cc_rep2 = st.text_input(
+                "N° CC REPRESENTANTE LEGAL",
+                key="cc_rep2"
+            )
+
+    st.markdown("---")
+
+
+def render_contratacion():
+    st.markdown("### ETAPA 3 — CONTRATACIÓN")
+    st.info("Contenido de contratación aquí.")
+
+
+def render_ejecucion():
+    st.markdown("### ETAPA 4 — EJECUCIÓN")
+    st.info("Contenido de ejecución aquí.")
+
+
+# =====================================================
+# ENRUTADOR DE ETAPAS
+# =====================================================
+
+if etapa == "1 Estudio Previo":
+    render_estudio_previo()
+
+elif etapa == "2 Planeación":
+    render_planeacion()
+
+elif etapa == "3 Contratación":
+    render_contratacion()
+
+elif etapa == "4 Ejecución":
+    render_ejecucion()
 
 # =====================================================
 # ETAPA 1 — ESTUDIO PREVIO (AJUSTADA Y ORDENADA)
@@ -970,6 +1129,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
