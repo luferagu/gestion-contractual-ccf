@@ -387,7 +387,7 @@ if etapa == "1 Estudio Previo":
         }
     }
 
-  # ===================== FILA 1 =====================
+# ===================== FILA 1 =====================
 col1, col2 = st.columns(2)
 
 with col1:
@@ -413,8 +413,6 @@ with col2:
         programa_codigo = None
         st.selectbox("PROGRAMA", ["NO APLICA"], disabled=True)
 
-# ===================== SEPARADOR =====================
-st.markdown("---")
 
 # ===================== FILA 2 =====================
 col3, col4 = st.columns(2)
@@ -460,22 +458,29 @@ with col4:
             disabled=True
         )
 
-    # =====================================================
-    # 2. DESCRIPCIÓN DEL OBJETO
-    # =====================================================
+# =====================================================
+# SEPARADOR VISUAL (FUERA DE COLUMNAS)
+# =====================================================
 
-    st.markdown("## 2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES")
-    st.text_area(
-        "2.1 OBJETO (DESCRIPCIÓN DETALLADA)",
-        value=objeto,
-        height=150,
-        disabled=True
-    )
+st.divider()
 
-    caracteristicas_tecnicas = st.text_area(
-        "2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN",
-        height=150
-    )
+# =====================================================
+# 2. DESCRIPCIÓN DEL OBJETO (ANCHO COMPLETO)
+# =====================================================
+
+st.markdown("## 2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES")
+
+st.text_area(
+    "2.1 OBJETO (DESCRIPCIÓN DETALLADA)",
+    value=objeto,
+    height=150,
+    disabled=True
+)
+
+caracteristicas_tecnicas = st.text_area(
+    "2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN",
+    height=150
+)
     # =====================================================
     # 2.3 FUNDAMENTOS JURÍDICOS
     # =====================================================
@@ -849,6 +854,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
