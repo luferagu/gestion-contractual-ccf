@@ -591,9 +591,21 @@ st.markdown("---")
 
 st.markdown("## 3. CONDICIONES DEL FUTURO CONTRATO")
 
-oportunidad = st.text_input(
-    "3.1 OPORTUNIDAD (Mes de suscripción en 2026)"
+meses = [
+    "Enero", "Febrero", "Marzo", "Abril",
+    "Mayo", "Junio", "Julio", "Agosto",
+    "Septiembre", "Octubre", "Noviembre", "Diciembre"
+]
+
+meses_seleccionados = st.multiselect(
+    "3.1 OPORTUNIDAD (Mes de suscripción en 2026)",
+    meses,
+    max_selections=2
 )
+
+if meses_seleccionados:
+    oportunidad = " y ".join(meses_seleccionados) + " de 2026"
+    st.success(f"Suscripción prevista para: {oportunidad}")
 
 forma_pago = st.text_area(
     "3.3 FORMA DE PAGO",
@@ -908,6 +920,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
