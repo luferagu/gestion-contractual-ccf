@@ -5,32 +5,6 @@ from database import conectar_db
 
 
 # =====================================================
-# CONVERTIDOR MASIVO TEMPORAL (PEGAR AQUÍ)
-# =====================================================
-
-entrada = """
-PEGUE_AQUI_TODO_SU_BLOQUE_DE_381_LINEAS
-"""
-
-st.divider()
-st.title("Convertidor Masivo de Rubros")
-
-if st.button("Generar lista Python"):
-    lineas = entrada.strip().split("\n")
-
-    resultado = "datos_rubros = [\n\n"
-
-    for linea in lineas:
-        partes = linea.strip().split("\t")
-        if len(partes) == 3:
-            programa, rubro, descripcion = partes
-            resultado += f'    ("{programa}","{rubro}","{descripcion}"),\n'
-
-    resultado += "\n]"
-
-    st.code(resultado, language="python")
-
-# =====================================================
 # CONFIGURACIÓN GENERAL
 # =====================================================
 st.set_page_config(
@@ -412,39 +386,76 @@ if etapa == "1 Estudio Previo":
         }
     }
 
-    # ===================== FILA 1 =====================
-    col1, col2 = st.columns(2)
+  # ===================== FILA 1 =====================
+col1, col2 = st.columns(2)
 
-    with col1:
-        centro_label = st.selectbox(
-            "CENTRO DE COSTOS",
-            [f"{c} - {d['nombre']}" for c, d in estructura_presupuestal.items()],
-            key="centro_costos_select"
+with col1:
+    centro_label = st.selectbox(
+        "CENTRO DE COSTOS",
+        [f"{c} - {d['nombre']}" for c, d in estructura_presupuestal.items()],
+        key="centro_costos_select"
+    )
+    centro_codigo = centro_label.split(" - ")[0]
+
+with col2:
+    programas = estructura_presupuestal[centro_codigo]["programas"]
+
+    if programas:
+        programa_label = st.selectbox(
+            "PROGRAMA",
+            [f"{c} - {n}" for c, n in programas.items()],
+            key="programa_select"
         )
-        centro_codigo = centro_label.split(" - ")[0]
+        programa_codigo = programa_label.split(" - ")[0]
+    else:
+        programa_label = None
+        programa_codigo = None
+        st.selectbox("PROGRAMA", ["NO APLICA"], disabled=True)
 
-    with col2:
-        programas = estructura_presupuestal[centro_codigo]["programas"]
 
-        if programas:
-            programa_label = st.selectbox(
-                "PROGRAMA",
-                [f"{c} - {n}" for c, n in programas.items()],
-                key="programa_select"
+# ===================== FILA 2 =====================
+col3, col4 = st.columns(2)
+
+with col3:
+    actividad_planeacion = st.text_input(
+        "ACTIVIDAD DE PLANEACIÓN",
+        key="actividad_planeacion"
+    )
+
+with col4:
+
+    if programa_codigo:
+
+        # Filtrar rubros según programa seleccionado
+        rubros_filtrados = [
+            f"{rubro} - {descripcion}"
+            for prog, rubro, descripcion in datos_rubros
+            if prog == programa_codigo
+        ]
+
+        if rubros_filtrados:
+            rubro_label = st.selectbox(
+                "RUBRO",
+                rubros_filtrados,
+                key="rubro_select"
             )
+            rubro_codigo = rubro_label.split(" - ")[0]
         else:
-            st.selectbox("PROGRAMA", ["NO APLICA"], disabled=True)
-
-    # ===================== FILA 2 =====================
-    col3, col4 = st.columns(2)
-
-    with col3:
-        codigo_planeacion = st.text_input("ACTIVIDAD DE PLANEACIÓN")
-
-    with col4:
-        rubro = st.text_input("RUBRO")
-
-    st.markdown("---")
+            rubro_label = None
+            rubro_codigo = None
+            st.selectbox(
+                "RUBRO",
+                ["No hay rubros disponibles para este programa"],
+                disabled=True
+            )
+    else:
+        rubro_label = None
+        rubro_codigo = None
+        st.selectbox(
+            "RUBRO",
+            ["Seleccione primero un programa"],
+            disabled=True
+        )
 
     # =====================================================
     # 2. DESCRIPCIÓN DEL OBJETO
@@ -835,6 +846,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
