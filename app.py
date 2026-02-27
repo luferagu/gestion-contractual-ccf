@@ -703,28 +703,28 @@ if etapa == "2 Planeación":
 
     st.markdown("#### PROPONENTE 1")
 
-    c1, c2, c3, c4 = st.columns([2, 2, 2, 3])
+    col1, col2, col3, col4 = st.columns([2, 2, 2, 3])
 
-    with c1:
+    with col1:
         tipo1 = st.selectbox(
             "TIPO PERSONA",
             ["Persona Natural", "Persona Jurídica"],
             key="tipo1"
         )
 
-    with c2:
+    with col2:
         nombre1 = st.text_input(
             "NOMBRE / RAZÓN SOCIAL",
             key="nombre1"
         )
 
-    with c3:
-        id1 = st.text_input(
+    with col3:
+        identificacion1 = st.text_input(
             "N° CC" if tipo1 == "Persona Natural" else "N° NIT",
             key="id1"
         )
 
-    with c4:
+    with col4:
         st.text_input("VALOR PROPUESTA 1", key="valor1")
 
     valor1, valor1_formateado = procesar_moneda("valor1")
@@ -762,28 +762,28 @@ if etapa == "2 Planeación":
 
     st.markdown("#### PROPONENTE 2")
 
-    c5, c6, c7, c8 = st.columns([2, 2, 2, 3])
+    col5, col6, col7, col8 = st.columns([2, 2, 2, 3])
 
-    with c5:
+    with col5:
         tipo2 = st.selectbox(
             "TIPO PERSONA",
             ["Persona Natural", "Persona Jurídica"],
             key="tipo2"
         )
 
-    with c6:
+    with col6:
         nombre2 = st.text_input(
             "NOMBRE / RAZÓN SOCIAL",
             key="nombre2"
         )
 
-    with c7:
-        id2 = st.text_input(
+    with col7:
+        identificacion2 = st.text_input(
             "N° CC" if tipo2 == "Persona Natural" else "N° NIT",
             key="id2"
         )
 
-    with c8:
+    with col8:
         st.text_input("VALOR PROPUESTA 2", key="valor2")
 
     valor2, valor2_formateado = procesar_moneda("valor2")
@@ -818,6 +818,57 @@ if etapa == "2 Planeación":
     # =====================================================
     # GUARDAR PLANEACIÓN
     # =====================================================
+
+    if st.button("GUARDAR PLANEACIÓN", use_container_width=True):
+
+        if not proceso_existe(ID):
+            st.error("Debe guardar primero el Estudio Previo.")
+
+        else:
+            conn = None
+            try:
+                conn = conectar_db()
+                cursor = conn.cursor()
+
+                # Verificar si ya existe planeación
+                cursor.execute(
+                    "SELECT 1 FROM public.planeacion WHERE id_proceso = %s",
+                    (ID,)
+                )
+
+                existe_planeacion = cursor.fetchone()
+
+                if existe_planeacion:
+                    st.warning("La planeación ya fue registrada para este proceso.")
+
+                else:
+                    cursor.execute("""
+                        INSERT INTO public.planeacion
+                        (
+                            id_proceso,
+                            tipo1, nombre1, identificacion1, valor1,
+                            representante1, cc_representante1,
+                            tipo2, nombre2, identificacion2, valor2,
+                            representante2, cc_representante2
+                        )
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """, (
+                        ID,
+                        tipo1, nombre1, identificacion1, valor1,
+                        representante1, cc_rep1,
+                        tipo2, nombre2, identificacion2, valor2,
+                        representante2, cc_rep2
+                    ))
+
+                    conn.commit()
+                    st.success("Planeación guardada correctamente.")
+
+            except Exception as e:
+                st.error(f"Error al guardar planeación: {e}")
+
+            finally:
+                if conn:
+                    conn.close()
 
     if st.button("GUARDAR PLANEACIÓN", use_container_width=True):
 
@@ -919,6 +970,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
