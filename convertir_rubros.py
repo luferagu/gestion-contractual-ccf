@@ -1,8 +1,4 @@
-# =====================================================
-# CONVERTIDOR MASIVO DE RUBROS A FORMATO PYTHON
-# =====================================================
-
-entrada = """
+datos_rubros = [
 4400-4412	510506101	SALARIO PERSON PERMANENT PUBLC
 4500-4526	510506101	SALARIO PERSON PERMANENT PUBLC
 4600-4611	510506101	SALARIO PERSON PERMANENT PUBLC
@@ -384,16 +380,3 @@ entrada = """
 4800-4821	530505202	GMF 4*1000 PRIVADO
 4800-4821	530520202	SERVICIO A LA DEUDA
 
-"""
-
-lineas = entrada.strip().split("\n")
-
-print("datos_rubros = [\n")
-
-for linea in lineas:
-    partes = linea.strip().split("\t")
-    if len(partes) == 3:
-        programa, rubro, descripcion = partes
-        print(f'    ("{programa}","{rubro}","{descripcion}"),')
-
-print("\n]")
