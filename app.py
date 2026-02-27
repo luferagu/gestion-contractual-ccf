@@ -420,7 +420,8 @@ col3, col4 = st.columns(2)
 with col3:
     actividad_planeacion = st.text_input(
         "ACTIVIDAD DE PLANEACIÓN",
-        key="actividad_planeacion"
+        key="actividad_planeacion",
+        disabled=(presupuesto_tipo != "INVERSIÓN")
     )
 
 with col4:
@@ -881,6 +882,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
