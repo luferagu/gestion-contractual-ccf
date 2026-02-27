@@ -418,13 +418,7 @@ with col2:
 # ===================== FILA 2 =====================
 col3, col4 = st.columns(2)
 
-with col3:
-    actividad_planeacion = st.text_input(
-        "ACTIVIDAD DE PLANEACIÓN",
-        key="actividad_planeacion",
-        disabled=(presupuesto_tipo != "INVERSIÓN")
-    )
-
+# ===================== COLUMNA 4 — RUBRO =====================
 with col4:
 
     if programa_codigo:
@@ -451,6 +445,7 @@ with col4:
                 ["No hay rubros disponibles para este programa"],
                 disabled=True
             )
+
     else:
         rubro_label = None
         rubro_codigo = None
@@ -460,6 +455,36 @@ with col4:
             disabled=True
         )
 
+# ===================== COLUMNA 3 — ACTIVIDAD =====================
+with col3:
+
+    if presupuesto_tipo == "INVERSIÓN" and programa_codigo and rubro_codigo:
+
+        actividades_filtradas = [
+            f"{codigo} - {descripcion}"
+            for prog, rub, codigo, descripcion in actividades_planeacion
+            if prog == programa_codigo and rub == rubro_codigo
+        ]
+
+        if actividades_filtradas:
+            actividad_planeacion = st.selectbox(
+                "ACTIVIDAD DE PLANEACIÓN",
+                actividades_filtradas,
+                key="actividad_planeacion"
+            )
+        else:
+            st.selectbox(
+                "ACTIVIDAD DE PLANEACIÓN",
+                ["No hay actividades asociadas"],
+                disabled=True
+            )
+
+    else:
+        st.text_input(
+            "ACTIVIDAD DE PLANEACIÓN",
+            value="No aplica",
+            disabled=True
+        )
 # =====================================================
 # SEPARADOR VISUAL (FUERA DE COLUMNAS)
 # =====================================================
@@ -883,6 +908,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
