@@ -3,6 +3,33 @@ from datetime import date
 from num2words import num2words
 from database import conectar_db
 
+
+# =====================================================
+# CONVERTIDOR MASIVO TEMPORAL (PEGAR AQUÍ)
+# =====================================================
+
+entrada = """
+PEGUE_AQUI_TODO_SU_BLOQUE_DE_381_LINEAS
+"""
+
+st.divider()
+st.title("Convertidor Masivo de Rubros")
+
+if st.button("Generar lista Python"):
+    lineas = entrada.strip().split("\n")
+
+    resultado = "datos_rubros = [\n\n"
+
+    for linea in lineas:
+        partes = linea.strip().split("\t")
+        if len(partes) == 3:
+            programa, rubro, descripcion = partes
+            resultado += f'    ("{programa}","{rubro}","{descripcion}"),\n'
+
+    resultado += "\n]"
+
+    st.code(resultado, language="python")
+
 # =====================================================
 # CONFIGURACIÓN GENERAL
 # =====================================================
@@ -808,6 +835,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
