@@ -564,16 +564,21 @@ st.markdown("---")
 
 st.markdown("## 3. CONDICIONES DEL FUTURO CONTRATO")
 
-    oportunidad = st.text_input("3.1 OPORTUNIDAD (Mes de suscripción en 2026)")
+oportunidad = st.text_input(
+    "3.1 OPORTUNIDAD (Mes de suscripción en 2026)"
+)
 
-    forma_pago = st.text_area("3.3 FORMA DE PAGO", height=120)
+forma_pago = st.text_area(
+    "3.3 FORMA DE PAGO",
+    height=120
+)
 
-    analisis = st.text_area(
-        "3.4 ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO",
-        height=120
-    )
+analisis = st.text_area(
+    "3.4 ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO",
+    height=120
+)
 
-    st.markdown("---")
+st.markdown("---")
 
     # =====================================================
     # 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS
@@ -869,6 +874,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
