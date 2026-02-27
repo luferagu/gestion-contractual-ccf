@@ -485,63 +485,78 @@ caracteristicas_tecnicas = st.text_area(
     # 2.3 FUNDAMENTOS JURÍDICOS
     # =====================================================
 
+# =====================================================
+# 2.3 FUNDAMENTOS JURÍDICOS
+# =====================================================
+
 st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
 
-    # Inicialización de estados
-    if "articulo_auto" not in st.session_state:
-        st.session_state.articulo_auto = "ARTÍCULO 16"
+# Inicialización de estados
+if "articulo_auto" not in st.session_state:
+    st.session_state.articulo_auto = "ARTÍCULO 16"
 
-    if "numeral_dinamico" not in st.session_state:
-        st.session_state.numeral_dinamico = "1"
+if "numeral_dinamico" not in st.session_state:
+    st.session_state.numeral_dinamico = "1"
 
-    if "literal_dinamico" not in st.session_state:
-        st.session_state.literal_dinamico = "a"
+if "literal_dinamico" not in st.session_state:
+    st.session_state.literal_dinamico = "a"
 
-    col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
+# Columnas
+col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
 
-    with col_modalidad:
-        modalidad = st.selectbox(
-            "MODALIDAD DE CONTRATACIÓN",
-            ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"],
-            key="modalidad_unica"
+with col_modalidad:
+    modalidad = st.selectbox(
+        "MODALIDAD DE CONTRATACIÓN",
+        ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"],
+        key="modalidad_unica"
+    )
+
+# Lógica dinámica según modalidad
+if modalidad == "DIRECTA":
+    st.session_state.articulo_auto = "ARTÍCULO 16"
+    opciones_numeral = ["1", "2", "3"]
+
+elif modalidad == "PRIVADA":
+    st.session_state.articulo_auto = "ARTÍCULO 17"
+    opciones_numeral = ["1", "2", "3", "4"]
+
+else:
+    st.session_state.articulo_auto = "ARTÍCULO 18"
+    opciones_numeral = ["1", "2", "3"]
+
+# Validación del numeral actual
+if st.session_state.numeral_dinamico not in opciones_numeral:
+    st.session_state.numeral_dinamico = opciones_numeral[0]
+
+with col_articulo:
+    st.text_input(
+        "ARTÍCULO",
+        key="articulo_auto",
+        disabled=True
+    )
+
+with col_numeral:
+    numeral = st.selectbox(
+        "NUMERAL",
+        opciones_numeral,
+        key="numeral_dinamico"
+    )
+
+with col_literal:
+    if modalidad == "DIRECTA" and numeral == "2":
+        literal = st.selectbox(
+            "LITERAL",
+            ["a", "b", "c", "d", "e", "f", "g", "h"],
+            key="literal_dinamico"
         )
-
-    if modalidad == "DIRECTA":
-        st.session_state.articulo_auto = "ARTÍCULO 16"
-        opciones_numeral = ["1", "2", "3"]
-
-    elif modalidad == "PRIVADA":
-        st.session_state.articulo_auto = "ARTÍCULO 17"
-        opciones_numeral = ["1", "2", "3", "4"]
-
     else:
-        st.session_state.articulo_auto = "ARTÍCULO 18"
-        opciones_numeral = ["1", "2", "3"]
-
-    if st.session_state.numeral_dinamico not in opciones_numeral:
-        st.session_state.numeral_dinamico = opciones_numeral[0]
-
-    with col_articulo:
-        st.text_input("ARTÍCULO", key="articulo_auto", disabled=True)
-
-    with col_numeral:
-        numeral = st.selectbox(
-            "NUMERAL",
-            opciones_numeral,
-            key="numeral_dinamico"
+        st.text_input(
+            "LITERAL",
+            value="No aplica",
+            disabled=True
         )
 
-    with col_literal:
-        if modalidad == "DIRECTA" and numeral == "2":
-            literal = st.selectbox(
-                "LITERAL",
-                ["a", "b", "c", "d", "e", "f", "g", "h"],
-                key="literal_dinamico"
-            )
-        else:
-            st.text_input("LITERAL", value="No aplica", disabled=True)
-
-    st.markdown("---")
+st.markdown("---")
 
     # =====================================================
     # 3. CONDICIONES DEL FUTURO CONTRATO
@@ -854,6 +869,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
