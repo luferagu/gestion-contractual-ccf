@@ -550,12 +550,26 @@ if etapa == "1 Estudio Previo":
 col1, col2 = st.columns(2)
 
 with col1:
-    centro_label = st.selectbox(
-        "CENTRO DE COSTOS",
-        [f"{c} - {d['nombre']}" for c, d in estructura_presupuestal.items()],
-        key="centro_costos_select"
-    )
-    centro_codigo = centro_label.split(" - ")[0]
+
+    if "estructura_presupuestal" in globals() and estructura_presupuestal:
+
+        centro_label = st.selectbox(
+            "CENTRO DE COSTOS",
+            [f"{c} - {d['nombre']}" for c, d in estructura_presupuestal.items()],
+            key="centro_costos_select"
+        )
+
+        centro_codigo = centro_label.split(" - ")[0]
+
+    else:
+        centro_label = None
+        centro_codigo = None
+
+        st.selectbox(
+            "CENTRO DE COSTOS",
+            ["No disponible"],
+            disabled=True
+        )
 
 with col2:
     programas = estructura_presupuestal[centro_codigo]["programas"]
@@ -1086,6 +1100,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
