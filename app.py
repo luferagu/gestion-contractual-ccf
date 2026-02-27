@@ -151,6 +151,103 @@ ID_PROCESO generado automáticamente: {ID}
 # ETAPA 1 — ESTUDIO PREVIO (AJUSTADA Y ORDENADA)
 # =====================================================
 if etapa == "1 Estudio Previo":
+    # ===================== FILA 1 =====================
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            centro_label = st.selectbox(
+                "CENTRO DE COSTOS",
+                [f"{c} - {d['nombre']}" for c, d in estructura_presupuestal.items()],
+                key="centro_costos_select"
+            )
+            centro_codigo = centro_label.split(" - ")[0]
+        
+        with col2:
+            programas = estructura_presupuestal[centro_codigo]["programas"]
+        
+            if programas:
+                programa_label = st.selectbox(
+                    "PROGRAMA",
+                    [f"{c} - {n}" for c, n in programas.items()],
+                    key="programa_select"
+                )
+                programa_codigo = programa_label.split(" - ")[0]
+            else:
+                programa_label = None
+                programa_codigo = None
+                st.selectbox("PROGRAMA", ["NO APLICA"], disabled=True)
+        
+        
+        # ===================== FILA 2 =====================
+        col3, col4 = st.columns(2)
+        
+        # ===================== COLUMNA 4 — RUBRO =====================
+        with col4:
+        
+            if programa_codigo:
+        
+                # Filtrar rubros según programa seleccionado
+                rubros_filtrados = [
+                    f"{rubro} - {descripcion}"
+                    for prog, rubro, descripcion in datos_rubros
+                    if prog == programa_codigo
+                ]
+        
+                if rubros_filtrados:
+                    rubro_label = st.selectbox(
+                        "RUBRO",
+                        rubros_filtrados,
+                        key="rubro_select"
+                    )
+                    rubro_codigo = rubro_label.split(" - ")[0]
+                else:
+                    rubro_label = None
+                    rubro_codigo = None
+                    st.selectbox(
+                        "RUBRO",
+                        ["No hay rubros disponibles para este programa"],
+                        disabled=True
+                    )
+        
+            else:
+                rubro_label = None
+                rubro_codigo = None
+                st.selectbox(
+                    "RUBRO",
+                    ["Seleccione primero un programa"],
+                    disabled=True
+                )
+        
+        # ===================== COLUMNA 3 — ACTIVIDAD =====================
+        with col3:
+        
+            if presupuesto_tipo == "INVERSIÓN" and programa_codigo and rubro_codigo:
+        
+                actividades_filtradas = [
+                    f"{codigo} - {descripcion}"
+                    for prog, rub, codigo, descripcion in actividades_planeacion
+                    if prog == programa_codigo and rub == rubro_codigo
+                ]
+        
+                if actividades_filtradas:
+                    actividad_planeacion = st.selectbox(
+                        "ACTIVIDAD DE PLANEACIÓN",
+                        actividades_filtradas,
+                        key="actividad_planeacion"
+                    )
+                else:
+                    st.selectbox(
+                        "ACTIVIDAD DE PLANEACIÓN",
+                        ["No hay actividades asociadas"],
+                        disabled=True
+                    )
+        
+            else:
+                st.text_input(
+                    "ACTIVIDAD DE PLANEACIÓN",
+                    value="No aplica",
+                    disabled=True
+                )
 
     st.markdown("### ETAPA 1 — ESTUDIO PREVIO")
 
@@ -388,103 +485,6 @@ if etapa == "1 Estudio Previo":
         }
     }
 
-# ===================== FILA 1 =====================
-col1, col2 = st.columns(2)
-
-with col1:
-    centro_label = st.selectbox(
-        "CENTRO DE COSTOS",
-        [f"{c} - {d['nombre']}" for c, d in estructura_presupuestal.items()],
-        key="centro_costos_select"
-    )
-    centro_codigo = centro_label.split(" - ")[0]
-
-with col2:
-    programas = estructura_presupuestal[centro_codigo]["programas"]
-
-    if programas:
-        programa_label = st.selectbox(
-            "PROGRAMA",
-            [f"{c} - {n}" for c, n in programas.items()],
-            key="programa_select"
-        )
-        programa_codigo = programa_label.split(" - ")[0]
-    else:
-        programa_label = None
-        programa_codigo = None
-        st.selectbox("PROGRAMA", ["NO APLICA"], disabled=True)
-
-
-# ===================== FILA 2 =====================
-col3, col4 = st.columns(2)
-
-# ===================== COLUMNA 4 — RUBRO =====================
-with col4:
-
-    if programa_codigo:
-
-        # Filtrar rubros según programa seleccionado
-        rubros_filtrados = [
-            f"{rubro} - {descripcion}"
-            for prog, rubro, descripcion in datos_rubros
-            if prog == programa_codigo
-        ]
-
-        if rubros_filtrados:
-            rubro_label = st.selectbox(
-                "RUBRO",
-                rubros_filtrados,
-                key="rubro_select"
-            )
-            rubro_codigo = rubro_label.split(" - ")[0]
-        else:
-            rubro_label = None
-            rubro_codigo = None
-            st.selectbox(
-                "RUBRO",
-                ["No hay rubros disponibles para este programa"],
-                disabled=True
-            )
-
-    else:
-        rubro_label = None
-        rubro_codigo = None
-        st.selectbox(
-            "RUBRO",
-            ["Seleccione primero un programa"],
-            disabled=True
-        )
-
-# ===================== COLUMNA 3 — ACTIVIDAD =====================
-with col3:
-
-    if presupuesto_tipo == "INVERSIÓN" and programa_codigo and rubro_codigo:
-
-        actividades_filtradas = [
-            f"{codigo} - {descripcion}"
-            for prog, rub, codigo, descripcion in actividades_planeacion
-            if prog == programa_codigo and rub == rubro_codigo
-        ]
-
-        if actividades_filtradas:
-            actividad_planeacion = st.selectbox(
-                "ACTIVIDAD DE PLANEACIÓN",
-                actividades_filtradas,
-                key="actividad_planeacion"
-            )
-        else:
-            st.selectbox(
-                "ACTIVIDAD DE PLANEACIÓN",
-                ["No hay actividades asociadas"],
-                disabled=True
-            )
-
-    else:
-        st.text_input(
-            "ACTIVIDAD DE PLANEACIÓN",
-            value="No aplica",
-            disabled=True
-        )
 # =====================================================
 # SEPARADOR VISUAL (FUERA DE COLUMNAS)
 # =====================================================
@@ -920,6 +920,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
