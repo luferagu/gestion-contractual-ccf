@@ -151,6 +151,7 @@ ID_PROCESO generado automáticamente: {ID}
 # ETAPA 1 — ESTUDIO PREVIO (AJUSTADA Y ORDENADA)
 # =====================================================
 if etapa == "1 Estudio Previo":
+      st.markdown("### ETAPA 1 — ESTUDIO PREVIO")
     # ===================== FILA 1 =====================
         col1, col2 = st.columns(2)
         
@@ -249,9 +250,7 @@ if etapa == "1 Estudio Previo":
                     disabled=True
                 )
 
-    st.markdown("### ETAPA 1 — ESTUDIO PREVIO")
-
-       # =====================================================
+    # =====================================================
     # CAMPOS PRINCIPALES (ANCHO COMPLETO)
     # =====================================================
 
@@ -920,6 +919,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
