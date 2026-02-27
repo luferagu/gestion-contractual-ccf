@@ -413,6 +413,8 @@ with col2:
         programa_codigo = None
         st.selectbox("PROGRAMA", ["NO APLICA"], disabled=True)
 
+# ===================== SEPARADOR =====================
+st.markdown("---")
 
 # ===================== FILA 2 =====================
 col3, col4 = st.columns(2)
@@ -847,6 +849,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
