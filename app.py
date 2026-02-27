@@ -558,11 +558,11 @@ with col_literal:
 
 st.markdown("---")
 
-    # =====================================================
-    # 3. CONDICIONES DEL FUTURO CONTRATO
-    # =====================================================
+# =====================================================
+# 3. CONDICIONES DEL FUTURO CONTRATO
+# =====================================================
 
-    st.markdown("## 3. CONDICIONES DEL FUTURO CONTRATO")
+st.markdown("## 3. CONDICIONES DEL FUTURO CONTRATO")
 
     oportunidad = st.text_input("3.1 OPORTUNIDAD (Mes de suscripción en 2026)")
 
@@ -869,6 +869,7 @@ if etapa == "3 Contratación":
 # =====================================================
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
