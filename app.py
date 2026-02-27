@@ -125,13 +125,68 @@ def procesar_moneda(key):
 
 
 # =====================================================
+# ESTRUCTURA PRESUPUESTAL (GLOBAL - ANTES DE USARSE)
+# =====================================================
+
+estructura_presupuestal = {
+    "4100": {
+        "nombre": "REGISTROS PUBLICOS",
+        "programas": {
+            "4100-4110": "FUNCIONAMIENTO SISTEMAS",
+            "4100-4111": "BRIGADAS DE REGISTRO",
+            "4100-4112": "COSTUMBRE MERCANTIL",
+            "4100-4113": "BRIGADA DE REGISTRO DE PROPONENTES",
+            "4100-4114": "JORNADAS DE RENOVACIONES",
+            "4100-4115": "CONFERENCIAS TALLER",
+            "4100-4116": "REVISORIA FISCAL",
+            "4100-4117": "PARTE TECNICA PROYECTO RUE",
+            "4100-4118": "PROYECTO COMUNICACIONES",
+            "4100-4119": "OTRAS NECESIDADES DE SISTEMAS",
+            "4100-4120": "NOMINA",
+            "4100-4121": "FUNCIONAMIENTO FACA",
+            "4100-4122": "FUNCIONAMIENTO FUNZA",
+            "4100-4123": "FUNCIONAMIENTO VILLETA",
+            "4100-4124": "FUNCIONAMIENTO PACHO",
+            "4100-4125": "FUNCIONAMIENTO GENERAL",
+            "4100-4126": "LISTA CONTRALORES Y PERITOS"
+        }
+    },
+    "4500": {
+        "nombre": "DESARROLLO EMPRESARIAL",
+        "programas": {
+            "4500-4510": "FERIAS, RUEDAS Y EVENTOS",
+            "4500-4513": "CAPACITACION",
+            "4500-4528": "PROMOCION Y APOYO EMPRENDIMIENTO",
+            "4500-4530": "GESTION DE PROYECTOS",
+            "4500-4531": "PROGRAMA DE INNOVACION"
+        }
+    },
+    "4800": {
+        "nombre": "GESTION ADMINISTRATIVA",
+        "programas": {
+            "4800-4810": "NOMINA",
+            "4800-4815": "JURIDICA",
+            "4800-4890": "INVERSION PUBLICA",
+            "4800-4892": "INVERSION PRIVADA"
+        }
+    },
+    "9999": {
+        "nombre": "OTROS",
+        "programas": {
+            "9999-9999": "OTROS NO CODIFICADOS"
+        }
+    }
+}
+
+
+# =====================================================
 # CONTROL DE ID
 # =====================================================
+
 if "ID_PROCESO" not in st.session_state:
     st.session_state.ID_PROCESO = generar_id()
 
 ID = st.session_state.ID_PROCESO
-
 # =====================================================
 # NAVEGACIÓN ETAPAS
 # =====================================================
@@ -920,6 +975,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
