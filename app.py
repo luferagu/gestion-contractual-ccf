@@ -988,7 +988,8 @@ if (
                     data=buffer,
                     file_name=f"Estudio_Previo_{ID}.docx",
                     mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    use_container_width=True
+                    use_container_width=True,
+                    key=f"descargar_estudio_{ID}"
                 )
 
             except Exception as e:
@@ -1225,6 +1226,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
