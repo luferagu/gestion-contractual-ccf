@@ -1015,3 +1015,4 @@ st.success("Sistema operativo en PostgreSQL (Supabase).")
 
 
 
+
