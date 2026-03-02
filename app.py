@@ -1086,9 +1086,9 @@ if st.session_state.etapa_actual == "2 Planeación" and st.session_state.pagina 
             conn.close()
 
         except Exception as e:
-    conn.rollback()
-    conn.close()
-    st.error(f"Error al guardar proceso: {e}")
+            conn.rollback()
+            conn.close()
+            st.error(f"Error al guardar planeación: {e}")
             
 # =====================================================
 # ETAPA 3 — CONTRATACIÓN
@@ -1143,6 +1143,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
