@@ -801,55 +801,66 @@ if (
 
     col_btn1, col_btn2 = st.columns(2)
 
-    # ==========================================
-    # BOTÓN GUARDAR Y CERRAR ETAPA 1
-    # ==========================================
-    with col_btn1:
+ # ==========================================
+# BOTÓN GUARDAR Y CERRAR ETAPA 1
+# ==========================================
+with col_btn1:
 
-        if st.button("GUARDAR Y CERRAR ETAPA 1", use_container_width=True):
+    if st.button("GUARDAR Y CERRAR ETAPA 1", use_container_width=True):
 
-            try:
-                conn = conectar_db()
-                cursor = conn.cursor()
+        try:
+            conn = conectar_db()
+            cursor = conn.cursor()
 
-                cursor.execute("""
-                    INSERT INTO procesos
-                    (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
-                    ON CONFLICT (id_proceso)
-                    DO UPDATE SET
-                        objeto = EXCLUDED.objeto,
-                        necesidad = EXCLUDED.necesidad,
-                        justificacion = EXCLUDED.justificacion,
-                        valor = EXCLUDED.valor,
-                        plazo = EXCLUDED.plazo,
-                        fecha_estudio = EXCLUDED.fecha_estudio
-                """, (
-                    ID,
-                    st.session_state.get("objeto", ""),
-                    st.session_state.get("necesidad", ""),
-                    st.session_state.get("justificacion", ""),
-                    valor if 'valor' in locals() else 0,
-                    plazo if 'plazo' in locals() else "",
-                    fecha_estudio
-                ))
+            # INSERT O UPDATE DEL ESTUDIO PREVIO
+            cursor.execute("""
+                INSERT INTO procesos
+                (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (id_proceso)
+                DO UPDATE SET
+                    objeto = EXCLUDED.objeto,
+                    necesidad = EXCLUDED.necesidad,
+                    justificacion = EXCLUDED.justificacion,
+                    valor = EXCLUDED.valor,
+                    plazo = EXCLUDED.plazo,
+                    fecha_estudio = EXCLUDED.fecha_estudio
+            """, (
+                ID,
+                st.session_state.get("objeto", ""),
+                st.session_state.get("necesidad", ""),
+                st.session_state.get("justificacion", ""),
+                valor if 'valor' in locals() else 0,
+                plazo if 'plazo' in locals() else "",
+                fecha_estudio
+            ))
 
-                conn.commit()
+            # CAMBIAR ESTADO A ETAPA 2
+            cursor.execute("""
+                UPDATE procesos
+                SET estado = 'ETAPA 2',
+                    fecha_actualizacion = NOW()
+                WHERE id_proceso = %s
+            """, (ID,))
+
+            conn.commit()
+            conn.close()
+
+            # PASAR VISUALMENTE A ETAPA 2
+            st.session_state.etapa_actual = "2 Planeación"
+
+            # GENERAR NUEVO CONSECUTIVO PARA EL SIGUIENTE PROCESO
+            st.session_state.ID_PROCESO = generar_id()
+
+            st.success("Estudio previo cerrado correctamente. Continúe en Planeación.")
+            st.rerun()
+
+        except Exception as e:
+            if conn:
+                conn.rollback()
                 conn.close()
 
-                # 🔴 PASAR A ETAPA 2
-                st.session_state.etapa_actual = "2 Planeación"
-
-                # 🔴 GENERAR NUEVO CONSECUTIVO PARA SIGUIENTE PROCESO
-                nuevo_id = generar_id()
-                st.session_state.ID_PROCESO = nuevo_id
-
-                st.success("Estudio previo cerrado correctamente. Continúe en Planeación.")
-
-                st.rerun()
-
-            except Exception as e:
-                st.error(f"Error al guardar proceso: {e}")
+            st.error(f"Error al guardar proceso: {e}")
 
                 # ==========================================
                 # CREAR CARPETA procesos/ID
@@ -1142,6 +1153,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
