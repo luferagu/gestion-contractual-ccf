@@ -498,15 +498,15 @@ if etapa == "1 Estudio Previo":
     
     # ===================== COLUMNA 3 — ACTIVIDAD =====================
     with col3:
-    
+
         if presupuesto_tipo == "INVERSIÓN" and programa_codigo and rubro_codigo:
-    
+
             actividades_filtradas = [
                 f"{codigo} - {descripcion}"
                 for prog, rub, codigo, descripcion in actividades_planeacion
                 if prog == programa_codigo and rub == rubro_codigo
             ]
-    
+
             if actividades_filtradas:
                 actividad_planeacion = st.selectbox(
                     "ACTIVIDAD DE PLANEACIÓN",
@@ -519,36 +519,38 @@ if etapa == "1 Estudio Previo":
                     ["No hay actividades asociadas"],
                     disabled=True
                 )
-    
+
         else:
             st.text_input(
                 "ACTIVIDAD DE PLANEACIÓN",
                 value="No aplica",
                 disabled=True
             )
+
     # =====================================================
     # SEPARADOR VISUAL
     # =====================================================
 
-        st.divider()
+    st.divider()
 
-# =====================================================
-# 2. DESCRIPCIÓN DEL OBJETO (ANCHO COMPLETO)
-# =====================================================
+    # =====================================================
+    # 2. DESCRIPCIÓN DEL OBJETO (ANCHO COMPLETO)
+    # =====================================================
 
-st.markdown("## 2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES")
+    st.markdown("## 2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES")
 
-st.text_area(
-    "2.1 OBJETO (DESCRIPCIÓN DETALLADA)",
-    value=st.session_state.get("objeto", ""),
-    height=150,
-    disabled=True
-)
+    st.text_area(
+        "2.1 OBJETO (DESCRIPCIÓN DETALLADA)",
+        value=st.session_state.get("objeto", ""),
+        height=150,
+        disabled=True
+    )
 
-caracteristicas_tecnicas = st.text_area(
-    "2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN",
-    height=150
-)
+    caracteristicas_tecnicas = st.text_area(
+        "2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN",
+        height=150
+    )
+
     # =====================================================
     # 2.3 FUNDAMENTOS JURÍDICOS
     # =====================================================
@@ -988,6 +990,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
