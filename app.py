@@ -802,10 +802,11 @@ if (
     col_btn1, col_btn2 = st.columns(2)
 
     # ==========================================
-    # BOTÓN GUARDAR
+    # BOTÓN GUARDAR Y CERRAR ETAPA 1
     # ==========================================
     with col_btn1:
-        if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
+
+        if st.button("GUARDAR Y CERRAR ETAPA 1", use_container_width=True):
 
             try:
                 conn = conectar_db()
@@ -835,6 +836,20 @@ if (
 
                 conn.commit()
                 conn.close()
+
+                # 🔴 PASAR A ETAPA 2
+                st.session_state.etapa_actual = "2 Planeación"
+
+                # 🔴 GENERAR NUEVO CONSECUTIVO PARA SIGUIENTE PROCESO
+                nuevo_id = generar_id()
+                st.session_state.ID_PROCESO = nuevo_id
+
+                st.success("Estudio previo cerrado correctamente. Continúe en Planeación.")
+
+                st.rerun()
+
+            except Exception as e:
+                st.error(f"Error al guardar proceso: {e}")
 
                 # ==========================================
                 # CREAR CARPETA procesos/ID
@@ -1127,6 +1142,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
