@@ -855,39 +855,40 @@ with col_btn1:
             conn.close()
             st.error(f"Error al guardar proceso: {e}")
 
-                # ==========================================
-                # CREAR CARPETA procesos/ID
-                # ==========================================
-                BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-                RUTA_PROCESOS = os.path.join(BASE_DIR, "procesos")
-                os.makedirs(RUTA_PROCESOS, exist_ok=True)
+# ==========================================
+# CREAR CARPETA procesos/ID
+# ==========================================
+import os
+import io
+from docxtpl import DocxTemplate
 
-                ruta_proceso = os.path.join(RUTA_PROCESOS, ID)
-                os.makedirs(ruta_proceso, exist_ok=True)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+RUTA_PROCESOS = os.path.join(BASE_DIR, "procesos")
+os.makedirs(RUTA_PROCESOS, exist_ok=True)
 
-                # ==========================================
-                # GENERAR Y GUARDAR DOCX
-                # ==========================================
-                contexto = {
-                    "OBJETO": st.session_state.get("objeto", ""),
-                    "JUSTIFICACION": st.session_state.get("justificacion", ""),
-                    "NECESIDAD": st.session_state.get("necesidad", "")
-                }
+ruta_proceso = os.path.join(RUTA_PROCESOS, ID)
+os.makedirs(ruta_proceso, exist_ok=True)
 
-                doc = DocxTemplate("plantillas/estudio_previo.docx")
-                doc.render(contexto)
+# ==========================================
+# GENERAR Y GUARDAR DOCX
+# ==========================================
+contexto = {
+    "OBJETO": st.session_state.get("objeto", ""),
+    "JUSTIFICACION": st.session_state.get("justificacion", ""),
+    "NECESIDAD": st.session_state.get("necesidad", "")
+}
 
-                ruta_archivo = os.path.join(
-                    ruta_proceso,
-                    f"Estudio_Previo_{ID}.docx"
-                )
+doc = DocxTemplate("plantillas/estudio_previo.docx")
+doc.render(contexto)
 
-                doc.save(ruta_archivo)
+ruta_archivo = os.path.join(
+    ruta_proceso,
+    f"Estudio_Previo_{ID}.docx"
+)
 
-                st.success(f"Proceso guardado correctamente en procesos/{ID}/")
+doc.save(ruta_archivo)
 
-            except Exception as e:
-                st.error(f"Error al guardar proceso: {e}")
+st.success(f"Proceso guardado correctamente en procesos/{ID}/")
 
     # ==========================================
     # BOTÓN DESCARGAR
@@ -1091,7 +1092,9 @@ if st.session_state.etapa_actual == "2 Planeación" and st.session_state.pagina 
             conn.close()
 
         except Exception as e:
-            st.error(f"Error al guardar planeación: {e}")
+    conn.rollback()
+    conn.close()
+    st.error(f"Error al guardar proceso: {e}")
             
 # =====================================================
 # ETAPA 3 — CONTRATACIÓN
@@ -1146,6 +1149,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
