@@ -530,7 +530,7 @@ if etapa == "1 Estudio Previo":
     # SEPARADOR VISUAL
     # =====================================================
 
-    st.divider()
+        st.divider()
 
 # =====================================================
 # 2. DESCRIPCIÓN DEL OBJETO (ANCHO COMPLETO)
@@ -988,6 +988,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
