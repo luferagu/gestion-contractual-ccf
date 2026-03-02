@@ -144,11 +144,18 @@ if "confirmar_generacion" not in st.session_state:
 # =====================================================
 # NAVEGACIÓN ETAPAS
 # =====================================================
+
+etapas_lista = ["1 Estudio Previo", "2 Planeación", "3 Contratación", "4 Ejecución"]
+
 etapa = st.radio(
     "",
-    ["1 Estudio Previo", "2 Planeación", "3 Contratación", "4 Ejecución"],
-    horizontal=True
+    etapas_lista,
+    horizontal=True,
+    index=etapas_lista.index(st.session_state.etapa_actual)
 )
+
+# Mantener sincronizado el estado
+st.session_state.etapa_actual = etapa
 
 st.markdown(f"""
 <div class="banner-id">
@@ -669,36 +676,116 @@ st.markdown("---")
 
 if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
 
-    if proceso_existe(ID):
-        st.warning("Este proceso ya está registrado.")
-    else:
-        try:
-            conn = conectar_db()
-            cursor = conn.cursor()
+    try:
+        conn = conectar_db()
+        cursor = conn.cursor()
 
-            cursor.execute("""
-                INSERT INTO procesos
-                (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """, (
-                ID,
-                objeto,
-                necesidad,
-                justificacion,
-                valor,
-                plazo,
-                fecha_estudio
-            ))
+        cursor.execute("""
+            INSERT INTO procesos
+            (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (id_proceso)
+            DO UPDATE SET
+                objeto = EXCLUDED.objeto,
+                necesidad = EXCLUDED.necesidad,
+                justificacion = EXCLUDED.justificacion,
+                valor = EXCLUDED.valor,
+                plazo = EXCLUDED.plazo,
+                fecha_estudio = EXCLUDED.fecha_estudio
+        """, (
+            ID,
+            objeto,
+            necesidad,
+            justificacion,
+            valor,
+            plazo,
+            fecha_estudio
+        ))
 
-            conn.commit()
-            conn.close()
+        conn.commit()
+        conn.close()
 
-            st.success("Proceso guardado correctamente.")
+        # Activar confirmación
+        st.session_state.confirmar_generacion = True
 
-        except Exception as e:
-            st.error(f"Error al guardar proceso: {e}")
+        st.success("Estudio guardado correctamente.")
+
+    except Exception as e:
+        st.error(f"Error al guardar proceso: {e}")
 
 
+# =====================================================
+# CONFIRMACION DE CIERRE ETAPA 1
+# =====================================================
+
+if st.session_state.get("confirmar_generacion", False):
+
+    st.warning("¿Está seguro de generar el Estudio Previo y cerrar la Etapa 1?")
+
+    col1, col2 = st.columns(2)
+
+    # BOTON CONFIRMAR
+    with col1:
+        if st.button("SI, GENERAR Y CERRAR ETAPA", use_container_width=True):
+
+            try:
+                conn = conectar_db()
+                cursor = conn.cursor()
+
+                cursor.execute("""
+                    UPDATE procesos
+                    SET fecha_estudio = %s
+                    WHERE id_proceso = %s
+                """, (fecha_estudio, ID))
+
+                conn.commit()
+                conn.close()
+
+                # Cambiar etapa automáticamente
+                st.session_state.etapa_actual = "2 Planeación"
+                st.session_state.confirmar_generacion = False
+
+                st.success("Etapa 1 cerrada correctamente.")
+                st.rerun()
+
+            except Exception as e:
+                st.error(f"Error al cerrar etapa: {e}")
+
+    # BOTON CANCELAR
+    with col2:
+        if st.button("CANCELAR", use_container_width=True):
+
+            st.session_state.confirmar_generacion = False
+            st.info("Operación cancelada.")
+            st.rerun()
+
+
+# =====================================================
+# DESCARGAR DOCUMENTO (solo si ya se guardó)
+# =====================================================
+
+if proceso_existe(ID):
+
+    st.markdown("### DESCARGAR DOCUMENTO")
+
+    contexto = {
+        "OBJETO": objeto,
+        "JUSTIFICACION": justificacion,
+        "NECESIDAD": necesidad,
+        "VALOR": f"$ {valor:,.0f}",
+        "VALOR_LETRAS": valor_en_letras(valor),
+        "PLAZO": f"{plazo} {unidad_plazo}"
+    }
+
+    archivo = generar_estudio_previo_docxtpl(contexto)
+
+    st.download_button(
+        label="DESCARGAR ESTUDIO PREVIO",
+        data=archivo,
+        file_name=f"Estudio_Previo_{ID}.docx",
+        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        use_container_width=True
+    )
 # =====================================================
 # ETAPA 2 — PLANEACIÓN
 # =====================================================
@@ -929,6 +1016,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
