@@ -359,7 +359,56 @@ if "confirmar_generacion" not in st.session_state:
 # ---------------------------------------------
 if "pagina" not in st.session_state:
     st.session_state.pagina = "Inicio"
-    
+
+# =====================================================
+# MÓDULO PROCESOS (ANTES DE LAS ETAPAS)
+# =====================================================
+
+if st.session_state.pagina == "Proceso":
+
+    st.title("📁 PROCESOS REGISTRADOS")
+
+    try:
+        conn = conectar_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT id_proceso, fecha_estudio
+            FROM procesos
+            ORDER BY fecha_estudio DESC
+        """)
+
+        registros = cursor.fetchall()
+        conn.close()
+
+        if registros:
+
+            opciones = {
+                f"{r[0]} - {r[1]}": r[0]
+                for r in registros
+            }
+
+            seleccion = st.selectbox(
+                "Seleccione un proceso",
+                list(opciones.keys())
+            )
+
+            if st.button("CARGAR PROCESO"):
+                st.session_state.ID_PROCESO = opciones[seleccion]
+                st.session_state.etapa_actual = "1 Estudio Previo"
+                st.session_state.pagina = "Inicio"
+                st.rerun()
+
+        else:
+            st.info("No existen procesos registrados.")
+
+    except Exception as e:
+        st.error(f"Error consultando procesos: {e}")
+
+    # 🔴 MUY IMPORTANTE
+    st.stop()
+
+
 # =====================================================
 # NAVEGACIÓN ETAPAS (SOLO EN MÓDULO INICIO)
 # =====================================================
@@ -1073,6 +1122,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
