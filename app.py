@@ -5,6 +5,11 @@ from database import conectar_db
 from convertir_rubros import datos_rubros
 from actividades_planeacion import actividades_planeacion
 
+# IMPORTS PARA GENERAR Y GUARDAR ARCHIVOS
+import os
+import io
+from docxtpl import DocxTemplate
+
 
 # =====================================================
 # CONFIGURACIÓN GENERAL
@@ -702,9 +707,11 @@ if etapa == "1 Estudio Previo":
 
     col_btn1, col_btn2 = st.columns(2)
 
-    # -------------------------
+     col_btn1, col_btn2 = st.columns(2)
+
+    # ==========================================
     # BOTÓN GUARDAR
-    # -------------------------
+    # ==========================================
     with col_btn1:
         if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
 
@@ -737,14 +744,43 @@ if etapa == "1 Estudio Previo":
                 conn.commit()
                 conn.close()
 
-                st.success("Estudio guardado correctamente.")
+                # ==========================================
+                # CREAR CARPETA procesos/ID
+                # ==========================================
+                BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+                RUTA_PROCESOS = os.path.join(BASE_DIR, "procesos")
+                os.makedirs(RUTA_PROCESOS, exist_ok=True)
+
+                ruta_proceso = os.path.join(RUTA_PROCESOS, ID)
+                os.makedirs(ruta_proceso, exist_ok=True)
+
+                # ==========================================
+                # GENERAR Y GUARDAR DOCX
+                # ==========================================
+                contexto = {
+                    "OBJETO": st.session_state.get("objeto", ""),
+                    "JUSTIFICACION": st.session_state.get("justificacion", ""),
+                    "NECESIDAD": st.session_state.get("necesidad", "")
+                }
+
+                doc = DocxTemplate("plantillas/estudio_previo.docx")
+                doc.render(contexto)
+
+                ruta_archivo = os.path.join(
+                    ruta_proceso,
+                    f"Estudio_Previo_{ID}.docx"
+                )
+
+                doc.save(ruta_archivo)
+
+                st.success(f"Proceso guardado correctamente en procesos/{ID}/")
 
             except Exception as e:
                 st.error(f"Error al guardar proceso: {e}")
 
-    # -------------------------
+    # ==========================================
     # BOTÓN DESCARGAR
-    # -------------------------
+    # ==========================================
     with col_btn2:
 
         if proceso_existe(ID):
@@ -755,11 +791,16 @@ if etapa == "1 Estudio Previo":
                 "NECESIDAD": st.session_state.get("necesidad", "")
             }
 
-            archivo = generar_estudio_previo_docxtpl(contexto)
+            doc = DocxTemplate("plantillas/estudio_previo.docx")
+            doc.render(contexto)
+
+            buffer = io.BytesIO()
+            doc.save(buffer)
+            buffer.seek(0)
 
             st.download_button(
                 label="DESCARGAR ESTUDIO PREVIO",
-                data=archivo,
+                data=buffer,
                 file_name=f"Estudio_Previo_{ID}.docx",
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 use_container_width=True
@@ -994,6 +1035,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
