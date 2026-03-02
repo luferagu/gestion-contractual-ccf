@@ -125,13 +125,22 @@ def procesar_moneda(key):
 
 
 # =====================================================
-# CONTROL DE ID
+# CONTROL DE ID Y ESTADOS
 # =====================================================
+
 if "ID_PROCESO" not in st.session_state:
     st.session_state.ID_PROCESO = generar_id()
 
 ID = st.session_state.ID_PROCESO
 
+# CONTROL DE ETAPA
+if "etapa_actual" not in st.session_state:
+    st.session_state.etapa_actual = "1 Estudio Previo"
+
+# CONTROL DE CONFIRMACION
+if "confirmar_generacion" not in st.session_state:
+    st.session_state.confirmar_generacion = False
+    
 # =====================================================
 # NAVEGACIÓN ETAPAS
 # =====================================================
@@ -920,6 +929,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
