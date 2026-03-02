@@ -697,69 +697,73 @@ if etapa == "1 Estudio Previo":
     st.markdown("---")
 
     # =====================================================
-    # GUARDAR
+    # BOTONES GUARDAR Y DESCARGAR EN UNA SOLA LÍNEA
     # =====================================================
 
-    if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
+    col_btn1, col_btn2 = st.columns(2)
 
-        try:
-            conn = conectar_db()
-            cursor = conn.cursor()
+    # -------------------------
+    # BOTÓN GUARDAR
+    # -------------------------
+    with col_btn1:
+        if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
 
-            cursor.execute("""
-                INSERT INTO procesos
-                (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-                ON CONFLICT (id_proceso)
-                DO UPDATE SET
-                    objeto = EXCLUDED.objeto,
-                    necesidad = EXCLUDED.necesidad,
-                    justificacion = EXCLUDED.justificacion,
-                    valor = EXCLUDED.valor,
-                    plazo = EXCLUDED.plazo,
-                    fecha_estudio = EXCLUDED.fecha_estudio
-            """, (
-                ID,
-                st.session_state.get("objeto", ""),
-                st.session_state.get("necesidad", ""),
-                st.session_state.get("justificacion", ""),
-                valor if 'valor' in locals() else 0,
-                plazo if 'plazo' in locals() else "",
-                fecha_estudio
-            ))
+            try:
+                conn = conectar_db()
+                cursor = conn.cursor()
 
-            conn.commit()
-            conn.close()
+                cursor.execute("""
+                    INSERT INTO procesos
+                    (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (id_proceso)
+                    DO UPDATE SET
+                        objeto = EXCLUDED.objeto,
+                        necesidad = EXCLUDED.necesidad,
+                        justificacion = EXCLUDED.justificacion,
+                        valor = EXCLUDED.valor,
+                        plazo = EXCLUDED.plazo,
+                        fecha_estudio = EXCLUDED.fecha_estudio
+                """, (
+                    ID,
+                    st.session_state.get("objeto", ""),
+                    st.session_state.get("necesidad", ""),
+                    st.session_state.get("justificacion", ""),
+                    valor if 'valor' in locals() else 0,
+                    plazo if 'plazo' in locals() else "",
+                    fecha_estudio
+                ))
 
-            st.session_state.confirmar_generacion = True
-            st.success("Estudio guardado correctamente.")
+                conn.commit()
+                conn.close()
 
-        except Exception as e:
-            st.error(f"Error al guardar proceso: {e}")
+                st.success("Estudio guardado correctamente.")
 
-    # =====================================================
-    # DESCARGAR DOCUMENTO
-    # =====================================================
+            except Exception as e:
+                st.error(f"Error al guardar proceso: {e}")
 
-    if proceso_existe(ID):
+    # -------------------------
+    # BOTÓN DESCARGAR
+    # -------------------------
+    with col_btn2:
 
-        st.markdown("### DESCARGAR DOCUMENTO")
+        if proceso_existe(ID):
 
-        contexto = {
-            "OBJETO": st.session_state.get("objeto", ""),
-            "JUSTIFICACION": st.session_state.get("justificacion", ""),
-            "NECESIDAD": st.session_state.get("necesidad", "")
-        }
+            contexto = {
+                "OBJETO": st.session_state.get("objeto", ""),
+                "JUSTIFICACION": st.session_state.get("justificacion", ""),
+                "NECESIDAD": st.session_state.get("necesidad", "")
+            }
 
-        archivo = generar_estudio_previo_docxtpl(contexto)
+            archivo = generar_estudio_previo_docxtpl(contexto)
 
-        st.download_button(
-            label="DESCARGAR ESTUDIO PREVIO",
-            data=archivo,
-            file_name=f"Estudio_Previo_{ID}.docx",
-            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            use_container_width=True
-        )
+            st.download_button(
+                label="DESCARGAR ESTUDIO PREVIO",
+                data=archivo,
+                file_name=f"Estudio_Previo_{ID}.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                use_container_width=True
+            )
 # =====================================================
 # ETAPA 2 — PLANEACIÓN
 # =====================================================
@@ -990,6 +994,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
