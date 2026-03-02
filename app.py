@@ -942,13 +942,13 @@ with col_btn2:
             # ------------------------------------------
             # Botón descarga con key único
             # ------------------------------------------
-            st.download_button(
+           st.download_button(
                 label="DESCARGAR ESTUDIO PREVIO",
                 data=buffer,
                 file_name=f"Estudio_Previo_{ID}.docx",
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 use_container_width=True,
-                key=f"descargar_estudio_{ID}"
+                key=f"descargar_{ID}_{uuid.uuid4()}"
             )
 
         except Exception as e:
@@ -1241,6 +1241,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
