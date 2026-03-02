@@ -355,32 +355,30 @@ if etapa == "1 Estudio Previo":
 
     st.markdown("### ETAPA 1 — ESTUDIO PREVIO")
 
-       # =====================================================
+      # =====================================================
     # CAMPOS PRINCIPALES (ANCHO COMPLETO)
     # =====================================================
 
     objeto = st.text_area(
-    "2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES",
-    key="objeto"
-    )
-        "OBJETO",
+        "2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES",
         height=200,
         placeholder="Describa el objeto contractual",
-        key="objeto_principal"
+        key="objeto"
     )
 
     justificacion = st.text_area(
         "JUSTIFICACIÓN",
         height=200,
-        placeholder="Fundamente técnica, jurídica y financieramente el proceso"
+        placeholder="Fundamente técnica, jurídica y financieramente el proceso",
+        key="justificacion"
     )
 
     necesidad = st.text_area(
         "1. DESCRIPCIÓN DE LA NECESIDAD QUE LA ENTIDAD PRETENDE SATISFACER CON LA CONTRATACIÓN",
         height=220,
-        placeholder="Describa la necesidad que se pretende satisfacer"
+        placeholder="Describa la necesidad que se pretende satisfacer",
+        key="necesidad"
     )
-
     # =====================================================
     # BLOQUE ECONÓMICO
     # =====================================================
@@ -1043,6 +1041,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
