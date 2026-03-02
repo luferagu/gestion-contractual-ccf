@@ -70,11 +70,22 @@ h1, h2, h3 { color: white; }
 with st.sidebar:
     st.title("📂 CCF")
     st.markdown("---")
-    st.button("🏠 Inicio")
-    st.button("📁 Proceso")
-    st.button("📑 Contratos")
-    st.button("📊 Reportes")
-    st.button("⚙ Configuración")
+
+    if st.button("🏠 Inicio"):
+        st.session_state.pagina = "Inicio"
+
+    if st.button("📁 Proceso"):
+        st.session_state.pagina = "Proceso"
+
+    if st.button("📑 Contratos"):
+        st.session_state.pagina = "Contratos"
+
+    if st.button("📊 Reportes"):
+        st.session_state.pagina = "Reportes"
+
+    if st.button("⚙ Configuración"):
+        st.session_state.pagina = "Configuracion"
+
     st.markdown("---")
     st.button("Cerrar sesión")
 
@@ -317,44 +328,73 @@ def generar_estudio_previo_docxtpl(contexto):
 
 
 # =====================================================
-# CONTROL DE ID Y ESTADOS
+# CONTROL DE ID, ESTADOS Y NAVEGACIÓN
 # =====================================================
 
+# ---------------------------------------------
+# ID DEL PROCESO
+# ---------------------------------------------
 if "ID_PROCESO" not in st.session_state:
     st.session_state.ID_PROCESO = generar_id()
 
 ID = st.session_state.ID_PROCESO
 
+
+# ---------------------------------------------
+# CONTROL DE ETAPA
+# ---------------------------------------------
 if "etapa_actual" not in st.session_state:
     st.session_state.etapa_actual = "1 Estudio Previo"
 
+
+# ---------------------------------------------
+# CONTROL CONFIRMACIÓN
+# ---------------------------------------------
 if "confirmar_generacion" not in st.session_state:
     st.session_state.confirmar_generacion = False
+
+
+# ---------------------------------------------
+# CONTROL DE PÁGINA (NUEVO — PARA SIDEBAR)
+# ---------------------------------------------
+if "pagina" not in st.session_state:
+    st.session_state.pagina = "Inicio"
     
 # =====================================================
-# NAVEGACIÓN ETAPAS
+# NAVEGACIÓN ETAPAS (SOLO EN MÓDULO INICIO)
 # =====================================================
 
-etapas_lista = ["1 Estudio Previo", "2 Planeación", "3 Contratación", "4 Ejecución"]
+if st.session_state.pagina == "Inicio":
 
-etapa = st.radio(
-    "",
-    etapas_lista,
-    horizontal=True,
-    index=etapas_lista.index(st.session_state.etapa_actual)
-)
+    etapas_lista = [
+        "1 Estudio Previo",
+        "2 Planeación",
+        "3 Contratación",
+        "4 Ejecución"
+    ]
 
-# Mantener sincronizado el estado
-st.session_state.etapa_actual = etapa
+    etapa = st.radio(
+        "",
+        etapas_lista,
+        horizontal=True,
+        index=etapas_lista.index(st.session_state.etapa_actual),
+        key="radio_etapas"
+    )
 
-st.markdown(f"""
-<div class="banner-id">
-ID_PROCESO generado automáticamente: {ID}
-</div>
-""", unsafe_allow_html=True)
+    # Mantener sincronizado el estado
+    st.session_state.etapa_actual = etapa
+
+    st.markdown(
+        f"""
+        <div class="banner-id">
+        ID_PROCESO generado automáticamente: {ID}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 # =====================================================
-# ETAPA 1 — ESTUDIO PREVIO (AJUSTADA Y ORDENADA)
+# ETAPA 1 — ESTUDIO PREVIO
 # =====================================================
 if etapa == "1 Estudio Previo":
 
@@ -1033,6 +1073,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
