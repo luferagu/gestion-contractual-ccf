@@ -889,8 +889,20 @@ if (
                 # ------------------------------------------
                 # AVANZAR A ETAPA 2 (SIN CAMBIAR EL ID)
                 # ------------------------------------------
+               # Avanzar etapa del proceso actual
                 st.session_state.etapa_actual = "2 Planeación"
-
+                
+                # Preparar nuevo proceso
+                nuevo_id = generar_id()
+                
+                # Limpiar variables del estudio previo
+                for campo in ["objeto", "necesidad", "justificacion", "valor_ep"]:
+                    if campo in st.session_state:
+                        del st.session_state[campo]
+                
+                # Asignar nuevo ID
+                st.session_state.ID_PROCESO = nuevo_id
+                
                 st.rerun()
 
             except Exception as e:
@@ -1165,6 +1177,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
