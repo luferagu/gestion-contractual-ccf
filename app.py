@@ -701,13 +701,11 @@ if etapa == "1 Estudio Previo":
 
     st.markdown("---")
 
-    # =====================================================
+     # =====================================================
     # BOTONES GUARDAR Y DESCARGAR EN UNA SOLA LÍNEA
     # =====================================================
 
     col_btn1, col_btn2 = st.columns(2)
-
-     col_btn1, col_btn2 = st.columns(2)
 
     # ==========================================
     # BOTÓN GUARDAR
@@ -1035,6 +1033,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
