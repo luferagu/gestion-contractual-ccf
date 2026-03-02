@@ -896,48 +896,63 @@ if (
 
                 st.error(f"Error al guardar proceso: {e}")
 
-    # ==========================================
-    # BOTÓN DESCARGAR (SI YA SE GUARDÓ)
-    # ==========================================
-    with col_btn2:
+# ==========================================
+# BOTÓN DESCARGAR (VISIBLE SI YA SE GUARDÓ)
+# ==========================================
 
-        if st.session_state.estudio_guardado:
+with col_btn2:
 
-            try:
-                contexto = {
-                    "ID_PROCESO": ID,
-                    "OBJETO": st.session_state.get("objeto", ""),
-                    "JUSTIFICACION": st.session_state.get("justificacion", ""),
-                    "NECESIDAD": st.session_state.get("necesidad", ""),
-                    "VALOR": valor if 'valor' in locals() else 0,
-                    "PLAZO": plazo if 'plazo' in locals() else "",
-                    "FECHA_ESTUDIO": fecha_estudio.strftime("%d/%m/%Y")
-                }
+    if st.session_state.estudio_guardado:
 
-                doc = DocxTemplate(ruta_plantilla)
-                doc.render(contexto)
+        try:
+            # ------------------------------------------
+            # Definir ruta base y plantilla
+            # ------------------------------------------
+            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-                buffer = io.BytesIO()
-                doc.save(buffer)
-                buffer.seek(0)
+            ruta_plantilla = os.path.join(
+                BASE_DIR,
+                "plantillas",
+                "estudio_previo.docx"
+            )
 
-                st.download_button(
-                    label="DESCARGAR ESTUDIO PREVIO",
-                    data=buffer,
-                    file_name=f"Estudio_Previo_{ID}.docx",
-                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    use_container_width=True
-                )
+            # ------------------------------------------
+            # Construcción del contexto
+            # ------------------------------------------
+            contexto = {
+                "ID_PROCESO": ID,
+                "OBJETO": st.session_state.get("objeto", ""),
+                "JUSTIFICACION": st.session_state.get("justificacion", ""),
+                "NECESIDAD": st.session_state.get("necesidad", ""),
+                "VALOR": valor if 'valor' in locals() else 0,
+                "PLAZO": plazo if 'plazo' in locals() else "",
+                "FECHA_ESTUDIO": fecha_estudio.strftime("%d/%m/%Y")
+            }
 
-                # Botón opcional para avanzar de etapa
-                if st.button("CONTINUAR A ETAPA 2", use_container_width=True):
-                    st.session_state.etapa_actual = "2 Planeación"
-                    st.session_state.estudio_guardado = False
-                    st.rerun()
+            # ------------------------------------------
+            # Generar documento en memoria
+            # ------------------------------------------
+            doc = DocxTemplate(ruta_plantilla)
+            doc.render(contexto)
 
-            except Exception as e:
-                st.error(f"Error al generar descarga: {e}")
+            buffer = io.BytesIO()
+            doc.save(buffer)
+            buffer.seek(0)
 
+            # ------------------------------------------
+            # Botón descarga con key único
+            # ------------------------------------------
+            st.download_button(
+                label="DESCARGAR ESTUDIO PREVIO",
+                data=buffer,
+                file_name=f"Estudio_Previo_{ID}.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                use_container_width=True,
+                key=f"descargar_estudio_{ID}"
+            )
+
+        except Exception as e:
+            st.error(f"Error al generar descarga: {e}")
        # ==========================================
     # BOTÓN DESCARGAR ESTUDIO PREVIO
     # ==========================================
@@ -1226,6 +1241,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
