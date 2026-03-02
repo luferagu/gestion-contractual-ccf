@@ -445,7 +445,12 @@ if st.session_state.pagina == "Inicio":
 # =====================================================
 # ETAPA 1 — ESTUDIO PREVIO
 # =====================================================
-if st.session_state.etapa_actual == "1 Estudio Previo" and st.session_state.pagina == "Inicio":
+if (
+    st.session_state.etapa_actual == "1 Estudio Previo"
+    and st.session_state.pagina == "Inicio"
+):
+
+    proceso_ya_guardado = proceso_existe(ID)
 
     st.markdown("### ETAPA 1 — ESTUDIO PREVIO")
 
@@ -1122,6 +1127,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
