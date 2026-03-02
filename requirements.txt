@@ -8,6 +8,8 @@ google-auth-oauthlib
 google-auth-httplib2
 psycopg[binary]
 python-docx
+docxtpl
+
 
 
 
