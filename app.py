@@ -795,18 +795,22 @@ if (
 
     st.markdown("---")
 
-    # =====================================================
+       # =====================================================
     # BOTONES GUARDAR Y DESCARGAR
     # =====================================================
 
     col_btn1, col_btn2 = st.columns(2)
 
+    # Variable de control para mostrar descarga
+    if "estudio_guardado" not in st.session_state:
+        st.session_state.estudio_guardado = False
+
     # ==========================================
-    # BOTÓN GUARDAR Y CERRAR ETAPA 1
+    # BOTÓN GUARDAR ESTUDIO PREVIO
     # ==========================================
     with col_btn1:
 
-        if st.button("GUARDAR Y CERRAR ETAPA 1", use_container_width=True):
+        if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
 
             try:
                 conn = conectar_db()
@@ -836,7 +840,7 @@ if (
                     valor if 'valor' in locals() else 0,
                     plazo if 'plazo' in locals() else "",
                     fecha_estudio,
-                    "ETAPA 2"
+                    "ETAPA 1"
                 ))
 
                 conn.commit()
@@ -852,11 +856,9 @@ if (
                 ruta_proceso = os.path.join(RUTA_PROCESOS, ID)
                 os.makedirs(ruta_proceso, exist_ok=True)
 
-                              # ------------------------------------------
+                # ------------------------------------------
                 # GENERAR Y GUARDAR ESTUDIO PREVIO
                 # ------------------------------------------
-
-                # 1. Construcción del contexto para la plantilla
                 contexto = {
                     "ID_PROCESO": ID,
                     "OBJETO": st.session_state.get("objeto", ""),
@@ -867,7 +869,6 @@ if (
                     "FECHA_ESTUDIO": fecha_estudio.strftime("%d/%m/%Y")
                 }
 
-                # 2. Cargar plantilla institucional
                 ruta_plantilla = os.path.join(
                     BASE_DIR,
                     "plantillas",
@@ -877,33 +878,14 @@ if (
                 doc = DocxTemplate(ruta_plantilla)
                 doc.render(contexto)
 
-                # 3. Definir ruta final del archivo
                 nombre_archivo = f"Estudio_Previo_{ID}.docx"
                 ruta_archivo = os.path.join(ruta_proceso, nombre_archivo)
 
-                # 4. Guardar documento físico
                 doc.save(ruta_archivo)
 
-                st.success(f"Estudio previo generado correctamente en procesos/{ID}/")
+                st.session_state.estudio_guardado = True
 
-                # ------------------------------------------
-                # AVANZAR A ETAPA 2 (SIN CAMBIAR EL ID)
-                # ------------------------------------------
-               # Avanzar etapa del proceso actual
-                st.session_state.etapa_actual = "2 Planeación"
-                
-                # Preparar nuevo proceso
-                nuevo_id = generar_id()
-                
-                # Limpiar variables del estudio previo
-                for campo in ["objeto", "necesidad", "justificacion", "valor_ep"]:
-                    if campo in st.session_state:
-                        del st.session_state[campo]
-                
-                # Asignar nuevo ID
-                st.session_state.ID_PROCESO = nuevo_id
-                
-                st.rerun()
+                st.success("Estudio previo guardado correctamente.")
 
             except Exception as e:
                 try:
@@ -913,6 +895,48 @@ if (
                     pass
 
                 st.error(f"Error al guardar proceso: {e}")
+
+    # ==========================================
+    # BOTÓN DESCARGAR (SI YA SE GUARDÓ)
+    # ==========================================
+    with col_btn2:
+
+        if st.session_state.estudio_guardado:
+
+            try:
+                contexto = {
+                    "ID_PROCESO": ID,
+                    "OBJETO": st.session_state.get("objeto", ""),
+                    "JUSTIFICACION": st.session_state.get("justificacion", ""),
+                    "NECESIDAD": st.session_state.get("necesidad", ""),
+                    "VALOR": valor if 'valor' in locals() else 0,
+                    "PLAZO": plazo if 'plazo' in locals() else "",
+                    "FECHA_ESTUDIO": fecha_estudio.strftime("%d/%m/%Y")
+                }
+
+                doc = DocxTemplate(ruta_plantilla)
+                doc.render(contexto)
+
+                buffer = io.BytesIO()
+                doc.save(buffer)
+                buffer.seek(0)
+
+                st.download_button(
+                    label="DESCARGAR ESTUDIO PREVIO",
+                    data=buffer,
+                    file_name=f"Estudio_Previo_{ID}.docx",
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    use_container_width=True
+                )
+
+                # Botón opcional para avanzar de etapa
+                if st.button("CONTINUAR A ETAPA 2", use_container_width=True):
+                    st.session_state.etapa_actual = "2 Planeación"
+                    st.session_state.estudio_guardado = False
+                    st.rerun()
+
+            except Exception as e:
+                st.error(f"Error al generar descarga: {e}")
 
        # ==========================================
     # BOTÓN DESCARGAR ESTUDIO PREVIO
@@ -1201,6 +1225,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
