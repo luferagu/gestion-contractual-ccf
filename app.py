@@ -396,7 +396,7 @@ if st.session_state.pagina == "Inicio":
 # =====================================================
 # ETAPA 1 — ESTUDIO PREVIO
 # =====================================================
-if etapa == "1 Estudio Previo":
+if st.session_state.etapa_actual == "1 Estudio Previo" and st.session_state.pagina == "Inicio":
 
     st.markdown("### ETAPA 1 — ESTUDIO PREVIO")
 
@@ -847,7 +847,7 @@ if etapa == "1 Estudio Previo":
 # ETAPA 2 — PLANEACIÓN
 # =====================================================
 
-if etapa == "2 Planeación":
+if st.session_state.etapa_actual == "2 Planeación" and st.session_state.pagina == "Inicio":
 
     st.markdown("### ETAPA 2 — PLANEACIÓN")
 
@@ -1024,7 +1024,7 @@ if etapa == "2 Planeación":
 # ETAPA 3 — CONTRATACIÓN
 # =====================================================
 
-if etapa == "3 Contratación":
+if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagina == "Inicio":
 
     st.markdown("### ETAPA 3 — CONTRATOS")
 
@@ -1073,6 +1073,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
