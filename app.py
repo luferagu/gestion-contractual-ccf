@@ -549,12 +549,13 @@ caracteristicas_tecnicas = st.text_area(
     "2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN",
     height=150
 )
-    # =====================================================
+       # =====================================================
     # 2.3 FUNDAMENTOS JURÍDICOS
     # =====================================================
 
     st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
 
+    # Inicialización de estados
     if "articulo_auto" not in st.session_state:
         st.session_state.articulo_auto = "ARTÍCULO 16"
 
@@ -564,6 +565,7 @@ caracteristicas_tecnicas = st.text_area(
     if "literal_dinamico" not in st.session_state:
         st.session_state.literal_dinamico = "a"
 
+    # Columnas
     col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
 
     with col_modalidad:
@@ -573,6 +575,7 @@ caracteristicas_tecnicas = st.text_area(
             key="modalidad_unica"
         )
 
+    # Lógica dinámica según modalidad
     if modalidad == "DIRECTA":
         st.session_state.articulo_auto = "ARTÍCULO 16"
         opciones_numeral = ["1", "2", "3"]
@@ -585,6 +588,7 @@ caracteristicas_tecnicas = st.text_area(
         st.session_state.articulo_auto = "ARTÍCULO 18"
         opciones_numeral = ["1", "2", "3"]
 
+    # Validación del numeral actual
     if st.session_state.numeral_dinamico not in opciones_numeral:
         st.session_state.numeral_dinamico = opciones_numeral[0]
 
@@ -984,6 +988,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
