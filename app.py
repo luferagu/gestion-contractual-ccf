@@ -549,7 +549,7 @@ caracteristicas_tecnicas = st.text_area(
     "2.2 CARACTERÍSTICAS TÉCNICAS DEL BIEN",
     height=150
 )
-       # =====================================================
+    # =====================================================
     # 2.3 FUNDAMENTOS JURÍDICOS
     # =====================================================
 
@@ -988,6 +988,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
