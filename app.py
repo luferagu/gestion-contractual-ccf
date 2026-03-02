@@ -852,9 +852,11 @@ if (
                 ruta_proceso = os.path.join(RUTA_PROCESOS, ID)
                 os.makedirs(ruta_proceso, exist_ok=True)
 
-                # ------------------------------------------
+                              # ------------------------------------------
                 # GENERAR Y GUARDAR ESTUDIO PREVIO
                 # ------------------------------------------
+
+                # 1. Construcción del contexto para la plantilla
                 contexto = {
                     "ID_PROCESO": ID,
                     "OBJETO": st.session_state.get("objeto", ""),
@@ -865,20 +867,30 @@ if (
                     "FECHA_ESTUDIO": fecha_estudio.strftime("%d/%m/%Y")
                 }
 
-                doc = DocxTemplate("plantillas/estudio_previo.docx")
-                doc.render(contexto)
-
-                ruta_archivo = os.path.join(
-                    ruta_proceso,
-                    f"Estudio_Previo_{ID}.docx"
+                # 2. Cargar plantilla institucional
+                ruta_plantilla = os.path.join(
+                    BASE_DIR,
+                    "plantillas",
+                    "estudio_previo.docx"
                 )
 
+                doc = DocxTemplate(ruta_plantilla)
+                doc.render(contexto)
+
+                # 3. Definir ruta final del archivo
+                nombre_archivo = f"Estudio_Previo_{ID}.docx"
+                ruta_archivo = os.path.join(ruta_proceso, nombre_archivo)
+
+                # 4. Guardar documento físico
                 doc.save(ruta_archivo)
 
                 st.success(f"Estudio previo generado correctamente en procesos/{ID}/")
 
-                # Avanzar a la siguiente etapa
+                # ------------------------------------------
+                # AVANZAR A ETAPA 2 (SIN CAMBIAR EL ID)
+                # ------------------------------------------
                 st.session_state.etapa_actual = "2 Planeación"
+
                 st.rerun()
 
             except Exception as e:
@@ -887,6 +899,7 @@ if (
                     conn.close()
                 except:
                     pass
+
                 st.error(f"Error al guardar proceso: {e}")
 
     # ==========================================
@@ -1152,6 +1165,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
