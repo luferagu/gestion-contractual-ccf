@@ -77,6 +77,9 @@ with st.sidebar:
 # FUNCIONES BASE
 # =====================================================
 
+from docxtpl import DocxTemplate
+import io
+
 def generar_id():
     conn = conectar_db()
     cursor = conn.cursor()
@@ -122,6 +125,27 @@ def procesar_moneda(key):
         return numero, formateado
 
     return 0, ""
+
+
+# =====================================================
+# FUNCIÓN GENERAR DOCUMENTO DESDE PLANTILLA
+# =====================================================
+
+def generar_estudio_previo_docxtpl(contexto):
+    """
+    Genera el Estudio Previo utilizando la plantilla institucional
+    ubicada en la carpeta /plantillas.
+    """
+
+    doc = DocxTemplate("plantillas/estudio_previo.docx")
+
+    doc.render(contexto)
+
+    buffer = io.BytesIO()
+    doc.save(buffer)
+    buffer.seek(0)
+
+    return buffer
 
 
 # =====================================================
@@ -1016,6 +1040,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
