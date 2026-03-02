@@ -360,6 +360,9 @@ if etapa == "1 Estudio Previo":
     # =====================================================
 
     objeto = st.text_area(
+    "2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES",
+    key="objeto"
+    )
         "OBJETO",
         height=200,
         placeholder="Describa el objeto contractual",
@@ -539,7 +542,7 @@ st.markdown("## 2. DESCRIPCIÓN DEL OBJETO A CONTRATAR, CON SUS ESPECIFICACIONES
 
 st.text_area(
     "2.1 OBJETO (DESCRIPCIÓN DETALLADA)",
-    value=objeto,
+    value=st.session_state.get("objeto", ""),
     height=150,
     disabled=True
 )
@@ -1040,6 +1043,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
