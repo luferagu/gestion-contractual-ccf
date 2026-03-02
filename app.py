@@ -553,264 +553,207 @@ caracteristicas_tecnicas = st.text_area(
     # 2.3 FUNDAMENTOS JURÍDICOS
     # =====================================================
 
-# =====================================================
-# 2.3 FUNDAMENTOS JURÍDICOS
-# =====================================================
+    st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
 
-st.markdown("### 2.3 FUNDAMENTOS JURÍDICOS")
+    if "articulo_auto" not in st.session_state:
+        st.session_state.articulo_auto = "ARTÍCULO 16"
 
-# Inicialización de estados
-if "articulo_auto" not in st.session_state:
-    st.session_state.articulo_auto = "ARTÍCULO 16"
+    if "numeral_dinamico" not in st.session_state:
+        st.session_state.numeral_dinamico = "1"
 
-if "numeral_dinamico" not in st.session_state:
-    st.session_state.numeral_dinamico = "1"
+    if "literal_dinamico" not in st.session_state:
+        st.session_state.literal_dinamico = "a"
 
-if "literal_dinamico" not in st.session_state:
-    st.session_state.literal_dinamico = "a"
+    col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
 
-# Columnas
-col_modalidad, col_articulo, col_numeral, col_literal = st.columns(4)
-
-with col_modalidad:
-    modalidad = st.selectbox(
-        "MODALIDAD DE CONTRATACIÓN",
-        ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"],
-        key="modalidad_unica"
-    )
-
-# Lógica dinámica según modalidad
-if modalidad == "DIRECTA":
-    st.session_state.articulo_auto = "ARTÍCULO 16"
-    opciones_numeral = ["1", "2", "3"]
-
-elif modalidad == "PRIVADA":
-    st.session_state.articulo_auto = "ARTÍCULO 17"
-    opciones_numeral = ["1", "2", "3", "4"]
-
-else:
-    st.session_state.articulo_auto = "ARTÍCULO 18"
-    opciones_numeral = ["1", "2", "3"]
-
-# Validación del numeral actual
-if st.session_state.numeral_dinamico not in opciones_numeral:
-    st.session_state.numeral_dinamico = opciones_numeral[0]
-
-with col_articulo:
-    st.text_input(
-        "ARTÍCULO",
-        key="articulo_auto",
-        disabled=True
-    )
-
-with col_numeral:
-    numeral = st.selectbox(
-        "NUMERAL",
-        opciones_numeral,
-        key="numeral_dinamico"
-    )
-
-with col_literal:
-    if modalidad == "DIRECTA" and numeral == "2":
-        literal = st.selectbox(
-            "LITERAL",
-            ["a", "b", "c", "d", "e", "f", "g", "h"],
-            key="literal_dinamico"
+    with col_modalidad:
+        modalidad = st.selectbox(
+            "MODALIDAD DE CONTRATACIÓN",
+            ["DIRECTA", "PRIVADA", "CONVOCATORIA ABIERTA"],
+            key="modalidad_unica"
         )
+
+    if modalidad == "DIRECTA":
+        st.session_state.articulo_auto = "ARTÍCULO 16"
+        opciones_numeral = ["1", "2", "3"]
+
+    elif modalidad == "PRIVADA":
+        st.session_state.articulo_auto = "ARTÍCULO 17"
+        opciones_numeral = ["1", "2", "3", "4"]
+
     else:
+        st.session_state.articulo_auto = "ARTÍCULO 18"
+        opciones_numeral = ["1", "2", "3"]
+
+    if st.session_state.numeral_dinamico not in opciones_numeral:
+        st.session_state.numeral_dinamico = opciones_numeral[0]
+
+    with col_articulo:
         st.text_input(
-            "LITERAL",
-            value="No aplica",
+            "ARTÍCULO",
+            key="articulo_auto",
             disabled=True
         )
 
-st.markdown("---")
+    with col_numeral:
+        numeral = st.selectbox(
+            "NUMERAL",
+            opciones_numeral,
+            key="numeral_dinamico"
+        )
 
-# =====================================================
-# 3. CONDICIONES DEL FUTURO CONTRATO
-# =====================================================
+    with col_literal:
+        if modalidad == "DIRECTA" and numeral == "2":
+            st.selectbox(
+                "LITERAL",
+                ["a", "b", "c", "d", "e", "f", "g", "h"],
+                key="literal_dinamico"
+            )
+        else:
+            st.text_input(
+                "LITERAL",
+                value="No aplica",
+                disabled=True
+            )
 
-st.markdown("## 3. CONDICIONES DEL FUTURO CONTRATO")
-
-meses = [
-    "Enero", "Febrero", "Marzo", "Abril",
-    "Mayo", "Junio", "Julio", "Agosto",
-    "Septiembre", "Octubre", "Noviembre", "Diciembre"
-]
-
-meses_seleccionados = st.multiselect(
-    "3.1 OPORTUNIDAD (Mes de suscripción en 2026)",
-    meses,
-    max_selections=2
-)
-
-if meses_seleccionados:
-    oportunidad = " y ".join(meses_seleccionados) + " de 2026"
-    st.success(f"Suscripción prevista para: {oportunidad}")
-
-forma_pago = st.text_area(
-    "3.3 FORMA DE PAGO",
-    height=120
-)
-
-analisis = st.text_area(
-    "3.4 ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO",
-    height=120
-)
-
-st.markdown("---")
+    st.markdown("---")
 
     # =====================================================
-# 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS
-# =====================================================
+    # 3. CONDICIONES DEL FUTURO CONTRATO
+    # =====================================================
 
-st.markdown("## 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS")
+    st.markdown("## 3. CONDICIONES DEL FUTURO CONTRATO")
 
-opciones_garantias = {
-    "Anticipo": """1. Anticipo: Para garantizar el Buen manejo y Correcta Inversión del Anticipo, por el 100% del mismo.""",
-    "Cumplimiento": """2. Cumplimiento: Por el 20% del valor del contrato.""",
-    "Salarios y Prestaciones": """3. Salarios y Prestaciones: Por el 15% del contrato.""",
-    "Responsabilidad Civil Extracontractual": """4. Responsabilidad Civil Extracontractual: 200 SMLMV.""",
-    "Estabilidad de la Obra": """5. Estabilidad de la Obra: 20% por 5 años.""",
-    "Calidad del Servicio": """6. Calidad del Servicio: 30% con vigencia adicional."""
-}
+    meses = [
+        "Enero", "Febrero", "Marzo", "Abril",
+        "Mayo", "Junio", "Julio", "Agosto",
+        "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ]
 
-garantias_seleccionadas = st.multiselect(
-    "GARANTÍAS EXIGIDAS",
-    list(opciones_garantias.keys()),
-    key="garantias_select"
-)
-
-if garantias_seleccionadas:
-    texto_garantias = "\n\n".join(
-        [opciones_garantias[g] for g in garantias_seleccionadas]
+    meses_seleccionados = st.multiselect(
+        "3.1 OPORTUNIDAD (Mes de suscripción en 2026)",
+        meses,
+        max_selections=2
     )
 
-    st.text_area(
-        "Detalle de Garantías Seleccionadas",
-        value=texto_garantias,
-        height=300,
-        disabled=True
+    oportunidad = ""
+    if meses_seleccionados:
+        oportunidad = " y ".join(meses_seleccionados) + " de 2026"
+        st.success(f"Suscripción prevista para: {oportunidad}")
+
+    forma_pago = st.text_area(
+        "3.3 FORMA DE PAGO",
+        height=120,
+        key="forma_pago"
     )
 
-st.markdown("---")
+    analisis = st.text_area(
+        "3.4 ANÁLISIS DE LAS CONDICIONES Y PRECIOS DEL MERCADO",
+        height=120,
+        key="analisis"
+    )
 
-# =====================================================
-# GUARDAR
-# =====================================================
+    st.markdown("---")
 
-if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
+    # =====================================================
+    # 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS
+    # =====================================================
 
-    try:
-        conn = conectar_db()
-        cursor = conn.cursor()
+    st.markdown("## 5. IDENTIFICACIÓN DEL RIESGO Y GARANTÍAS")
 
-        cursor.execute("""
-            INSERT INTO procesos
-            (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-            ON CONFLICT (id_proceso)
-            DO UPDATE SET
-                objeto = EXCLUDED.objeto,
-                necesidad = EXCLUDED.necesidad,
-                justificacion = EXCLUDED.justificacion,
-                valor = EXCLUDED.valor,
-                plazo = EXCLUDED.plazo,
-                fecha_estudio = EXCLUDED.fecha_estudio
-        """, (
-            ID,
-            objeto,
-            necesidad,
-            justificacion,
-            valor,
-            plazo,
-            fecha_estudio
-        ))
-
-        conn.commit()
-        conn.close()
-
-        # Activar confirmación
-        st.session_state.confirmar_generacion = True
-
-        st.success("Estudio guardado correctamente.")
-
-    except Exception as e:
-        st.error(f"Error al guardar proceso: {e}")
-
-
-# =====================================================
-# CONFIRMACION DE CIERRE ETAPA 1
-# =====================================================
-
-if st.session_state.get("confirmar_generacion", False):
-
-    st.warning("¿Está seguro de generar el Estudio Previo y cerrar la Etapa 1?")
-
-    col1, col2 = st.columns(2)
-
-    # BOTON CONFIRMAR
-    with col1:
-        if st.button("SI, GENERAR Y CERRAR ETAPA", use_container_width=True):
-
-            try:
-                conn = conectar_db()
-                cursor = conn.cursor()
-
-                cursor.execute("""
-                    UPDATE procesos
-                    SET fecha_estudio = %s
-                    WHERE id_proceso = %s
-                """, (fecha_estudio, ID))
-
-                conn.commit()
-                conn.close()
-
-                # Cambiar etapa automáticamente
-                st.session_state.etapa_actual = "2 Planeación"
-                st.session_state.confirmar_generacion = False
-
-                st.success("Etapa 1 cerrada correctamente.")
-                st.rerun()
-
-            except Exception as e:
-                st.error(f"Error al cerrar etapa: {e}")
-
-    # BOTON CANCELAR
-    with col2:
-        if st.button("CANCELAR", use_container_width=True):
-
-            st.session_state.confirmar_generacion = False
-            st.info("Operación cancelada.")
-            st.rerun()
-
-
-# =====================================================
-# DESCARGAR DOCUMENTO (solo si ya se guardó)
-# =====================================================
-
-if proceso_existe(ID):
-
-    st.markdown("### DESCARGAR DOCUMENTO")
-
-    contexto = {
-        "OBJETO": objeto,
-        "JUSTIFICACION": justificacion,
-        "NECESIDAD": necesidad,
-        "VALOR": f"$ {valor:,.0f}",
-        "VALOR_LETRAS": valor_en_letras(valor),
-        "PLAZO": f"{plazo} {unidad_plazo}"
+    opciones_garantias = {
+        "Anticipo": "1. Anticipo: Buen manejo y correcta inversión del 100%.",
+        "Cumplimiento": "2. Cumplimiento: 20% del valor del contrato.",
+        "Salarios y Prestaciones": "3. Salarios y Prestaciones: 15% del contrato.",
+        "Responsabilidad Civil Extracontractual": "4. RCE: 200 SMLMV.",
+        "Estabilidad de la Obra": "5. Estabilidad: 20% por 5 años.",
+        "Calidad del Servicio": "6. Calidad del Servicio: 30% con vigencia adicional."
     }
 
-    archivo = generar_estudio_previo_docxtpl(contexto)
-
-    st.download_button(
-        label="DESCARGAR ESTUDIO PREVIO",
-        data=archivo,
-        file_name=f"Estudio_Previo_{ID}.docx",
-        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        use_container_width=True
+    garantias_seleccionadas = st.multiselect(
+        "GARANTÍAS EXIGIDAS",
+        list(opciones_garantias.keys()),
+        key="garantias_select"
     )
+
+    if garantias_seleccionadas:
+        texto_garantias = "\n\n".join(
+            [opciones_garantias[g] for g in garantias_seleccionadas]
+        )
+
+        st.text_area(
+            "Detalle de Garantías Seleccionadas",
+            value=texto_garantias,
+            height=200,
+            disabled=True
+        )
+
+    st.markdown("---")
+
+    # =====================================================
+    # GUARDAR
+    # =====================================================
+
+    if st.button("GUARDAR ESTUDIO PREVIO", use_container_width=True):
+
+        try:
+            conn = conectar_db()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                INSERT INTO procesos
+                (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (id_proceso)
+                DO UPDATE SET
+                    objeto = EXCLUDED.objeto,
+                    necesidad = EXCLUDED.necesidad,
+                    justificacion = EXCLUDED.justificacion,
+                    valor = EXCLUDED.valor,
+                    plazo = EXCLUDED.plazo,
+                    fecha_estudio = EXCLUDED.fecha_estudio
+            """, (
+                ID,
+                st.session_state.get("objeto", ""),
+                st.session_state.get("necesidad", ""),
+                st.session_state.get("justificacion", ""),
+                valor if 'valor' in locals() else 0,
+                plazo if 'plazo' in locals() else "",
+                fecha_estudio
+            ))
+
+            conn.commit()
+            conn.close()
+
+            st.session_state.confirmar_generacion = True
+            st.success("Estudio guardado correctamente.")
+
+        except Exception as e:
+            st.error(f"Error al guardar proceso: {e}")
+
+    # =====================================================
+    # DESCARGAR DOCUMENTO
+    # =====================================================
+
+    if proceso_existe(ID):
+
+        st.markdown("### DESCARGAR DOCUMENTO")
+
+        contexto = {
+            "OBJETO": st.session_state.get("objeto", ""),
+            "JUSTIFICACION": st.session_state.get("justificacion", ""),
+            "NECESIDAD": st.session_state.get("necesidad", "")
+        }
+
+        archivo = generar_estudio_previo_docxtpl(contexto)
+
+        st.download_button(
+            label="DESCARGAR ESTUDIO PREVIO",
+            data=archivo,
+            file_name=f"Estudio_Previo_{ID}.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            use_container_width=True
+        )
 # =====================================================
 # ETAPA 2 — PLANEACIÓN
 # =====================================================
@@ -1041,6 +984,7 @@ if etapa == "3 Contratación":
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
