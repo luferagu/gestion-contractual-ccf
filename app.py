@@ -795,100 +795,94 @@ if (
 
     st.markdown("---")
 
-     # =====================================================
+    # =====================================================
     # BOTONES GUARDAR Y DESCARGAR EN UNA SOLA LÍNEA
     # =====================================================
 
     col_btn1, col_btn2 = st.columns(2)
 
-# ==========================================
-# BOTÓN GUARDAR Y CERRAR ETAPA 1
-# ==========================================
-with col_btn1:
+    # ==========================================
+    # BOTÓN GUARDAR Y CERRAR ETAPA 1
+    # ==========================================
+    with col_btn1:
 
-    if st.button("GUARDAR Y CERRAR ETAPA 1", use_container_width=True):
+        if st.button("GUARDAR Y CERRAR ETAPA 1", use_container_width=True):
 
-        try:
-            conn = conectar_db()
-            cursor = conn.cursor()
+            try:
+                conn = conectar_db()
+                cursor = conn.cursor()
 
-            cursor.execute("""
-                INSERT INTO procesos
-                (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-                ON CONFLICT (id_proceso)
-                DO UPDATE SET
-                    objeto = EXCLUDED.objeto,
-                    necesidad = EXCLUDED.necesidad,
-                    justificacion = EXCLUDED.justificacion,
-                    valor = EXCLUDED.valor,
-                    plazo = EXCLUDED.plazo,
-                    fecha_estudio = EXCLUDED.fecha_estudio
-            """, (
-                ID,
-                st.session_state.get("objeto", ""),
-                st.session_state.get("necesidad", ""),
-                st.session_state.get("justificacion", ""),
-                valor if 'valor' in locals() else 0,
-                plazo if 'plazo' in locals() else "",
-                fecha_estudio
-            ))
+                cursor.execute("""
+                    INSERT INTO procesos
+                    (id_proceso, objeto, necesidad, justificacion, valor, plazo, fecha_estudio)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (id_proceso)
+                    DO UPDATE SET
+                        objeto = EXCLUDED.objeto,
+                        necesidad = EXCLUDED.necesidad,
+                        justificacion = EXCLUDED.justificacion,
+                        valor = EXCLUDED.valor,
+                        plazo = EXCLUDED.plazo,
+                        fecha_estudio = EXCLUDED.fecha_estudio
+                """, (
+                    ID,
+                    st.session_state.get("objeto", ""),
+                    st.session_state.get("necesidad", ""),
+                    st.session_state.get("justificacion", ""),
+                    valor if 'valor' in locals() else 0,
+                    plazo if 'plazo' in locals() else "",
+                    fecha_estudio
+                ))
 
-            cursor.execute("""
-                UPDATE procesos
-                SET estado = 'ETAPA 2',
-                    fecha_actualizacion = NOW()
-                WHERE id_proceso = %s
-            """, (ID,))
+                cursor.execute("""
+                    UPDATE procesos
+                    SET estado = 'ETAPA 2',
+                        fecha_actualizacion = NOW()
+                    WHERE id_proceso = %s
+                """, (ID,))
 
-            conn.commit()
-            conn.close()
+                conn.commit()
+                conn.close()
 
-            st.session_state.etapa_actual = "2 Planeación"
-            st.session_state.ID_PROCESO = generar_id()
+                # ==========================================
+                # CREAR CARPETA procesos/ID
+                # ==========================================
+                BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+                RUTA_PROCESOS = os.path.join(BASE_DIR, "procesos")
+                os.makedirs(RUTA_PROCESOS, exist_ok=True)
 
-            st.success("Estudio previo cerrado correctamente.")
-            st.rerun()
+                ruta_proceso = os.path.join(RUTA_PROCESOS, ID)
+                os.makedirs(ruta_proceso, exist_ok=True)
 
-        except Exception as e:
-            conn.rollback()
-            conn.close()
-            st.error(f"Error al guardar proceso: {e}")
+                # ==========================================
+                # GENERAR Y GUARDAR DOCX
+                # ==========================================
+                contexto = {
+                    "OBJETO": st.session_state.get("objeto", ""),
+                    "JUSTIFICACION": st.session_state.get("justificacion", ""),
+                    "NECESIDAD": st.session_state.get("necesidad", "")
+                }
 
-# ==========================================
-# CREAR CARPETA procesos/ID
-# ==========================================
-import os
-import io
-from docxtpl import DocxTemplate
+                doc = DocxTemplate("plantillas/estudio_previo.docx")
+                doc.render(contexto)
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-RUTA_PROCESOS = os.path.join(BASE_DIR, "procesos")
-os.makedirs(RUTA_PROCESOS, exist_ok=True)
+                ruta_archivo = os.path.join(
+                    ruta_proceso,
+                    f"Estudio_Previo_{ID}.docx"
+                )
 
-ruta_proceso = os.path.join(RUTA_PROCESOS, ID)
-os.makedirs(ruta_proceso, exist_ok=True)
+                doc.save(ruta_archivo)
 
-# ==========================================
-# GENERAR Y GUARDAR DOCX
-# ==========================================
-contexto = {
-    "OBJETO": st.session_state.get("objeto", ""),
-    "JUSTIFICACION": st.session_state.get("justificacion", ""),
-    "NECESIDAD": st.session_state.get("necesidad", "")
-}
+                st.session_state.etapa_actual = "2 Planeación"
+                st.session_state.ID_PROCESO = generar_id()
 
-doc = DocxTemplate("plantillas/estudio_previo.docx")
-doc.render(contexto)
+                st.success(f"Proceso guardado correctamente en procesos/{ID}/")
+                st.rerun()
 
-ruta_archivo = os.path.join(
-    ruta_proceso,
-    f"Estudio_Previo_{ID}.docx"
-)
-
-doc.save(ruta_archivo)
-
-st.success(f"Proceso guardado correctamente en procesos/{ID}/")
+            except Exception as e:
+                conn.rollback()
+                conn.close()
+                st.error(f"Error al guardar proceso: {e}")
 
     # ==========================================
     # BOTÓN DESCARGAR
@@ -1149,6 +1143,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
