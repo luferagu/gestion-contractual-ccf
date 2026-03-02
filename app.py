@@ -914,37 +914,61 @@ if (
 
                 st.error(f"Error al guardar proceso: {e}")
 
+       # ==========================================
+    # BOTÓN DESCARGAR ESTUDIO PREVIO
     # ==========================================
-    # BOTÓN DESCARGAR
-    # ==========================================
+
     with col_btn2:
 
         if proceso_existe(ID):
 
-            contexto = {
-                "ID_PROCESO": ID,
-                "OBJETO": st.session_state.get("objeto", ""),
-                "JUSTIFICACION": st.session_state.get("justificacion", ""),
-                "NECESIDAD": st.session_state.get("necesidad", ""),
-                "VALOR": valor if 'valor' in locals() else 0,
-                "PLAZO": plazo if 'plazo' in locals() else "",
-                "FECHA_ESTUDIO": fecha_estudio.strftime("%d/%m/%Y")
-            }
+            try:
+                # ------------------------------------------
+                # Construcción del contexto
+                # ------------------------------------------
+                contexto = {
+                    "ID_PROCESO": ID,
+                    "OBJETO": st.session_state.get("objeto", ""),
+                    "JUSTIFICACION": st.session_state.get("justificacion", ""),
+                    "NECESIDAD": st.session_state.get("necesidad", ""),
+                    "VALOR": valor if 'valor' in locals() else 0,
+                    "PLAZO": plazo if 'plazo' in locals() else "",
+                    "FECHA_ESTUDIO": fecha_estudio.strftime("%d/%m/%Y")
+                }
 
-            doc = DocxTemplate("plantillas/estudio_previo.docx")
-            doc.render(contexto)
+                # ------------------------------------------
+                # Cargar plantilla institucional
+                # ------------------------------------------
+                BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+                ruta_plantilla = os.path.join(
+                    BASE_DIR,
+                    "plantillas",
+                    "estudio_previo.docx"
+                )
 
-            buffer = io.BytesIO()
-            doc.save(buffer)
-            buffer.seek(0)
+                doc = DocxTemplate(ruta_plantilla)
+                doc.render(contexto)
 
-            st.download_button(
-                label="DESCARGAR ESTUDIO PREVIO",
-                data=buffer,
-                file_name=f"Estudio_Previo_{ID}.docx",
-                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                use_container_width=True
-            )
+                # ------------------------------------------
+                # Generar archivo en memoria
+                # ------------------------------------------
+                buffer = io.BytesIO()
+                doc.save(buffer)
+                buffer.seek(0)
+
+                # ------------------------------------------
+                # Botón de descarga
+                # ------------------------------------------
+                st.download_button(
+                    label="DESCARGAR ESTUDIO PREVIO",
+                    data=buffer,
+                    file_name=f"Estudio_Previo_{ID}.docx",
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    use_container_width=True
+                )
+
+            except Exception as e:
+                st.error(f"Error al generar el archivo para descarga: {e}")
 # =====================================================
 # ETAPA 2 — PLANEACIÓN
 # =====================================================
@@ -1177,6 +1201,7 @@ if st.session_state.etapa_actual == "3 Contratación" and st.session_state.pagin
 
 st.divider()
 st.success("Sistema operativo en PostgreSQL (Supabase).")
+
 
 
 
